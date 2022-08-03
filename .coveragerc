@@ -1,5 +1,6 @@
 [run]
 source =
+    guess_number_game
     backgammon
     othello
     wumpus
