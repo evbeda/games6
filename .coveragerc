@@ -1,4 +1,8 @@
 [run]
+source =
+    backgammon
+    othello
+    wumpus
 
 omit =
     env/*
