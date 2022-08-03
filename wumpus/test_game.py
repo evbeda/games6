@@ -3,7 +3,7 @@ from wumpus.game import WumpusGame
 from wumpus.constants import IN_PROGRESS
 
 
-class TestTable(unittest.TestCase):
+class TestGame(unittest.TestCase):
 
     def setUp(self):
         self.game = WumpusGame()
