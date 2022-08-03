@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Running Flake8
-          command: flake8
+          command: pip install flake8 && flake8
       - run:
           name: Create test reports directory
           command: mkdir /tmp/test-artifacts
