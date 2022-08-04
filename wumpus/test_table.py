@@ -14,7 +14,9 @@ class TestTable(unittest.TestCase):
         self.assertEqual([[None, None, None], [None, None, None]], table.board)
 
     def test_creat_real_table(self):
-        self.assertEqual([8, 15], [len(self.table.board), len(self.table.board[0])])
+        self.assertEqual(
+            [8, 15], [len(self.table.board), len(self.table.board[0])]
+        )
 
     def test_board_columns(self):
         flag = True
@@ -25,3 +27,7 @@ class TestTable(unittest.TestCase):
 
     def test_board_rows(self):
         self.assertTrue(len(self.table.board) == self.row)
+
+    def test_initial_place_player(self):
+        self.table.place_player()
+        self.assertEqual(self.table.board[0][0], "J")
