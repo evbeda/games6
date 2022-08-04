@@ -25,3 +25,7 @@ class Othello():
 
     def what_is(self, row, col):
         return self.init_board[row][col]
+
+    def is_empty(self, row, col):
+        value = self.what_is(row, col)
+        return value is None
