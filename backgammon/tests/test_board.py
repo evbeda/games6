@@ -1,5 +1,5 @@
 import unittest
-from .create_board import create_board
+from ..game.create_board import create_board
 
 
 class BoardTest(unittest.TestCase):

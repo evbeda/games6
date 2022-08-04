@@ -1,5 +1,5 @@
 import unittest
-from .select_player import select_player
+from ..game.select_player import select_player
 from unittest.mock import patch
 
 
