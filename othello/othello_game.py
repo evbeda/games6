@@ -1,5 +1,6 @@
 
 class Othello():
+
     def __init__(self):
         self.init_board = [
             [None, None, None, None, None, None, None, None],
@@ -10,3 +11,7 @@ class Othello():
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None]]
+
+    def get_piece_count(self, board, kind):
+        return sum(
+            [ficha == kind for row in board for ficha in row])
