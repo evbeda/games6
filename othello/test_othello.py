@@ -5,7 +5,8 @@ from othello.othello_game import Othello
 from othello.scenarios_test import (
     black_12,
     white_12,
-    mix_6)
+    mix_6,
+    mix_10)
 
 
 class Test_othello(unittest.TestCase):
@@ -95,6 +96,59 @@ class Test_othello(unittest.TestCase):
         for _ in range(it):
             self.game.next_turn()
         self.assertEqual(expected, self.game.get_opposite_piece())
+
+    @parameterized.expand(
+        [
+            ({'from_row': 0,
+                'to_row': 1,
+                'from_col': 0,
+                'to_col': 1}, 0, 0),
+
+            ({'from_row': 6,
+                'to_row': 7,
+                'from_col': 6,
+                'to_col': 7}, 7, 7),
+
+            ({'from_row': 0,
+                'to_row': 1,
+                'from_col': 6,
+                'to_col': 7}, 0, 7),
+
+            ({'from_row': 6,
+                'to_row': 7,
+                'from_col': 0,
+                'to_col': 1}, 7, 0),
+
+            ({'from_row': 0,
+                'to_row': 1,
+                'from_col': 0,
+                'to_col': 1}, 0, 0),
+
+            ({'from_row': 3,
+                'to_row': 5,
+                'from_col': 3,
+                'to_col': 5}, 4, 4),
+        ]
+    )
+    def test_get_llimits(self, expected, row, col):
+
+        self.assertEqual(expected, self.game.get_limits(row, col))
+
+    @parameterized.expand(
+        [
+            (black_12, [], 'B', 1, 1),
+            (white_12, [], 'W', 1, 5),
+            (mix_6, [(3, 4), (4, 3)], 'W', 4, 4),
+            (mix_6, [], 'B', 7, 1),
+            (black_12, [(3, 4), (4, 3)], 'W', 3, 3),
+            (mix_10, [(3, 3), (4, 4), (5, 2), (5, 4)], 'B', 4, 3),
+            (mix_10, [(2, 2), (3, 4), (4, 3)], 'W', 3, 3)
+        ]
+    )
+    def test_close_opposite_pieces(self, board, expected, player, row, col):
+        self.game.init_board = board
+        self.game.player_turn = player
+        self.assertEqual(expected, self.game.close_opposite_around(row, col))
 
 
 if __name__ == "__main__":
