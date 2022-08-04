@@ -14,6 +14,7 @@ class Moves_test(unittest.TestCase):
             (20, 5, True),  # border table dades
             (20, 6, True),
             (24, 6, False),
+            (3, 6, True)
         ])
     def test_new_position_check(self, position, dice, flag):
         # initial_position ,board, daces
