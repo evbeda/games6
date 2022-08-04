@@ -83,6 +83,19 @@ class Test_othello(unittest.TestCase):
         value = self.game.is_empty(row, col)
         self.assertEqual(expected, value)
 
+    @parameterized.expand(
+        [
+            (1, 'B'),
+            (3, 'B'),
+            (4, 'W'),
+            (7, 'B'),
+        ]
+    )
+    def test_opposite_piece(self, it, expected):
+        for _ in range(it):
+            self.game.next_turn()
+        self.assertEqual(expected, self.game.get_opposite_piece())
+
 
 if __name__ == "__main__":
     unittest.main()

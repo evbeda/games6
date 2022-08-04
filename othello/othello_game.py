@@ -19,9 +19,7 @@ class Othello():
             [ficha == kind for row in board for ficha in row])
 
     def next_turn(self):
-        aux = self.possibles_players.copy()
-        aux.remove(self.player_turn)
-        self.player_turn = aux[0]
+        self.player_turn = self.get_opposite_piece()
 
     def what_is(self, row, col):
         return self.init_board[row][col]
@@ -29,3 +27,8 @@ class Othello():
     def is_empty(self, row, col):
         value = self.what_is(row, col)
         return value is None
+
+    def get_opposite_piece(self):
+        aux = self.possibles_players.copy()
+        aux.remove(self.player_turn)
+        return aux[0]
