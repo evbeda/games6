@@ -31,4 +31,6 @@ class TestTable(unittest.TestCase):
     def test_initial_place_player(self):
         self.table.place_player()
         self.assertEqual(self.table.board[0][0], "J")
-        self.assertEqual([self.table.player.row, self.table.player.row], [0, 0])
+        self.assertEqual(
+            [self.table.player.row, self.table.player.row], [0, 0]
+            )
