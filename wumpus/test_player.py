@@ -1,4 +1,5 @@
 import unittest
+from parameterized import parameterized
 from wumpus.player import Player
 
 
@@ -7,20 +8,12 @@ class TestPlayer(unittest.TestCase):
     def setUp(self):
         self.player = Player()
 
-    def test_move_s(self):
-        self.player.move("s")
-        self.assertEqual(self.player.row, 1)
-
-    def test_move_d(self):
-        self.player.move("d")
-        self.assertEqual(self.player.col, 1)
-
-    def test_move_w(self):
-        self.player.row = 1
-        self.player.move("w")
-        self.assertEqual(self.player.row, 0)
-
-    def test_move_a(self):
-        self.player.col = 1
-        self.player.move("a")
-        self.assertEqual(self.player.col, 0)
+    @parameterized.expand([
+        ("s", [1, 0]),
+        ("d", [0, 1]),
+        ("w", [0, 0]),
+        ("a", [0, 0])
+    ])
+    def test_valid_move(self, movement, expected_movement):
+        self.player.move(movement)
+        self.assertEqual([self.player.row, self.player.col], expected_movement)
