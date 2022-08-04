@@ -67,6 +67,22 @@ class Test_othello(unittest.TestCase):
         value = self.game.what_is(row, col)
         self.assertEqual(expected, value)
 
+    @parameterized.expand(
+        [
+            (black_12, False, 1, 1),
+            (white_12, False, 1, 5),
+            (mix_6, False, 4, 4),
+            (mix_6, False, 7, 1),
+            (mix_6, True, 4, 5),
+            (black_12, True, 2, 5),
+            (white_12, True, 6, 6)
+        ]
+    )
+    def test_is_empty(self, board, expected, row, col):
+        self.game.init_board = board
+        value = self.game.is_empty(row, col)
+        self.assertEqual(expected, value)
+
 
 if __name__ == "__main__":
     unittest.main()
