@@ -1,3 +1,6 @@
+from wumpus.player import Player
+
+
 class Table:
 
     def __init__(self, row, col):
@@ -6,4 +9,5 @@ class Table:
         self.board = [[None for j in range(col)] for i in range(row)]
 
     def place_player(self):
+        self.player = Player()
         self.board[0][0] = "J"
