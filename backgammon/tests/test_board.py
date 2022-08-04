@@ -1,6 +1,6 @@
 import unittest
 from parameterized import parameterized
-from ..game.create_board import create_board, available_pieces
+from ..game.board import create_board, available_pieces
 
 
 class BoardTest(unittest.TestCase):
