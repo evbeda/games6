@@ -15,3 +15,6 @@ class Othello():
     def get_piece_count(self, board, kind):
         return sum(
             [ficha == kind for row in board for ficha in row])
+
+    def what_is(self, row, col):
+        return self.init_board[row][col]
