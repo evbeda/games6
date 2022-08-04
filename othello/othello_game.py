@@ -22,3 +22,6 @@ class Othello():
         aux = self.possibles_players.copy()
         aux.remove(self.player_turn)
         self.player_turn = aux[0]
+
+    def what_is(self, row, col):
+        return self.init_board[row][col]
