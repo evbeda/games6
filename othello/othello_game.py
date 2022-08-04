@@ -57,3 +57,12 @@ class Othello():
             'to_row': to_row,
             'from_col': from_col,
             'to_col': to_col}
+
+    def close_opposite_around(self, row, col):
+        limits = self.get_limits(row, col)
+        close_opposite_list = []
+        for i in range(limits["from_row"], limits["to_row"] + 1):
+            for j in range(limits["from_col"], limits["to_col"] + 1):
+                if self.what_is(i, j) == self.get_opposite_piece():
+                    close_opposite_list.append((i, j))
+        return close_opposite_list
