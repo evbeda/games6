@@ -35,6 +35,22 @@ class Test_othello(unittest.TestCase):
         pieces = self.game.get_piece_count(board, kind)
         self.assertEqual(expected, pieces)
 
+    @parameterized.expand(
+        [
+            (black_12, 'B', 1, 1),
+            (white_12, 'W', 1, 5),
+            (mix_6, 'W', 4, 4),
+            (mix_6, 'B', 7, 1),
+            (mix_6, None, 4, 5),
+            (black_12, None, 2, 5),
+            (white_12, None, 6, 6)
+        ]
+    )
+    def test_what_is(self, board, expected, row, col):
+        self.game.init_board = board
+        value = self.game.what_is(row, col)
+        self.assertEqual(expected, value)
+
 
 if __name__ == "__main__":
     unittest.main()
