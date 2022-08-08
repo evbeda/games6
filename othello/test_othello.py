@@ -12,7 +12,9 @@ from othello.scenarios_test import (
     flip_row_white,
     final_flip_row_white,
     diagonal_flip,
-    final_diagonal_flip)
+    final_diagonal_flip,
+    validate_direction_1,
+    validate_direction_2)
 
 
 class Test_othello(unittest.TestCase):
@@ -185,6 +187,27 @@ class Test_othello(unittest.TestCase):
         self.game.flip_pieces(cordinates)
         self.assertEqual(
             self._convert_scenario_to_matrix(final_board), self.game.board)
+
+    @parameterized.expand(
+        [
+            (validate_direction_1, 'B', 6, 4, "n", [[5, 4], [4, 4]]),
+            (validate_direction_1, 'W', 7, 4, "ne", [[6, 5], [5, 6]]),
+            (validate_direction_1, 'W', 0, 5, "e", [[0, 6]]),
+            (validate_direction_1, 'B', 0, 0, "se", [[1, 1]]),
+            (validate_direction_2, 'B', 0, 6, "s", [[1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6]]),
+            (validate_direction_1, 'W', 2, 5, "sw", [[3, 4], [4, 3]]),
+            (validate_direction_2, 'W', 4, 3, "w", [[4, 2], [4, 1]]),
+            (validate_direction_2, 'W', 6, 4, "nw", [[5, 3], [4, 2], [3, 1]]),
+            (validate_direction_2, 'W', 0, 4, "n", False),
+            (validate_direction_2, 'B', 3, 0, "w", False),
+            (validate_direction_2, 'W', 7, 1, "s", False),
+            (validate_direction_2, 'B', 5, 7, "e", False),
+        ]
+    )
+    def test_validate_direction(self, board, player, row, col, direction, expected):
+        self.game.board = board
+        self.game.player_turn = player
+        self.assertEqual(expected, self.game.validate_direction(row, col, direction))
 
 
 if __name__ == "__main__":

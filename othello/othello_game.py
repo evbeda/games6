@@ -35,6 +35,8 @@ class Othello():
         return aux[0]
 
     def get_index_limit(self, i):
+        '''
+        Argument i is an index'''
         if i == 0:
 
             from_i = i
@@ -49,6 +51,11 @@ class Othello():
         return from_i, to_i
 
     def get_limits(self, row, col):
+        '''
+        Returns a dictionary with 4 values, which are the coordinates of
+        edges that define a square.
+        It can be a 3x3, 2x3 or 3x2 square or a 2x2 square, depending if the entered
+        coordinates are in an edge or not.'''
 
         from_row, to_row = self.get_index_limit(row)
         from_col, to_col = self.get_index_limit(col)
@@ -72,3 +79,54 @@ class Othello():
 
         for row, col in coordinates:
             self.board[row][col] = self.player_turn
+
+    '''
+    def validate_move(self, row, col):
+        NEEDS TO BE COMPLETED
+        Used by validate_direction(), generates array if valid
+        Returns False if not valid.
+        Suggested: if true, it should return a list of list, where
+        each list is a list of coordinates returned by validate_direction,
+        hence, in most of the cases this function should call validate_direction() eigth times,
+        one for every direction. If a move is on an edge, this list will include three False.
+        if self.board[row][col] is not None:
+            return False
+    '''
+
+    def validate_direction(self, row, col, direction):
+        '''
+        gets row and col, direction is a string.
+        returns false is direction is not valid,
+        returns the array if direction is valid.
+        The returned array does not include the position where we are placing a piece,
+        nor the last position that includes a piece of the same color of the active player
+        '''
+
+        my_dictionary = {
+            "n": [-1, 0],
+            "ne": [-1, 1],
+            "e": [0, 1],
+            "se": [1, 1],
+            "s": [1, 0],
+            "sw": [1, -1],
+            "w": [0, -1],
+            "nw": [-1, -1]
+        }
+
+        change = my_dictionary[direction]
+
+        myList = []
+
+        while row + change[0] >= 0 and row + change[0] < 8 and col + change[0] >= 0 and col + change[1] < 8:
+            row = row + change[0]
+            col = col + change[1]
+            if self.board[row][col] is None:
+                return False
+            if self.board[row][col] == self.player_turn:
+                break
+            myList.append([row, col])
+
+        if myList:
+            return myList
+        else:
+            return False
