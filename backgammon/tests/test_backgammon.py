@@ -57,6 +57,15 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(self.backgammon.roll_dices(),
                          (expetc_value, expetc_value))
 
+    @parameterized.expand([
+        ('WHITE', 'BLACK'),
+        ('BLACK', 'WHITE'),
+    ])
+    def test_opposite(self, current_player, expected):
+
+        self.backgammon.player = current_player
+        self.assertEqual(self.backgammon.opposite, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
