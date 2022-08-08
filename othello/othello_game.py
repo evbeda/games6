@@ -12,7 +12,8 @@ class Othello():
             [None, None, None, "B", "W", None, None, None],
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
-            [None, None, None, None, None, None, None, None]]
+            [None, None, None, None, None, None, None, None],
+        ]
 
     def get_piece_count(self, kind):
         return sum(
