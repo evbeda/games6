@@ -20,7 +20,7 @@ class Test_othello(unittest.TestCase):
             self.assertEqual(len(row), 8)
 
     def test_initial_black_piece_count(self):
-        black_pieces = self.game.get_piece_count(self.game.board, 'B')
+        black_pieces = self.game.get_piece_count('B')
         self.assertEqual(2, black_pieces)
 
     @parameterized.expand(
@@ -32,7 +32,9 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_initia_white_piece_count(self, board, expected, kind):
-        pieces = self.game.get_piece_count(board, kind)
+        # replace board to see diferents situacions
+        self.game.board = board
+        pieces = self.game.get_piece_count(kind)
         self.assertEqual(expected, pieces)
 
     def test_initial_play(self):
