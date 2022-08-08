@@ -6,7 +6,13 @@ from othello.scenarios_test import (
     black_12,
     white_12,
     mix_6,
-    mix_10)
+    mix_10,
+    flip_black,
+    final_flip_black,
+    flip_row_white,
+    final_flip_row_white,
+    diagonal_flip,
+    final_diagonal_flip)
 
 
 class Test_othello(unittest.TestCase):
@@ -162,6 +168,23 @@ class Test_othello(unittest.TestCase):
         self.game.board = self._convert_scenario_to_matrix(board)
         self.game.player_turn = player
         self.assertEqual(expected, self.game.close_opposite_around(row, col))
+
+    @parameterized.expand(
+        # initial_board , coordinates , index_player, final_board
+        [
+            (flip_black, [(0, 0)], 1, final_flip_black),
+            (flip_row_white, [(5, 0), (5, 2), (5, 4)], 0,
+                final_flip_row_white),
+            (diagonal_flip, [(0, 0), (1, 1), (2, 2)], 1,
+                final_diagonal_flip)
+        ]
+    )
+    def test_flip_pieces(self, initial_board, cordinates, index, final_board):
+        self.game.board = self._convert_scenario_to_matrix(initial_board)
+        self.game.player_turn = self.game.possibles_players[index]
+        self.game.flip_pieces(cordinates)
+        self.assertEqual(
+            self._convert_scenario_to_matrix(final_board), self.game.board)
 
 
 if __name__ == "__main__":
