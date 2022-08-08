@@ -14,9 +14,9 @@ class Othello():
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None]]
 
-    def get_piece_count(self, board, kind):
+    def get_piece_count(self, kind):
         return sum(
-            [ficha == kind for row in board for ficha in row])
+            [ficha == kind for row in self.board for ficha in row])
 
     def next_turn(self):
         self.player_turn = self.get_opposite_piece()
