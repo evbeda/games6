@@ -33,3 +33,8 @@ class WumpusGame:
     def check_is_empty(self, coordinate):
         cell = self.board[coordinate[0]][coordinate[1]]
         return True if cell is None else False
+
+    def move_J_transaction(self, coordinate):
+        pos = self.position_finder("J")[0]
+        self.board[coordinate[0]][coordinate[1]] = "J"
+        self.board[pos[0]][pos[1]] = None

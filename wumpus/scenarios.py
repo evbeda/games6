@@ -10,3 +10,6 @@ SCENARIO_3 = [[None for j in range(COL)] for i in range(ROW)]
 SCENARIO_3[3][5] = "J"
 
 SCENARIO_4 = [[None for j in range(COL)] for i in range(ROW)]
+
+SCENARIO_5 = [[None for j in range(COL)] for i in range(ROW)]
+SCENARIO_5[2][4] = "J"

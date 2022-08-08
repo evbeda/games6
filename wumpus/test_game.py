@@ -1,8 +1,12 @@
 import unittest
-from wumpus.game import WumpusGame
-from wumpus.constants import IN_PROGRESS, COL, ROW
+
 from parameterized import parameterized
-from .scenarios import SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4
+
+from wumpus.constants import COL, IN_PROGRESS, ROW
+from wumpus.game import WumpusGame
+
+from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+                        SCENARIO_5)
 
 
 class TestGame(unittest.TestCase):
@@ -65,3 +69,17 @@ class TestGame(unittest.TestCase):
         self.game.board = board
         is_empty = self.game.check_is_empty(coordinate)
         self.assertEqual(is_empty, expected)
+
+    @parameterized.expand([
+        (SCENARIO_5, (1, 4)),
+        (SCENARIO_5, (3, 4)),
+        (SCENARIO_5, (2, 5)),
+        (SCENARIO_5, (2, 6))
+
+    ])
+    def test_move_transaction(self, board, coordinate):
+        self.game.board = board
+        pos = self.game.position_finder("J")[0]
+        self.game.move_J_transaction(coordinate)
+        self.assertEqual(self.game.board[pos[0]][pos[1]], None)
+        self.assertEqual(self.game.board[coordinate[0]][coordinate[1]], "J")
