@@ -1,4 +1,14 @@
-from wumpus.constants import IN_PROGRESS, COL, ROW
+from wumpus.constants import (
+    IN_PROGRESS,
+    COL,
+    ROW,
+    GOLD_QUANTITY,
+    GOLD,
+    WUMPUS_QUANTITY,
+    WUMPUS,
+    SWORDS_QUANTITY
+)
+import random
 
 
 class WumpusGame:
@@ -6,14 +16,33 @@ class WumpusGame:
     def __init__(self) -> None:
         self.state = IN_PROGRESS
         self.board = [[None for j in range(COL)] for i in range(ROW)]
+        self.player = self.place_player()
+        self.gold = self.place_item(GOLD, GOLD_QUANTITY)
+        self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
+        self.swords = SWORDS_QUANTITY
+        self.collected_gold = 0
 
     def place_player(self):
         self.board[0][0] = "J"
 
+    def place_item(self, item, quantity):
+
+        for _ in range(quantity):
+            while True:  # busca hasta encontrar una posicion libre
+                row, col = self.rand_pos()
+                if self.check_is_empty((row, col)):
+                    self.board[row][col] = item
+                    break
+
+    def rand_pos(self):
+        row = random.randint(0, ROW - 1)
+        col = random.randint(0, COL - 1)
+        return (row, col)
+
     def position_finder(self, item):
         position_list = []
-        for i in range(len(self.board)):
-            for j in range(len(self.board)):
+        for i in range(ROW):
+            for j in range(COL):
                 if self.board[i][j] == item:
                     position_list.append((i, j))
         return position_list

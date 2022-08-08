@@ -1,8 +1,7 @@
 import unittest
 
 from parameterized import parameterized
-
-from wumpus.constants import COL, IN_PROGRESS, ROW
+from .constants import COL, IN_PROGRESS, ROW, GOLD, GOLD_QUANTITY
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
@@ -83,3 +82,17 @@ class TestGame(unittest.TestCase):
         self.game.move_J_transaction(coordinate)
         self.assertEqual(self.game.board[pos[0]][pos[1]], None)
         self.assertEqual(self.game.board[coordinate[0]][coordinate[1]], "J")
+
+    # @parameterized.expand([
+    #     (SCENARIO_1, )
+    # ])
+    # @patch("random.randint")
+    @parameterized.expand([
+        (GOLD, GOLD_QUANTITY)
+    ])
+    def test_place_item(self, item, quantity):
+        self.assertEqual(len(self.game.position_finder("G")), 8)
+
+
+if __name__ == "__main__":
+    unittest.main()
