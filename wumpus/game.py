@@ -29,3 +29,7 @@ class WumpusGame:
         if direction == "d" and not coordinate[1] < 7:
             validator = False
         return validator
+
+    def check_is_empty(self, coordinate):
+        cell = self.board[coordinate[0]][coordinate[1]]
+        return True if cell is None else False

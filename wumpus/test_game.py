@@ -54,3 +54,14 @@ class TestGame(unittest.TestCase):
     def test_is_out_of_bounds(self, coordinate, direction):
         is_out = self.game.is_not_out_of_bounds(coordinate, direction)
         self.assertFalse(is_out)
+
+    @parameterized.expand([
+        (SCENARIO_1, (7, 0), True),
+        (SCENARIO_2, (1, 3), False),
+        (SCENARIO_3, (3, 0), True),
+        (SCENARIO_4, (3, 6), True),
+    ])
+    def test_check_is_empty(self, board, coordinate, expected):
+        self.game.board = board
+        is_empty = self.game.check_is_empty(coordinate)
+        self.assertEqual(is_empty, expected)
