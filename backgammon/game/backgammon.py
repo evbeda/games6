@@ -4,6 +4,7 @@ import random
 class BackgammonGame():
 
     def __init__(self):
+
         self.board = [
             [2, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 5],
             [0, 0], [0, 3], [0, 0], [0, 0], [0, 0], [5, 0],
@@ -22,7 +23,7 @@ class BackgammonGame():
         return result
 
     def select_initial_player():
-        player = random.randint(1, 2)
+        player = random.choice(['WHITE', 'BLACK'])
         return player
 
     def roll_dices(self):

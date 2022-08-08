@@ -31,15 +31,15 @@ class BackgammonGameTest(unittest.TestCase):
         result = self.backgammon.available_pieces(side)
         self.assertEqual(result, list(expected_result))
 
-    @patch('random.randint', return_value=1)
+    @patch('random.choice', return_value='WHITE')
     def test_player_1(self, patched_randint):
         player = BackgammonGame.select_initial_player()
-        self.assertEqual(player, 1)
+        self.assertEqual(player, 'WHITE')
 
-    @patch('random.randint', return_value=2)
+    @patch('random.choice', return_value='BLACK')
     def test_player_2(self, patched_randint):
         player = BackgammonGame.select_initial_player()
-        self.assertEqual(player, 2)
+        self.assertEqual(player, 'BLACK')
 
     @parameterized.expand([
         (1, 1),
