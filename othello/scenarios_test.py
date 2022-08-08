@@ -9,6 +9,7 @@ black_12 = [
     '  BB B B',
     '        ',
 ]
+
 white_12 = [
     'W     W ',
     '     W  ',
@@ -106,3 +107,23 @@ final_diagonal_flip = [
     '  BB B B',
     '        ',
 ]
+
+validate_direction_1 = [
+    [None, None, None, None, None, None, "B", "W"],
+    [None, "W", None, None, None, None, None, None],
+    [None, None, "B", None, None, None, None, 'B'],
+    [None, None, None, "W", "B", None, None, None],
+    [None, None, None, "B", "W", None, None, "W"],
+    ["W", None, 'W', None, 'W', None, "B", None],
+    [None, None, None, None, None, 'B', None, None],
+    [None, 'B', None, None, None, None, None, "W"]]
+
+validate_direction_2 = [
+    [None, None, None, None, None, None, None, None],
+    [None, None, None, None, None, None, "W", None],
+    ["W", None, None, None, None, None, "W", None],
+    [None, "B", None, None, None, None, "W", None],
+    ["W", "B", "B", None, None, None, "W", None],
+    [None, None, None, "B", None, None, "W", None],
+    [None, None, None, None, None, None, "W", None],
+    [None, None, None, None, None, None, "B", None]]
