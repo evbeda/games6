@@ -67,3 +67,8 @@ class Othello():
                 if self.what_is(i, j) == self.get_opposite_piece():
                     close_opposite_list.append((i, j))
         return close_opposite_list
+
+    def flip_pieces(self, coordinates):
+
+        for row, col in coordinates:
+            self.board[row][col] = self.player_turn
