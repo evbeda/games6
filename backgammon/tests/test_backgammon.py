@@ -10,6 +10,10 @@ class BackgammonGameTest(unittest.TestCase):
     def setUp(self):
         self.backgammon = BackgammonGame()
 
+    def test_game_active_change(self):
+        self.backgammon.game_active_change()
+        self.assertEqual(self.backgammon.active_game, False)
+
     def test_slots(self):
         self.assertEqual(len(self.backgammon.board), 24)
 
@@ -52,7 +56,6 @@ class BackgammonGameTest(unittest.TestCase):
     @patch('random.randint')
     def test_roll_dices_number_interval(self, expetc_value,
                                         patch_value, patch_function):
-
         patch_function.return_value = patch_value
         self.assertEqual(self.backgammon.roll_dices(),
                          (expetc_value, expetc_value))
@@ -82,6 +85,18 @@ class BackgammonGameTest(unittest.TestCase):
         for _ in range(it):
             game.next_turn()
         self.assertEqual(expected, game.player)
+
+    @parameterized.expand([
+        ("BLACK", 0, False),
+        ("WHITE", 1, True)
+
+
+    ])
+    def test_less_than_two_enemies_in_position(self, current_player, position,
+                                               expected_result):
+        self.backgammon.player = current_player
+        result = self.backgammon.less_than_two_enemies_in_position(position)
+        self.assertEqual(result, expected_result)
 
 
 if __name__ == '__main__':
