@@ -17,3 +17,15 @@ class WumpusGame:
                 if self.board[i][j] == item:
                     position_list.append((i, j))
         return position_list
+
+    def is_not_out_of_bounds(self, coordinate, direction):
+        validator = True
+        if direction == "w" and not coordinate[0] > 0:
+            validator = False
+        if direction == "s" and not coordinate[0] < 14:
+            validator = False
+        if direction == "a" and not coordinate[1] > 0:
+            validator = False
+        if direction == "d" and not coordinate[1] < 7:
+            validator = False
+        return validator

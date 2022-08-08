@@ -34,3 +34,23 @@ class TestGame(unittest.TestCase):
         self.game.board = board
         position_list = self.game.position_finder(item)
         self.assertEqual(position_list, expected)
+
+    @parameterized.expand([
+        ((0, 0), "s"),
+        ((1, 3), "w"),
+        ((3, 5), "a"),
+        ((3, 5), "d"),
+    ])
+    def test_is_not_out_of_bounds(self, coordinate, direction):
+        is_not_out = self.game.is_not_out_of_bounds(coordinate, direction)
+        self.assertTrue(is_not_out)
+
+    @parameterized.expand([
+        ((14, 0), "s"),
+        ((0, 3), "w"),
+        ((3, 0), "a"),
+        ((3, 7), "d"),
+    ])
+    def test_is_out_of_bounds(self, coordinate, direction):
+        is_out = self.game.is_not_out_of_bounds(coordinate, direction)
+        self.assertFalse(is_out)
