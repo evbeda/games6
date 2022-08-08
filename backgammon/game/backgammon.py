@@ -1,3 +1,6 @@
+import random
+
+
 class BackgammonGame():
 
     def __init__(self):
@@ -8,6 +11,7 @@ class BackgammonGame():
             [5, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 2]
         ]
         self.expelled = {"BLACK": 0, "WHITE": 0}
+        self.player = BackgammonGame.select_initial_player()
 
     def available_pieces(self, side):
         color = 0 if side == "WHITE" else 1
@@ -16,3 +20,7 @@ class BackgammonGame():
             if pyramid[color]:
                 result.append(index)
         return result
+
+    def select_initial_player():
+        player = random.randint(1, 2)
+        return player
