@@ -13,6 +13,7 @@ class BackgammonGame():
         ]
         self.expelled = {"BLACK": 0, "WHITE": 0}
         self.player = BackgammonGame.select_initial_player()
+        self.active_game = True
 
     def available_pieces(self, side):
         color = 0 if side == "WHITE" else 1
@@ -22,12 +23,15 @@ class BackgammonGame():
                 result.append(index)
         return result
 
+    # if there are no movements, the game must finish
+    def game_active_change(self):
+        self.active_game = False
+
     def select_initial_player():
         player = random.choice(['WHITE', 'BLACK'])
         return player
 
     def roll_dices(self):
-
         dice_one = random.randint(1, 6)
         dice_two = random.randint(1, 6)
         return (dice_one, dice_two)
@@ -38,3 +42,8 @@ class BackgammonGame():
 
     def next_turn(self):
         self.player = self.opposite
+
+    def less_than_two_enemies_in_position(self, position):
+        index_opp = 0 if self.opposite == "WHITE" else 1
+        result = True if self.board[position][index_opp] < 2 else False
+        return result
