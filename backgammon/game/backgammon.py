@@ -47,3 +47,7 @@ class BackgammonGame():
         index_opp = 0 if self.opposite == "WHITE" else 1
         result = True if self.board[position][index_opp] < 2 else False
         return result
+
+    def less_than_five_own_pieces(self, position):
+        side = 0 if self.player == "WHITE" else 1
+        return self.board[position][side] < 5

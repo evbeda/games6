@@ -89,14 +89,25 @@ class BackgammonGameTest(unittest.TestCase):
     @parameterized.expand([
         ("BLACK", 0, False),
         ("WHITE", 1, True)
-
-
     ])
     def test_less_than_two_enemies_in_position(self, current_player, position,
                                                expected_result):
         self.backgammon.player = current_player
         result = self.backgammon.less_than_two_enemies_in_position(position)
         self.assertEqual(result, expected_result)
+
+    @parameterized.expand([
+        ('WHITE', 11, False),
+        ('WHITE', 16, True),
+        ('WHITE', 18, False),
+        ('BLACK', 5, False),
+        ('BLACK', 12, False),
+    ])
+    def test_less_than_five_own_pieces(self, current_player,
+                                       position, expected):
+        self.backgammon.player = current_player
+        result = self.backgammon.less_than_five_own_pieces(position)
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':
