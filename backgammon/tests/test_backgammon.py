@@ -66,6 +66,23 @@ class BackgammonGameTest(unittest.TestCase):
         self.backgammon.player = current_player
         self.assertEqual(self.backgammon.opposite, expected)
 
+    @parameterized.expand(
+        [
+            (3, 'BLACK', 'WHITE'),
+            (1, 'WHITE', 'BLACK'),
+            (4, 'WHITE', 'WHITE'),
+            (7, 'WHITE', 'BLACK'),
+        ]
+    )
+    @patch('random.choice')
+    def test_current_turn(self, it, expected,
+                          patch_value, patch_function):
+        patch_function.return_value = patch_value
+        game = BackgammonGame()
+        for _ in range(it):
+            game.next_turn()
+        self.assertEqual(expected, game.player)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -35,3 +35,6 @@ class BackgammonGame():
     @property
     def opposite(self):
         return 'BLACK' if self.player == 'WHITE' else 'WHITE'
+
+    def next_turn(self):
+        self.player = self.opposite
