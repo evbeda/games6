@@ -2,6 +2,7 @@ import unittest
 from parameterized import parameterized
 from backgammon.game.backgammon import BackgammonGame
 from backgammon.tests.test_scenarios import initial_board
+from unittest.mock import patch
 
 
 class BackgammonGameTest(unittest.TestCase):
@@ -29,6 +30,16 @@ class BackgammonGameTest(unittest.TestCase):
         self.backgammon.board = board
         result = self.backgammon.available_pieces(side)
         self.assertEqual(result, list(expected_result))
+
+    @patch('random.randint', return_value=1)
+    def test_player_1(self, patched_randint):
+        player = BackgammonGame.select_initial_player()
+        self.assertEqual(player, 1)
+
+    @patch('random.randint', return_value=2)
+    def test_player_2(self, patched_randint):
+        player = BackgammonGame.select_initial_player()
+        self.assertEqual(player, 2)
 
 
 if __name__ == '__main__':
