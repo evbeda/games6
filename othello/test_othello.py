@@ -13,15 +13,14 @@ class Test_othello(unittest.TestCase):
 
     def setUp(self):
         self.game = Othello()
-        self.board = self.game.init_board
 
     def test_board_size(self):
-        self.assertEqual(len(self.board), 8)
-        for row in self.board:
+        self.assertEqual(len(self.game.board), 8)
+        for row in self.game.board:
             self.assertEqual(len(row), 8)
 
     def test_initial_black_piece_count(self):
-        black_pieces = self.game.get_piece_count(self.game.init_board, 'B')
+        black_pieces = self.game.get_piece_count(self.game.board, 'B')
         self.assertEqual(2, black_pieces)
 
     @parameterized.expand(
@@ -64,7 +63,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_what_is(self, board, expected, row, col):
-        self.game.init_board = board
+        self.game.board = board
         value = self.game.what_is(row, col)
         self.assertEqual(expected, value)
 
@@ -80,7 +79,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_is_empty(self, board, expected, row, col):
-        self.game.init_board = board
+        self.game.board = board
         value = self.game.is_empty(row, col)
         self.assertEqual(expected, value)
 
@@ -146,7 +145,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_close_opposite_pieces(self, board, expected, player, row, col):
-        self.game.init_board = board
+        self.game.board = board
         self.game.player_turn = player
         self.assertEqual(expected, self.game.close_opposite_around(row, col))
 
