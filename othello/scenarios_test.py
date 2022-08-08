@@ -1,40 +1,42 @@
 black_12 = [
-    [None, None, None, None, None, None, None, None],
-    [None, "B", None, "B", None, None, "B", None],
-    [None, "B", None, None, None, None, None, None],
-    ["B", "B", None, "W", "B", None, None, None],
-    [None, None, None, "B", "W", None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, "B", "B", None, 'B', None, "B"],
-    [None, None, None, None, None, None, None, None]]
-
+    '        ',
+    ' B B  B ',
+    ' B      ',
+    'BB WB   ',
+    '   BW   ',
+    '        ',
+    '  BB B B',
+    '        ',
+]
 white_12 = [
-    ["W", None, None, None, None, None, "W", None],
-    [None, None, None, None, None, "W", None, None],
-    [None, "W", None, None, None, None, "W", None],
-    [None, None, None, "W", "B", None, None, None],
-    ["W", None, None, "B", "W", None, "W", None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, 'B', None, None],
-    ["W", "W", None, None, "W", None, None, None]]
-
+    'W     W ',
+    '     W  ',
+    ' W    W ',
+    '   WB   ',
+    'W  BW W ',
+    '        ',
+    '     B  ',
+    'WW  W   ',
+]
 mix_6 = [
-    [None, None, None, 'B', None, None, None, "W"],
-    [None, "W", None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, 'B'],
-    [None, None, None, "W", "B", None, None, None],
-    [None, None, None, "B", "W", None, None, None],
-    ["W", None, None, None, None, None, None, None],
-    [None, None, None, None, None, 'B', None, None],
-    [None, 'B', None, None, None, None, None, "W"]]
+    '   B   W',
+    ' W      ',
+    '       B',
+    '   WB   ',
+    '   BW   ',
+    'W       ',
+    '     B  ',
+    ' B     W',
+]
 
 
 mix_10 = [
-    [None, None, None, 'B', None, None, "B", "W"],
-    [None, "W", None, None, None, None, None, None],
-    [None, None, "B", None, None, None, None, 'B'],
-    [None, None, None, "W", "B", None, None, None],
-    [None, None, None, "B", "W", None, None, None],
-    ["W", None, 'W', None, 'W', None, None, None],
-    [None, None, None, None, None, 'B', None, None],
-    [None, 'B', None, None, None, None, None, "W"]]
+    '   B  BW',
+    ' W      ',
+    '  B    B',
+    '   WB   ',
+    '   BW   ',
+    'W W W   ',
+    '     B  ',
+    ' B     W',
+]

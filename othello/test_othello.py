@@ -11,6 +11,18 @@ from othello.scenarios_test import (
 
 class Test_othello(unittest.TestCase):
 
+    def _convert_scenario_to_matrix(self, scenario):
+        matrix = []
+        for scenario_line in scenario:
+            matrix_line = [
+                scenario_letter
+                if scenario_letter in 'BW'
+                else None
+                for scenario_letter in scenario_line
+            ]
+            matrix.append(matrix_line)
+        return matrix
+
     def setUp(self):
         self.game = Othello()
 
@@ -33,7 +45,7 @@ class Test_othello(unittest.TestCase):
     )
     def test_initia_white_piece_count(self, board, expected, kind):
         # replace board to see diferents situacions
-        self.game.board = board
+        self.game.board = self._convert_scenario_to_matrix(board)
         pieces = self.game.get_piece_count(kind)
         self.assertEqual(expected, pieces)
 
@@ -65,7 +77,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_what_is(self, board, expected, row, col):
-        self.game.board = board
+        self.game.board = self._convert_scenario_to_matrix(board)
         value = self.game.what_is(row, col)
         self.assertEqual(expected, value)
 
@@ -81,7 +93,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_is_empty(self, board, expected, row, col):
-        self.game.board = board
+        self.game.board = self._convert_scenario_to_matrix(board)
         value = self.game.is_empty(row, col)
         self.assertEqual(expected, value)
 
@@ -147,7 +159,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_close_opposite_pieces(self, board, expected, player, row, col):
-        self.game.board = board
+        self.game.board = self._convert_scenario_to_matrix(board)
         self.game.player_turn = player
         self.assertEqual(expected, self.game.close_opposite_around(row, col))
 
