@@ -41,6 +41,22 @@ class BackgammonGameTest(unittest.TestCase):
         player = BackgammonGame.select_initial_player()
         self.assertEqual(player, 2)
 
+    @parameterized.expand([
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+    ])
+    @patch('random.randint')
+    def test_roll_dices_number_interval(self, expetc_value,
+                                        patch_value, patch_function):
+
+        patch_function.return_value = patch_value
+        self.assertEqual(self.backgammon.roll_dices(),
+                         (expetc_value, expetc_value))
+
 
 if __name__ == '__main__':
     unittest.main()
