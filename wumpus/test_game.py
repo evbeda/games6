@@ -40,46 +40,46 @@ class TestGame(unittest.TestCase):
         self.assertEqual(position_list, expected)
 
     @parameterized.expand([
-        ((0, 0), "s"),
-        ((1, 3), "w"),
-        ((3, 5), "a"),
-        ((3, 5), "d"),
+        (0, 0, "s"),
+        (1, 3, "w"),
+        (3, 5, "a"),
+        (3, 5, "d"),
     ])
-    def test_is_not_out_of_bounds(self, coordinate, direction):
-        is_not_out = self.game.is_not_out_of_bounds(coordinate, direction)
+    def test_is_not_out_of_bounds(self, row, col, direction):
+        is_not_out = self.game.is_not_out_of_bounds(row, col, direction)
         self.assertTrue(is_not_out)
 
     @parameterized.expand([
-        ((14, 0), "s"),
-        ((0, 3), "w"),
-        ((3, 0), "a"),
-        ((3, 7), "d"),
+        (14, 0, "s"),
+        (0, 3, "w"),
+        (3, 0, "a"),
+        (3, 7, "d"),
     ])
-    def test_is_out_of_bounds(self, coordinate, direction):
-        is_out = self.game.is_not_out_of_bounds(coordinate, direction)
+    def test_is_out_of_bounds(self, row, col, direction):
+        is_out = self.game.is_not_out_of_bounds(row, col, direction)
         self.assertFalse(is_out)
 
     @parameterized.expand([
-        (SCENARIO_1, (7, 0), True),
-        (SCENARIO_2, (1, 3), False),
-        (SCENARIO_3, (3, 0), True),
-        (SCENARIO_4, (3, 6), True),
+        (SCENARIO_1, 7, 0, True),
+        (SCENARIO_2, 1, 3, False),
+        (SCENARIO_3, 3, 0, True),
+        (SCENARIO_4, 3, 6, True),
     ])
-    def test_check_is_empty(self, board, coordinate, expected):
+    def test_check_is_empty(self, board, row, col, expected):
         self.game.board = board
-        is_empty = self.game.check_is_empty(coordinate)
+        is_empty = self.game.check_is_empty(row, col)
         self.assertEqual(is_empty, expected)
 
     @parameterized.expand([
-        (SCENARIO_5, (1, 4)),
-        (SCENARIO_5, (3, 4)),
-        (SCENARIO_5, (2, 5)),
-        (SCENARIO_5, (2, 6))
+        (SCENARIO_5, 1, 4),
+        (SCENARIO_5, 3, 4),
+        (SCENARIO_5, 2, 5),
+        (SCENARIO_5, 2, 6)
 
     ])
-    def test_move_transaction(self, board, coordinate):
+    def test_move_transaction(self, board, row, col):
         self.game.board = board
         pos = self.game.position_finder("J")[0]
-        self.game.move_J_transaction(coordinate)
+        self.game.move_player_transaction(row, col)
         self.assertEqual(self.game.board[pos[0]][pos[1]], None)
-        self.assertEqual(self.game.board[coordinate[0]][coordinate[1]], "J")
+        self.assertEqual(self.game.board[row][col], "J")
