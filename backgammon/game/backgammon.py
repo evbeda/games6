@@ -105,3 +105,19 @@ class BackgammonGame():
     def change_position(self, actual_row, actual_col, new_row, new_col):
         self.board[actual_row][actual_col] -= 1
         self.board[new_row][new_col] += 1
+
+    def can_capture(self, position):
+        opposite_piece = 1 if self.player == "WHITE" else 0
+        return self.board[position][opposite_piece] == 1
+
+    def make_move(self, actual_cell, actual_col, new_cell, new_col):
+        if (
+            self.is_valid_move(actual_cell, new_cell)
+            and self.can_capture(new_cell)
+        ):
+            self.capture_opposite_piece(new_cell)
+            return True
+        elif self.is_valid_move(actual_cell, new_cell):
+            self.change_position(actual_cell, actual_col, new_cell, new_col)
+            return True
+        return False
