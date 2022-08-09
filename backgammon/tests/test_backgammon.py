@@ -146,19 +146,6 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (initial_board, 0, {
-            (0, 0): 2,
-            (11, 0): 5,
-            (16, 0): 3,
-            (18, 0): 5,
-        })
-    ])
-    def test_get_pieces_positions(self, board, player_position, expected):
-        self.backgammon.board = board
-        positions = self.backgammon.get_pieces_positions(player_position)
-        self.assertEqual(positions, expected)
-
-    @parameterized.expand([
         (5,)
     ])
     def test_capture_opposite_piece(self, position):
