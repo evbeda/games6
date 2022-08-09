@@ -145,6 +145,19 @@ class BackgammonGameTest(unittest.TestCase):
         result = self.backgammon.is_valid_move(initial_pos, final_pos)
         self.assertEqual(result, expected)
 
+    @parameterized.expand([
+        (initial_board, 0, {
+            (0, 0): 2,
+            (11, 0): 5,
+            (16, 0): 3,
+            (18, 0): 5,
+        })
+    ])
+    def test_get_pieces_positions(self, board, player_position, expected):
+        self.backgammon.board = board
+        positions = self.backgammon.get_pieces_positions(player_position)
+        self.assertEqual(positions, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
