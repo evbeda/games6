@@ -69,3 +69,10 @@ class BackgammonGame():
             if element[player_position] > 0:
                 positions[(index, player_position)] = element[player_position]
         return positions
+
+    def capture_opposite_piece(self, position):
+        inter_position_player = 0 if self.player == "WHITE" else 1
+        inter_position_to_capture = 1 if self.player == "WHITE" else 0
+        self.board[position][inter_position_player] += 1
+        self.board[position][inter_position_to_capture] -= 1
+        self.expelled[self.opposite] += 1
