@@ -6,7 +6,7 @@ from othello.scenarios_test import (
     black_12,
     white_12,
     mix_6,
-    mix_10,
+    # mix_10,
     flip_black,
     final_flip_black,
     flip_row_white,
@@ -121,58 +121,58 @@ class Test_othello(unittest.TestCase):
             self.game.next_turn()
         self.assertEqual(expected, self.game.get_opposite_piece())
 
-    @parameterized.expand(
-        [
-            ({'from_row': 0,
-                'to_row': 1,
-                'from_col': 0,
-                'to_col': 1}, 0, 0),
+    # @parameterized.expand(
+    #     [
+    #         ({'from_row': 0,
+    #             'to_row': 1,
+    #             'from_col': 0,
+    #             'to_col': 1}, 0, 0),
 
-            ({'from_row': 6,
-                'to_row': 7,
-                'from_col': 6,
-                'to_col': 7}, 7, 7),
+    #         ({'from_row': 6,
+    #             'to_row': 7,
+    #             'from_col': 6,
+    #             'to_col': 7}, 7, 7),
 
-            ({'from_row': 0,
-                'to_row': 1,
-                'from_col': 6,
-                'to_col': 7}, 0, 7),
+    #         ({'from_row': 0,
+    #             'to_row': 1,
+    #             'from_col': 6,
+    #             'to_col': 7}, 0, 7),
 
-            ({'from_row': 6,
-                'to_row': 7,
-                'from_col': 0,
-                'to_col': 1}, 7, 0),
+    #         ({'from_row': 6,
+    #             'to_row': 7,
+    #             'from_col': 0,
+    #             'to_col': 1}, 7, 0),
 
-            ({'from_row': 0,
-                'to_row': 1,
-                'from_col': 0,
-                'to_col': 1}, 0, 0),
+    #         ({'from_row': 0,
+    #             'to_row': 1,
+    #             'from_col': 0,
+    #             'to_col': 1}, 0, 0),
 
-            ({'from_row': 3,
-                'to_row': 5,
-                'from_col': 3,
-                'to_col': 5}, 4, 4),
-        ]
-    )
-    def test_get_llimits(self, expected, row, col):
+    #         ({'from_row': 3,
+    #             'to_row': 5,
+    #             'from_col': 3,
+    #             'to_col': 5}, 4, 4),
+    #     ]
+    # )
+    # def test_get_llimits(self, expected, row, col):
 
-        self.assertEqual(expected, self.game.get_limits(row, col))
+    #     self.assertEqual(expected, self.game.get_limits(row, col))
 
-    @parameterized.expand(
-        [
-            (black_12, [], 'B', 1, 1),
-            (white_12, [], 'W', 1, 5),
-            (mix_6, [(3, 4), (4, 3)], 'W', 4, 4),
-            (mix_6, [], 'B', 7, 1),
-            (black_12, [(3, 4), (4, 3)], 'W', 3, 3),
-            (mix_10, [(3, 3), (4, 4), (5, 2), (5, 4)], 'B', 4, 3),
-            (mix_10, [(2, 2), (3, 4), (4, 3)], 'W', 3, 3)
-        ]
-    )
-    def test_close_opposite_pieces(self, board, expected, player, row, col):
-        self.game.board = self._convert_scenario_to_matrix(board)
-        self.game.player_turn = player
-        self.assertEqual(expected, self.game.close_opposite_around(row, col))
+    # @parameterized.expand(
+    #     [
+    #         (black_12, [], 'B', 1, 1),
+    #         (white_12, [], 'W', 1, 5),
+    #         (mix_6, [(3, 4), (4, 3)], 'W', 4, 4),
+    #         (mix_6, [], 'B', 7, 1),
+    #         (black_12, [(3, 4), (4, 3)], 'W', 3, 3),
+    #         (mix_10, [(3, 3), (4, 4), (5, 2), (5, 4)], 'B', 4, 3),
+    #         (mix_10, [(2, 2), (3, 4), (4, 3)], 'W', 3, 3)
+    #     ]
+    # )
+    # def test_close_opposite_pieces(self, board, expected, player, row, col):
+    #     self.game.board = self._convert_scenario_to_matrix(board)
+    #     self.game.player_turn = player
+    #     self.assertEqual(expected, self.game.close_opposite_around(row, col))
 
     @parameterized.expand(
         # initial_board , coordinates , index_player, final_board
@@ -197,7 +197,8 @@ class Test_othello(unittest.TestCase):
             (validate_direction_1, 'W', 7, 4, "ne", [[6, 5], [5, 6]]),
             (validate_direction_1, 'W', 0, 5, "e", [[0, 6]]),
             (validate_direction_1, 'B', 0, 0, "se", [[1, 1]]),
-            (validate_direction_2, 'B', 0, 6, "s", [[1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6]]),
+            (validate_direction_2, 'B', 0, 6, "s", [[1, 6], [2, 6], [3, 6],
+                                                    [4, 6], [5, 6], [6, 6]]),
             (validate_direction_1, 'W', 2, 5, "sw", [[3, 4], [4, 3]]),
             (validate_direction_2, 'W', 4, 3, "w", [[4, 2], [4, 1]]),
             (validate_direction_2, 'W', 6, 4, "nw", [[5, 3], [4, 2], [3, 1]]),
@@ -208,10 +209,12 @@ class Test_othello(unittest.TestCase):
             (validate_direction_2, 'B', 1, 3, "e", False),
         ]
     )
-    def test_validate_direction(self, board, player, row, col, direction, expected):
+    def test_validate_direction(self, board, player,
+                                row, col, direction, expected):
         self.game.board = board
         self.game.player_turn = player
-        self.assertEqual(expected, self.game.validate_direction(row, col, direction))
+        self.assertEqual(expected,
+                         self.game.validate_direction(row, col, direction))
 
     def test_select_winner_white(self):
         self.game.board = self._convert_scenario_to_matrix(board_winner_w)
@@ -236,7 +239,8 @@ class Test_othello(unittest.TestCase):
     @parameterized.expand(
         [
             (validate_direction_2, 'B', 1, 2, False),
-            (validate_direction_2, 'B', 0, 6, [[1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6]]),
+            (validate_direction_2, 'B', 0, 6, [[1, 6], [2, 6], [3, 6],
+                                               [4, 6], [5, 6], [6, 6]]),
         ]
     )
     def test_validate_move(self, board, player, row, col, expected):
