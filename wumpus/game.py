@@ -15,7 +15,7 @@ class WumpusGame:
 
     def __init__(self) -> None:
         self.state = IN_PROGRESS
-        self.board = [[None for j in range(COL)] for i in range(ROW)]
+        self.board = [['' for j in range(COL)] for i in range(ROW)]
         self.player = self.place_player()
         self.gold = self.place_item(GOLD, GOLD_QUANTITY)
         self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
@@ -56,12 +56,13 @@ class WumpusGame:
 
     def check_is_empty(self, row, col):
         cell = self.board[row][col]
-        return cell is None
+        return cell == ''
 
-    def move_player_transaction(self, row, col):
-        pos = self.position_finder("J")[0]
-        self.board[row][col] = "J"
-        self.board[pos[0]][pos[1]] = None
+    def move_player_transaction(self, new_row, new_col):
+
+        row, col = self.position_finder("J")[0]
+        self.board[row][col] = self.board[row][col].replace('J', '')
+        self.board[new_row][new_col] += "J"
 
     def there_is_gold(self, row: int, col: int) -> bool:
         return (row, col) in self.position_finder(GOLD)
