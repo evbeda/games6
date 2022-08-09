@@ -14,6 +14,9 @@ class Othello():
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
         ]
+        self.black_can_play = True
+        self.white_can_play = True
+        self.is_playing = True
 
     def get_piece_count(self, kind):
         return sum(
@@ -85,9 +88,15 @@ class Othello():
             return self.possibles_players[0]
 
     def flip_pieces(self, coordinates):
-
         for row, col in coordinates:
             self.board[row][col] = self.player_turn
+        # self.black_can_play = True
+        # self.white_can_play = True
+
+    def end_game(self):
+        if self.black_can_play is False and self.white_can_play is False:
+            self.is_playing = False
+            self.determine_winner()
 
     '''
     def validate_move(self, row, col):
@@ -130,7 +139,6 @@ class Othello():
         nor the last position that includes a
         piece of the same color of the active player
         '''
-
         my_dictionary = {
             "n": [-1, 0],
             "ne": [-1, 1],
@@ -141,11 +149,8 @@ class Othello():
             "w": [0, -1],
             "nw": [-1, -1]
         }
-
         change = my_dictionary[direction]
-
         myList = []
-
         while (row + change[0] >= 0 and
                row + change[0] < 8 and
                col + change[0] >= 0 and col + change[1] < 8):
@@ -156,8 +161,13 @@ class Othello():
             if self.board[row][col] == self.player_turn:
                 break
             myList.append([row, col])
-
         if myList:
             return myList
         else:
+            # self.player_turn = False
             return False
+
+    def check_if_the_player_can_play(self, moves):
+        if moves == {}:
+            return False
+        return True
