@@ -248,6 +248,30 @@ class Test_othello(unittest.TestCase):
         self.game.player_turn = player
         self.assertEqual(expected, self.game.validate_move(row, col))
 
+    @parameterized.expand(
+        [
+            ({}, False),
+            ({(1, 1): [(1, 2), (1, 3)]}, True)
+        ]
+    )
+    def test_check_if_the_player_can_play(self, moves, expected_result):
+        self.assertEqual(self.game.check_if_the_player_can_play(moves),
+                         expected_result)
+
+    @parameterized.expand(
+        [
+            (False, False, False),
+            (False, True, True),
+            (True, False, True),
+            (True, True, True)
+        ]
+    )
+    def test_end_game(self, black_player, white_player, expected_result):
+        self.game.black_can_play = black_player
+        self.game.white_can_play = white_player
+        self.game.end_game()
+        self.assertEqual(self.game.is_playing, expected_result)
+
 
 if __name__ == "__main__":
     unittest.main()
