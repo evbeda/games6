@@ -7,8 +7,11 @@ from .constants import (GOLD, GOLD_QUANTITY, WUMPUS, WUMPUS_QUANTITY,
 from wumpus.constants import COL, IN_PROGRESS, ROW
 from wumpus.game import WumpusGame
 
-from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-                        SCENARIO_5)
+from .scenarios import (
+    SCENARIO_1, SCENARIO_2,
+    SCENARIO_3, SCENARIO_4,
+    SCENARIO_5, SCENARIO_TEST_GOLD
+)
 
 
 class TestGame(unittest.TestCase):
@@ -100,3 +103,23 @@ class TestGame(unittest.TestCase):
         gameTest.board = [[None for j in range(COL)] for i in range(ROW)]
         gameTest.place_item(item, quantity)
         self.assertEqual(len(gameTest.position_finder(item)), 8)
+
+    @parameterized.expand([
+        (2, 4, True),
+        (4, 12, False),
+        (4, 5, True),
+        (7, 14, True),
+        (1, 0, False),
+        (0, 0, False),
+        (6, 4, True),
+        (5, 5, True),
+        (7, 0, False),
+        (5, 6, False),
+
+    ])
+    def test_there_is_gold(self, row, col, expeted):
+
+        game = WumpusGame()
+        game.board = SCENARIO_TEST_GOLD
+        result = game.there_is_gold(row, col)
+        self.assertEqual(result, expeted)

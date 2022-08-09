@@ -62,3 +62,6 @@ class WumpusGame:
         pos = self.position_finder("J")[0]
         self.board[row][col] = "J"
         self.board[pos[0]][pos[1]] = None
+
+    def there_is_gold(self, row: int, col: int) -> bool:
+        return (row, col) in self.position_finder(GOLD)
