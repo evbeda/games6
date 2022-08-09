@@ -15,7 +15,19 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
                         SCENARIO_DANGER_RIGTH, SCENARIO_DANGER_UP,
                         SCENARIO_DANGER_DOWN, SCENARIO_TEST_DELETE,
-                        SCENARIO_WIN_GOLD)
+                        SCENARIO_WIN_GOLD,
+                        SCENARIO_DANGER_COMPLETE_FINAL,
+                        SCENARIO_DANGER_COMPLETE_INIT,
+                        SCENARIO_DANGER_LEFT_DOWN_INIT,
+                        SCENARIO_DANGER_LEFT_DOWN_FINAL,
+                        SCENARIO_DANGER_RIGTH_DOWN_INI,
+                        SCENARIO_DANGER_RIGTH_DOWN_FINAL,
+                        SCENARIO_DANGER_DOWN_INITI,
+                        SCENARIO_DANGER_DOWN_FINAL,
+                        SCENARIO_CROSS_ELEMENT_INIT,
+                        SCENARIO_CROSS_ELEMENT_FINAL,
+                        SCENARIO_CROSS_DIF_ELEMENT_INI,
+                        SCENARIO_CROSS_DIF_ELEMENT_FIN)
 
 
 class TestGame(unittest.TestCase):
@@ -173,3 +185,28 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.board[old_player_row][old_player_col], '')
         self.assertTrue(GOLD not in game.board[row][col])
         self.assertEqual(len(game.position_finder(GOLD)), 3)
+
+    @parameterized.expand([
+        (SCENARIO_DANGER_DOWN_INITI, WUMPUS, SCENARIO_DANGER_DOWN_FINAL),
+        (SCENARIO_DANGER_COMPLETE_INIT, HOLES, SCENARIO_DANGER_COMPLETE_FINAL),
+        (SCENARIO_DANGER_LEFT_DOWN_INIT, WUMPUS,
+            SCENARIO_DANGER_LEFT_DOWN_FINAL),
+        (SCENARIO_DANGER_RIGTH_DOWN_INI, WUMPUS,
+            SCENARIO_DANGER_RIGTH_DOWN_FINAL),
+        (SCENARIO_CROSS_ELEMENT_INIT, WUMPUS,
+            SCENARIO_CROSS_ELEMENT_FINAL),
+        (SCENARIO_CROSS_ELEMENT_INIT, WUMPUS,
+            SCENARIO_CROSS_ELEMENT_FINAL)
+    ])
+    def test_print_signals(self, board_init, item, final_board):
+        test_game = WumpusGame()
+        test_game.board = board_init
+        test_game.print_signals(item)
+        self.assertEqual(test_game.board, final_board)
+
+    def test_print_signals_dif(self):
+        test_game = WumpusGame()
+        test_game.board = SCENARIO_CROSS_DIF_ELEMENT_INI
+        test_game.print_signals(HOLES)
+        test_game.print_signals(WUMPUS)
+        self.assertEqual(test_game.board, SCENARIO_CROSS_DIF_ELEMENT_FIN)
