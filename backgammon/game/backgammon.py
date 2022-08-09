@@ -14,6 +14,8 @@ class BackgammonGame():
         self.expelled = {"BLACK": 0, "WHITE": 0}
         self.player = random.choice(['WHITE', 'BLACK'])
         self.active_game = True
+        self.dice_one = 0
+        self.dice_two = 0
 
     def available_pieces(self, side):
         color = 0 if side == "WHITE" else 1
@@ -27,10 +29,41 @@ class BackgammonGame():
     def game_active_change(self):
         self.active_game = False
 
+    # Modified dices mechanism
     def roll_dices(self):
-        dice_one = random.randint(1, 6)
-        dice_two = random.randint(1, 6)
-        return (dice_one, dice_two)
+        self.dice_one = random.randint(1, 6)
+        self.dice_two = random.randint(1, 6)
+        return (self.dice_one, self.dice_two)
+
+    @property
+    def move_points(self):
+        '''Determines the different move options the player has, based on "move points", which is based on the
+        rolled dices.
+        returns a list of the possible moves a player can make, based only on the move points.'''
+        if self.dice_one != self.dice_two:
+            return [self.dice_one, self.dice_two]
+        else:
+            return [self.dice_one, self.dice_two, self.dice_one, self.dice_two]
+
+    def get_move_options(self):
+        '''Determines the move options based ONLY on the dices.
+        Should be used only once per turn'''
+        d1 = self.dice_one
+        d2 = self.dice_two
+        move_options = []
+        if len(self.move_points) == 2:
+            move_options = [d1, d2, d1 + d2]
+            move_options = list(set(move_options))
+        elif len(self.move_points) == 4:
+            move_options = [d1, d1 * 2, d1 * 3, d1 * 4]
+        return move_options
+
+    '''
+    def update_move_options(self, move):
+        Updates the move options remaining, based on the last move
+
+        return True
+    '''
 
     @property
     def opposite(self):
