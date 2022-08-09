@@ -1,7 +1,7 @@
 import unittest
 
 from parameterized import parameterized
-from .constants import (GOLD, GOLD_QUANTITY, WUMPUS, WUMPUS_QUANTITY,
+from .constants import (GOLD, GOLD_QUANTITY, PLAYER, WUMPUS, WUMPUS_QUANTITY,
                         HOLES_QUANTITY, HOLES)
 
 from wumpus.constants import COL, IN_PROGRESS, ROW
@@ -10,7 +10,7 @@ from wumpus.game import WumpusGame
 from .scenarios import (
     SCENARIO_1, SCENARIO_2,
     SCENARIO_3, SCENARIO_4,
-    SCENARIO_5, SCENARIO_TEST_GOLD
+    SCENARIO_5, SCENARIO_TEST_DELETE, SCENARIO_TEST_GOLD
 )
 
 
@@ -125,3 +125,17 @@ class TestGame(unittest.TestCase):
         game.board = SCENARIO_TEST_GOLD
         result = game.there_is_gold(row, col)
         self.assertEqual(result, expeted)
+
+    @parameterized.expand([
+        (GOLD, 5, 5, ''),
+        (WUMPUS, 7, 8, ''),
+        (WUMPUS, 7, 14, ''),
+        (GOLD, 2, 10, ''),
+        (PLAYER, 3, 4, ''),
+    ])
+    def test_delete_item(self, item, row, col, expected):
+        game = WumpusGame()
+        game.board = SCENARIO_TEST_DELETE
+        game.delete_item_on_position(item, row, col)
+        result = game.board[row][col]
+        self.assertEqual(result, expected)

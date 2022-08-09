@@ -1,4 +1,4 @@
-from .constants import GOLD, ROW, COL
+from .constants import GOLD, PLAYER, ROW, COL, WUMPUS
 
 SCENARIO_1 = [['' for j in range(COL)] for i in range(ROW)]
 SCENARIO_1[0][0] = "J"
@@ -22,3 +22,12 @@ SCENARIO_TEST_GOLD[7][14] = GOLD
 SCENARIO_TEST_GOLD[3][4] = GOLD
 SCENARIO_TEST_GOLD[6][4] = GOLD
 SCENARIO_TEST_GOLD[5][5] = GOLD
+
+
+SCENARIO_TEST_DELETE = [['' for j in range(COL)] for i in range(ROW)]
+SCENARIO_TEST_DELETE[5][5] = GOLD
+SCENARIO_TEST_DELETE[7][8] = WUMPUS
+SCENARIO_TEST_DELETE[7][14] = WUMPUS
+SCENARIO_TEST_DELETE[2][10] = GOLD
+SCENARIO_TEST_DELETE[3][4] = PLAYER
+# include in this scenario the signal of danger when they are already encoded
