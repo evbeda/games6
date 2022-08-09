@@ -84,9 +84,11 @@ class TestGame(unittest.TestCase):
     ])
     def test_move_transaction(self, board, row, col):
         self.game.board = board
-        pos = self.game.position_finder("J")[0]
+        old_row, old_row = self.game.position_finder("J")[0]
+        value_cell = self.game.board[old_row][old_row]
         self.game.move_player_transaction(row, col)
-        self.assertEqual(self.game.board[pos[0]][pos[1]], None)
+        self.assertEqual(self.game.board[old_row][old_row],
+                         value_cell.replace('J', ''))
         self.assertEqual(self.game.board[row][col], "J")
 
     # @parameterized.expand([
@@ -100,7 +102,7 @@ class TestGame(unittest.TestCase):
     ])
     def test_place_item(self, item, quantity):
         gameTest = WumpusGame()
-        gameTest.board = [[None for j in range(COL)] for i in range(ROW)]
+        gameTest.board = [['' for j in range(COL)] for i in range(ROW)]
         gameTest.place_item(item, quantity)
         self.assertEqual(len(gameTest.position_finder(item)), 8)
 
