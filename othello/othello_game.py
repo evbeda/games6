@@ -92,9 +92,25 @@ class Othello():
         if self.board[row][col] is not None:
             return False
     '''
+    def validate_move(self, row, col):
+        '''
+        Tells whether a move is valid or not.
+        Returns False if not valid,
+        Returns an list of lists, where the contained lists consist '''
+        directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+        flips = []
+        for i in directions:
+            potential_flips = self.validate_direction(row, col, i)
+            if potential_flips:
+                flips = flips + potential_flips
+        if not flips:
+            return False
+        else:
+            return flips
 
     def validate_direction(self, row, col, direction):
         '''
+        used by validate_move()
         gets row and col, direction is a string.
         returns false is direction is not valid,
         returns the array if direction is valid.
@@ -117,7 +133,9 @@ class Othello():
 
         myList = []
 
-        while row + change[0] >= 0 and row + change[0] < 8 and col + change[0] >= 0 and col + change[1] < 8:
+        while (row + change[0] >= 0 and
+               row + change[0] < 8 and
+               col + change[0] >= 0 and col + change[1] < 8):
             row = row + change[0]
             col = col + change[1]
             if self.board[row][col] is None:
