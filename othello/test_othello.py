@@ -13,6 +13,9 @@ from othello.scenarios_test import (
     final_flip_row_white,
     diagonal_flip,
     final_diagonal_flip,
+    board_winner_w,
+    board_tie,
+    board_tie_empty,
     validate_direction_1,
     validate_direction_2)
 
@@ -209,6 +212,26 @@ class Test_othello(unittest.TestCase):
         self.game.board = board
         self.game.player_turn = player
         self.assertEqual(expected, self.game.validate_direction(row, col, direction))
+
+    def test_select_winner_white(self):
+        self.game.board = self._convert_scenario_to_matrix(board_winner_w)
+        winner = self.game.determine_winner()
+        self.assertEqual("W", winner)
+
+    def test_select_winner_black(self):
+        self.game.board = self._convert_scenario_to_matrix(diagonal_flip)
+        winner = self.game.determine_winner()
+        self.assertEqual("B", winner)
+
+    def test_select_winner_tie(self):
+        self.game.board = self._convert_scenario_to_matrix(board_tie)
+        winner = self.game.determine_winner()
+        self.assertEqual("Tie", winner)
+
+    def test_select_empty_tie(self):
+        self.game.board = self._convert_scenario_to_matrix(board_tie_empty)
+        winner = self.game.determine_winner()
+        self.assertEqual("Tie", winner)
 
     @parameterized.expand(
         [

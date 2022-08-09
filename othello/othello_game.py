@@ -54,7 +54,8 @@ class Othello():
         '''
         Returns a dictionary with 4 values, which are the coordinates of
         edges that define a square.
-        It can be a 3x3, 2x3 or 3x2 square or a 2x2 square, depending if the entered
+        It can be a 3x3, 2x3 or 3x2 square or a 2x2 square,
+        depending if the entered
         coordinates are in an edge or not.'''
 
         from_row, to_row = self.get_index_limit(row)
@@ -75,6 +76,14 @@ class Othello():
                     close_opposite_list.append((i, j))
         return close_opposite_list
 
+    def determine_winner(self):
+        if self.get_piece_count("W") == self.get_piece_count("B"):
+            return "Tie"
+        elif self.get_piece_count("W") > self.get_piece_count("B"):
+            return self.possibles_players[1]
+        else:
+            return self.possibles_players[0]
+
     def flip_pieces(self, coordinates):
 
         for row, col in coordinates:
@@ -87,8 +96,10 @@ class Othello():
         Returns False if not valid.
         Suggested: if true, it should return a list of list, where
         each list is a list of coordinates returned by validate_direction,
-        hence, in most of the cases this function should call validate_direction() eigth times,
-        one for every direction. If a move is on an edge, this list will include three False.
+        hence, in most of the cases this function should
+        call validate_direction() eigth times,
+        one for every direction. If a move is on an edge,
+        this list will include three False.
         if self.board[row][col] is not None:
             return False
     '''
@@ -114,8 +125,10 @@ class Othello():
         gets row and col, direction is a string.
         returns false is direction is not valid,
         returns the array if direction is valid.
-        The returned array does not include the position where we are placing a piece,
-        nor the last position that includes a piece of the same color of the active player
+        The returned array does not include the
+        position where we are placing a piece,
+        nor the last position that includes a
+        piece of the same color of the active player
         '''
 
         my_dictionary = {

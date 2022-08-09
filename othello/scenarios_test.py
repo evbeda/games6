@@ -127,3 +127,36 @@ validate_direction_2 = [
     [None, None, None, "B", None, None, "W", None],
     [None, None, None, None, None, None, "W", None],
     [None, None, None, None, None, None, "B", None]]
+
+board_winner_w = [
+    'W       ',
+    ' W    B ',
+    '  W     ',
+    'B  WB   ',
+    '    W   ',
+    '        ',
+    '       B',
+    '        ',
+]
+
+board_tie = [
+    'W       ',
+    ' W    B ',
+    '  W     ',
+    'B  WB   ',
+    '    W   ',
+    '        ',
+    '  B    B',
+    '        ',
+]
+
+board_tie_empty = [
+    '        ',
+    '        ',
+    '        ',
+    '        ',
+    '        ',
+    '        ',
+    '        ',
+    '        ',
+]
