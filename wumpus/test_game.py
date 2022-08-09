@@ -1,7 +1,8 @@
 import unittest
 
 from parameterized import parameterized
-from .constants import GOLD, GOLD_QUANTITY
+from .constants import (GOLD, GOLD_QUANTITY, WUMPUS, WUMPUS_QUANTITY,
+                        HOLES_QUANTITY, HOLES)
 
 from wumpus.constants import COL, IN_PROGRESS, ROW
 from wumpus.game import WumpusGame
@@ -90,9 +91,12 @@ class TestGame(unittest.TestCase):
     # ])
     # @patch("random.randint")
     @parameterized.expand([
-        (GOLD, GOLD_QUANTITY)
+        (GOLD, GOLD_QUANTITY),
+        (WUMPUS, WUMPUS_QUANTITY),
+        (HOLES, HOLES_QUANTITY)
     ])
     def test_place_item(self, item, quantity):
-        # self.game.place_item(item, quantity)
-        game = WumpusGame()
-        self.assertEqual(len(game.position_finder("G")), 8)
+        gameTest = WumpusGame()
+        gameTest.board = [[None for j in range(COL)] for i in range(ROW)]
+        gameTest.place_item(item, quantity)
+        self.assertEqual(len(gameTest.position_finder(item)), 8)
