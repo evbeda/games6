@@ -17,7 +17,10 @@ from othello.scenarios_test import (
     board_tie,
     board_tie_empty,
     validate_direction_1,
-    validate_direction_2)
+    validate_direction_2,
+    all_poss_moves_board_1,
+    all_poss_moves_exp_1,
+    none_pos_exp_1)
 
 
 class Test_othello(unittest.TestCase):
@@ -193,20 +196,20 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (validate_direction_1, 'B', 6, 4, "n", [[5, 4], [4, 4]]),
-            (validate_direction_1, 'W', 7, 4, "ne", [[6, 5], [5, 6]]),
-            (validate_direction_1, 'W', 0, 5, "e", [[0, 6]]),
-            (validate_direction_1, 'B', 0, 0, "se", [[1, 1]]),
-            (validate_direction_2, 'B', 0, 6, "s", [[1, 6], [2, 6], [3, 6],
-                                                    [4, 6], [5, 6], [6, 6]]),
-            (validate_direction_1, 'W', 2, 5, "sw", [[3, 4], [4, 3]]),
-            (validate_direction_2, 'W', 4, 3, "w", [[4, 2], [4, 1]]),
-            (validate_direction_2, 'W', 6, 4, "nw", [[5, 3], [4, 2], [3, 1]]),
-            (validate_direction_2, 'W', 0, 4, "n", False),
-            (validate_direction_2, 'B', 3, 0, "w", False),
-            (validate_direction_2, 'W', 7, 1, "s", False),
-            (validate_direction_2, 'B', 5, 7, "e", False),
-            (validate_direction_2, 'B', 1, 3, "e", False),
+            (validate_direction_1, 'B', 6, 4, "n", [(5, 4), (4, 4)]),
+            (validate_direction_1, 'W', 7, 4, "ne", [(6, 5), (5, 6)]),
+            (validate_direction_1, 'W', 0, 5, "e", [(0, 6)]),
+            (validate_direction_1, 'B', 0, 0, "se", [(1, 1)]),
+            (validate_direction_2, 'B', 0, 6, "s", [(1, 6), (2, 6), (3, 6),
+                                                    (4, 6), (5, 6), (6, 6)]),
+            (validate_direction_1, 'W', 2, 5, "sw", [(3, 4), (4, 3)]),
+            (validate_direction_2, 'W', 4, 3, "w", [(4, 2), (4, 1)]),
+            (validate_direction_2, 'W', 6, 4, "nw", [(5, 3), (4, 2), (3, 1)]),
+            (validate_direction_2, 'W', 0, 4, "n", []),
+            (validate_direction_2, 'B', 3, 0, "w", []),
+            (validate_direction_2, 'W', 7, 1, "s", []),
+            (validate_direction_2, 'B', 5, 7, "e", []),
+            (validate_direction_2, 'B', 1, 3, "e", []),
         ]
     )
     def test_validate_direction(self, board, player,
@@ -238,9 +241,9 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (validate_direction_2, 'B', 1, 2, False),
-            (validate_direction_2, 'B', 0, 6, [[1, 6], [2, 6], [3, 6],
-                                               [4, 6], [5, 6], [6, 6]]),
+            (validate_direction_2, 'B', 1, 2, []),
+            (validate_direction_2, 'B', 0, 6, [(1, 6), (2, 6), (3, 6),
+                                               (4, 6), (5, 6), (6, 6)]),
         ]
     )
     def test_validate_move(self, board, player, row, col, expected):
@@ -271,6 +274,39 @@ class Test_othello(unittest.TestCase):
         self.game.white_can_play = white_player
         self.game.end_game()
         self.assertEqual(self.game.is_playing, expected_result)
+
+    @parameterized.expand(
+        [
+            (all_poss_moves_board_1, all_poss_moves_exp_1)
+        ]
+    )
+    def test_all_possible_moves_values(self, board, expected):
+        self.game.board = self._convert_scenario_to_matrix(board)
+        result = self.game.all_possible_moves()
+        for key, value in result.items():
+            result_list = sorted(value, key=lambda tup: (tup[0], tup[1]))
+            expected_list = sorted(expected[key], key=lambda tup: (tup[0], tup[1]))
+            self.assertEqual(result_list, expected_list)
+
+    @parameterized.expand(
+        [
+            (all_poss_moves_board_1, all_poss_moves_exp_1)
+        ]
+    )
+    def test_all_possible_moves_values_key(self, board, expected):
+        self.game.board = self._convert_scenario_to_matrix(board)
+        result = self.game.all_possible_moves()
+        self.assertEqual(result.keys(), expected.keys())
+
+    @parameterized.expand(
+        [
+            (all_poss_moves_board_1, none_pos_exp_1)
+        ]
+    )
+    def test_none_pos(self, board, expected):
+        self.game.board = self._convert_scenario_to_matrix(board)
+        result = self.game.none_pos()
+        self.assertListEqual(result, expected)
 
 
 if __name__ == "__main__":

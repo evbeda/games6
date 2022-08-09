@@ -1,4 +1,3 @@
-
 class Othello():
 
     def __init__(self):
@@ -123,10 +122,7 @@ class Othello():
             potential_flips = self.validate_direction(row, col, i)
             if potential_flips:
                 flips = flips + potential_flips
-        if not flips:
-            return False
-        else:
-            return flips
+        return flips
 
     def validate_direction(self, row, col, direction):
         '''
@@ -151,21 +147,40 @@ class Othello():
         }
         change = my_dictionary[direction]
         myList = []
+        ending_same_color = False
+
         while (row + change[0] >= 0 and
                row + change[0] < 8 and
-               col + change[0] >= 0 and col + change[1] < 8):
+               col + change[1] >= 0 and col + change[1] < 8):
             row = row + change[0]
             col = col + change[1]
             if self.board[row][col] is None:
-                return False
+                return []
             if self.board[row][col] == self.player_turn:
+                ending_same_color = True
                 break
-            myList.append([row, col])
-        if myList:
-            return myList
-        else:
-            # self.player_turn = False
-            return False
+            myList.append((row, col))
+
+        return myList if ending_same_color else []
+
+    def all_possible_moves(self):
+        moves = {}
+        positions = self.none_pos()
+
+        for pos in positions:
+            aux = self.validate_move(pos[0], pos[1])
+            if aux:
+                moves[(pos[0], pos[1])] = aux
+
+        return moves
+
+    def none_pos(self):
+        pos = []
+        for x, row in enumerate(self.board):
+            for y, element in enumerate(row):
+                if element is None:
+                    pos.append((x, y))
+        return pos
 
     def check_if_the_player_can_play(self, moves):
         if moves == {}:
