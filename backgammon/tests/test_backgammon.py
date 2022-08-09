@@ -165,6 +165,18 @@ class BackgammonGameTest(unittest.TestCase):
         game.change_position(actual_row, actual_col, new_row, new_col)
         self.assertEqual(1, game.board[new_row][new_col])
 
+    @parameterized.expand([
+        (2, 3, [2, 3, 5]),
+        (3, 4, [3, 4, 7]),
+        (5, 5, [5, 10, 15, 20])
+    ])
+    def test_get_move_options(self, d1, d2, expected):
+        self.backgammon.dice_one = d1
+        self.backgammon.dice_two = d2
+        # self.backgammon.move_points = points
+        result = self.backgammon.get_move_options()
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
