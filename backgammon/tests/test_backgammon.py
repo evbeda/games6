@@ -125,6 +125,24 @@ class BackgammonGameTest(unittest.TestCase):
         result = self.backgammon.at_least_one_piece_of_the_player(position)
         self.assertEqual(result, expected_result)
 
+    @parameterized.expand([
+
+        ('WHITE', 1, 5, False),
+        ('WHITE', 5, 6, False),
+        ('WHITE', 0, 11, False),
+        ('BLACK', 5, 2, True),
+        ('BLACK', 12, 7, True),
+        ('BLACK', 23, 19, True),
+        ('BLACK', 21, 22, False),
+        ('BLACK', 23, 18, False),
+
+    ])
+    def test_valid_move(self, current_player,
+                        initial_pos, final_pos, expected):
+        self.backgammon.player = current_player
+        result = self.backgammon.is_valid_move(initial_pos, final_pos)
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
