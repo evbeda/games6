@@ -37,12 +37,14 @@ class BackgammonGameTest(unittest.TestCase):
 
     @patch('random.choice', return_value='WHITE')
     def test_player_1(self, patched_randint):
-        player = BackgammonGame.select_initial_player()
+        new_game = BackgammonGame()
+        player = new_game.player
         self.assertEqual(player, 'WHITE')
 
     @patch('random.choice', return_value='BLACK')
     def test_player_2(self, patched_randint):
-        player = BackgammonGame.select_initial_player()
+        new_game = BackgammonGame()
+        player = new_game.player
         self.assertEqual(player, 'BLACK')
 
     @parameterized.expand([
@@ -78,12 +80,12 @@ class BackgammonGameTest(unittest.TestCase):
         ]
     )
     @patch('random.choice')
-    def test_current_turn(self, it, expected,
-                          patch_value, patch_function):
+    def test_change_player(self, it, expected,
+                           patch_value, patch_function):
         patch_function.return_value = patch_value
         game = BackgammonGame()
         for _ in range(it):
-            game.next_turn()
+            game.change_active_player()
         self.assertEqual(expected, game.player)
 
     @parameterized.expand([
