@@ -12,7 +12,7 @@ class BackgammonGame():
             [5, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 2]
         ]
         self.expelled = {"BLACK": 0, "WHITE": 0}
-        self.player = BackgammonGame.select_initial_player()
+        self.player = random.choice(['WHITE', 'BLACK'])
         self.active_game = True
 
     def available_pieces(self, side):
@@ -27,10 +27,6 @@ class BackgammonGame():
     def game_active_change(self):
         self.active_game = False
 
-    def select_initial_player():
-        player = random.choice(['WHITE', 'BLACK'])
-        return player
-
     def roll_dices(self):
         dice_one = random.randint(1, 6)
         dice_two = random.randint(1, 6)
@@ -40,7 +36,7 @@ class BackgammonGame():
     def opposite(self):
         return 'BLACK' if self.player == 'WHITE' else 'WHITE'
 
-    def next_turn(self):
+    def change_active_player(self):
         self.player = self.opposite
 
     def less_than_two_enemies_in_position(self, position):
