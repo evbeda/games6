@@ -69,3 +69,31 @@ class WumpusGame:
 
     def delete_item_on_position(self, item, row, col):
         self.board[row][col] = self.board[row][col].replace(item, '')
+
+    def _posible_position(self, row, col):
+        positions = {
+            "nort": (row - 1, col),
+            "sout": (row + 1, col),
+            "east": (row, col + 1),
+            "west": (row, col - 1)
+        }
+
+        if row - 1 < 0:
+            del (positions['nort'])
+        if row + 1 > 7:
+            del (positions['sout'])
+        if col + 1 > 7:
+            del (positions['east'])
+        if col - 1 < 0:
+            del (positions['west'])
+
+        return list(positions.values())
+
+    def find_signal_indicator(self, item):
+        position_holes = self.position_finder(item)
+        position_signals = []
+        for pos in position_holes:
+            list_int = self._posible_position(pos[0], pos[1])
+            for tuple in list_int:
+                position_signals.append(tuple)
+        return position_signals

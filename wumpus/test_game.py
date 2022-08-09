@@ -7,11 +7,13 @@ from .constants import (GOLD, GOLD_QUANTITY, PLAYER, WUMPUS, WUMPUS_QUANTITY,
 from wumpus.constants import COL, IN_PROGRESS, ROW
 from wumpus.game import WumpusGame
 
-from .scenarios import (
-    SCENARIO_1, SCENARIO_2,
-    SCENARIO_3, SCENARIO_4,
-    SCENARIO_5, SCENARIO_TEST_DELETE, SCENARIO_TEST_GOLD
-)
+from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+                        SCENARIO_5, SCENARIO_TEST_GOLD,
+                        SCENARIO_DANGER_SIGNAL_HOLES,
+                        SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
+                        SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
+                        SCENARIO_DANGER_RIGTH, SCENARIO_DANGER_UP,
+                        SCENARIO_DANGER_DOWN, SCENARIO_TEST_DELETE)
 
 
 class TestGame(unittest.TestCase):
@@ -117,10 +119,8 @@ class TestGame(unittest.TestCase):
         (5, 5, True),
         (7, 0, False),
         (5, 6, False),
-
     ])
     def test_there_is_gold(self, row, col, expeted):
-
         game = WumpusGame()
         game.board = SCENARIO_TEST_GOLD
         result = game.there_is_gold(row, col)
@@ -139,3 +139,17 @@ class TestGame(unittest.TestCase):
         game.delete_item_on_position(item, row, col)
         result = game.board[row][col]
         self.assertEqual(result, expected)
+
+    @parameterized.expand([
+        (SCENARIO_DANGER_SIGNAL_HOLES, [(0, 1), (2, 1), (1, 2), (1, 0)]),
+        (SCENARIO_DANGER_LEFT_DOWN, [(6, 0), (7, 1)]),
+        (SCENARIO_DANGER_RIGTH_DOWN, [(6, 7), (7, 6)]),
+        (SCENARIO_DANGER_RIGTH_UP, [(1, 7), (0, 6)]),
+        (SCENARIO_DANGER_LEFT, [(3, 0), (5, 0), (4, 1)]),
+        (SCENARIO_DANGER_RIGTH, [(3, 7), (5, 7), (4, 6)]),
+        (SCENARIO_DANGER_UP, [(1, 4), (0, 5), (0, 3)]),
+        (SCENARIO_DANGER_DOWN, [(6, 4), (7, 5), (7, 3)]),
+    ])
+    def test_find_signal_indicator(self, board, positions):
+        self.game.board = board
+        self.assertEqual(self.game.find_signal_indicator(HOLES), positions)
