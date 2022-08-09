@@ -61,8 +61,11 @@ class WumpusGame:
     def move_player_transaction(self, new_row, new_col):
 
         row, col = self.position_finder("J")[0]
-        self.board[row][col] = self.board[row][col].replace('J', '')
+        self.delete_item_on_position('J', row, col)
         self.board[new_row][new_col] += "J"
 
     def there_is_gold(self, row: int, col: int) -> bool:
         return (row, col) in self.position_finder(GOLD)
+
+    def delete_item_on_position(self, item, row, col):
+        self.board[row][col] = self.board[row][col].replace(item, '')

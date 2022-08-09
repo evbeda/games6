@@ -11,3 +11,4 @@ HOLES_QUANTITY = 8
 GOLD = "G"
 WUMPUS = "W"
 HOLES = "O"
+PLAYER = "J"
