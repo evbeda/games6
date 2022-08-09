@@ -202,12 +202,24 @@ class Test_othello(unittest.TestCase):
             (validate_direction_2, 'B', 3, 0, "w", False),
             (validate_direction_2, 'W', 7, 1, "s", False),
             (validate_direction_2, 'B', 5, 7, "e", False),
+            (validate_direction_2, 'B', 1, 3, "e", False),
         ]
     )
     def test_validate_direction(self, board, player, row, col, direction, expected):
         self.game.board = board
         self.game.player_turn = player
         self.assertEqual(expected, self.game.validate_direction(row, col, direction))
+
+    @parameterized.expand(
+        [
+            (validate_direction_2, 'B', 1, 2, False),
+            (validate_direction_2, 'B', 0, 6, [[1, 6], [2, 6], [3, 6], [4, 6], [5, 6], [6, 6]]),
+        ]
+    )
+    def test_validate_move(self, board, player, row, col, expected):
+        self.game.board = board
+        self.game.player_turn = player
+        self.assertEqual(expected, self.game.validate_move(row, col))
 
 
 if __name__ == "__main__":
