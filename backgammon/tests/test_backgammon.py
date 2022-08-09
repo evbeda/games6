@@ -158,6 +158,16 @@ class BackgammonGameTest(unittest.TestCase):
         positions = self.backgammon.get_pieces_positions(player_position)
         self.assertEqual(positions, expected)
 
+    @parameterized.expand([
+        (5,)
+    ])
+    def test_capture_opposite_piece(self, position):
+        game = BackgammonGame()
+        game.player = "WHITE"
+        game.capture_opposite_piece(position)
+        captured_piece = game.expelled["BLACK"]
+        self.assertEqual(1, captured_piece)
+
 
 if __name__ == '__main__':
     unittest.main()
