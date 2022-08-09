@@ -16,3 +16,4 @@ SIGNAL_WUMPUS = "+"
 SIGNAL_HOLE = "~"
 PLAYER = "J"
 ALL_ELEMENTS = "GWOJ+~J"
+ITEMS_DICTIONARY = {"O": "~", "W": "+"}

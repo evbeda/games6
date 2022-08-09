@@ -8,6 +8,7 @@ from wumpus.constants import (
     WUMPUS,
     SWORDS_QUANTITY,
     PLAYER,
+    ITEMS_DICTIONARY
 )
 import random
 
@@ -91,9 +92,9 @@ class WumpusGame:
         return list(positions.values())
 
     def find_signal_indicator(self, item):
-        position_holes = self.position_finder(item)
+        position_items = self.position_finder(item)
         position_signals = []
-        for pos in position_holes:
+        for pos in position_items:
             list_int = self._posible_position(pos[0], pos[1])
             for tuple in list_int:
                 position_signals.append(tuple)
@@ -103,3 +104,9 @@ class WumpusGame:
 
         self.delete_item_on_position(GOLD, row, col)
         self.move_player_transaction(row, col)
+
+    def print_signals(self, item):
+        positions = self.find_signal_indicator(item)
+        for row, col in positions:
+            if ITEMS_DICTIONARY[item] not in self.board[row][col]:
+                self.board[row][col] += ITEMS_DICTIONARY[item]
