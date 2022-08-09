@@ -57,3 +57,11 @@ class BackgammonGame():
         if not self.board[position][player_piece]:
             return False
         return True
+
+    def is_valid_move(self, initial_pos, final_pos) -> bool:
+
+        enenmy_condition = self.less_than_two_enemies_in_position(final_pos)
+        own_condition = (self.less_than_five_own_pieces(final_pos) and
+                         self.at_least_one_piece_of_the_player(initial_pos))
+
+        return enenmy_condition and own_condition
