@@ -6,7 +6,8 @@ from wumpus.constants import (
     GOLD,
     WUMPUS_QUANTITY,
     WUMPUS,
-    SWORDS_QUANTITY
+    SWORDS_QUANTITY,
+    PLAYER,
 )
 import random
 
@@ -60,9 +61,9 @@ class WumpusGame:
 
     def move_player_transaction(self, new_row, new_col):
 
-        row, col = self.position_finder("J")[0]
-        self.delete_item_on_position('J', row, col)
-        self.board[new_row][new_col] += "J"
+        row, col = self.position_finder(PLAYER)[0]
+        self.delete_item_on_position(PLAYER, row, col)
+        self.board[new_row][new_col] += PLAYER
 
     def there_is_gold(self, row: int, col: int) -> bool:
         return (row, col) in self.position_finder(GOLD)
@@ -97,3 +98,8 @@ class WumpusGame:
             for tuple in list_int:
                 position_signals.append(tuple)
         return position_signals
+
+    def move_and_win_gold(self, row, col):
+
+        self.delete_item_on_position(GOLD, row, col)
+        self.move_player_transaction(row, col)
