@@ -1,5 +1,4 @@
 import random
-from collections import defaultdict
 
 
 class BackgammonGame():
@@ -62,13 +61,6 @@ class BackgammonGame():
                          self.at_least_one_piece_of_the_player(initial_pos))
 
         return enenmy_condition and own_condition
-
-    def get_pieces_positions(self, player_position):
-        positions = defaultdict(int)
-        for index, element in enumerate(self.board):
-            if element[player_position] > 0:
-                positions[(index, player_position)] = element[player_position]
-        return positions
 
     def capture_opposite_piece(self, position):
         inter_position_player = 0 if self.player == "WHITE" else 1
