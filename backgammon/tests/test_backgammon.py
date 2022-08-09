@@ -1,7 +1,7 @@
 import unittest
 from parameterized import parameterized
 from backgammon.game.backgammon import BackgammonGame
-from backgammon.tests.test_scenarios import initial_board
+from backgammon.tests.test_scenarios import initial_board, board_1
 from unittest.mock import patch
 
 
@@ -166,6 +166,7 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(1, game.board[new_row][new_col])
 
     @parameterized.expand([
+
         (2, 3, [2, 3, 5]),
         (3, 4, [3, 4, 7]),
         (5, 5, [5, 10, 15, 20])
@@ -175,6 +176,31 @@ class BackgammonGameTest(unittest.TestCase):
         self.backgammon.dice_two = d2
         # self.backgammon.move_points = points
         result = self.backgammon.get_move_options()
+        self.assertEqual(result, expected)
+
+    @parameterized.expand([
+        (board_1, "WHITE", 5, True),
+        (board_1, "WHITE", 1, False),
+    ])
+    def test_can_capture(self, board, current_player, position, expected):
+        game = BackgammonGame()
+        game.board = board
+        game.player = current_player
+        result = game.can_capture(position)
+        self.assertEqual(result, expected)
+
+    @parameterized.expand([
+        (board_1, "WHITE", 0, 0, 1, 0, True),
+        (board_1, "WHITE", 0, 0, 11, 0, False),
+        (board_1, "WHITE", 0, 0, 2, 0, True)
+    ])
+    def test_make_move(self, board, current_player, actual_cell, actual_col,
+                       new_cell, new_col, expected):
+        game = BackgammonGame()
+        game.board = board
+        game.player = current_player
+        result = game.make_move(actual_cell, actual_col,
+                                new_cell, new_col)
         self.assertEqual(result, expected)
 
 
