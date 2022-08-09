@@ -1,4 +1,5 @@
 import unittest
+from copy import deepcopy
 
 from parameterized import parameterized
 from .constants import (GOLD, GOLD_QUANTITY, PLAYER, WUMPUS, WUMPUS_QUANTITY,
@@ -13,7 +14,8 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
                         SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
                         SCENARIO_DANGER_RIGTH, SCENARIO_DANGER_UP,
-                        SCENARIO_DANGER_DOWN, SCENARIO_TEST_DELETE)
+                        SCENARIO_DANGER_DOWN, SCENARIO_TEST_DELETE,
+                        SCENARIO_WIN_GOLD)
 
 
 class TestGame(unittest.TestCase):
@@ -153,3 +155,21 @@ class TestGame(unittest.TestCase):
     def test_find_signal_indicator(self, board, positions):
         self.game.board = board
         self.assertEqual(self.game.find_signal_indicator(HOLES), positions)
+
+    @parameterized.expand([
+        (5, 4),
+        (5, 6),
+        (4, 5),
+        (6, 5),
+    ])
+    def test_move_and_win_gold(self, row, col):
+
+        game = WumpusGame()
+        game.board = deepcopy(SCENARIO_WIN_GOLD)
+        old_player_row, old_player_col = game.position_finder(PLAYER)[0]
+        game.move_and_win_gold(row, col)
+        new_player_row, new_player_col = game.position_finder(PLAYER)[0]
+        self.assertEqual((new_player_row, new_player_col), (row, col))
+        self.assertEqual(game.board[old_player_row][old_player_col], '')
+        self.assertTrue(GOLD not in game.board[row][col])
+        self.assertEqual(len(game.position_finder(GOLD)), 3)
