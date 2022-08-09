@@ -76,3 +76,7 @@ class BackgammonGame():
         self.board[position][inter_position_player] += 1
         self.board[position][inter_position_to_capture] -= 1
         self.expelled[self.opposite] += 1
+
+    def change_position(self, actual_row, actual_col, new_row, new_col):
+        self.board[actual_row][actual_col] -= 1
+        self.board[new_row][new_col] += 1

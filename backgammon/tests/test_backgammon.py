@@ -168,6 +168,16 @@ class BackgammonGameTest(unittest.TestCase):
         captured_piece = game.expelled["BLACK"]
         self.assertEqual(1, captured_piece)
 
+    @parameterized.expand([
+        (initial_board, 0, 0, 1, 0)
+    ])
+    def test_change_position(self, board, actual_row, actual_col,
+                             new_row, new_col):
+        game = BackgammonGame()
+        game.board = board
+        game.change_position(actual_row, actual_col, new_row, new_col)
+        self.assertEqual(1, game.board[new_row][new_col])
+
 
 if __name__ == '__main__':
     unittest.main()
