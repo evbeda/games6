@@ -178,6 +178,30 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
+        (3, 4, [3, 4, 7], 3, [4]),
+        (3, 4, [3, 4, 7], 4, [3]),
+        (3, 4, [3, 4, 7], 7, []),
+        (3, 4, [3], 7, []),
+        (3, 4, [4], 7, []),
+        (4, 4, [4, 8, 12, 16], 16, []),
+        (4, 4, [4, 8, 12, 16], 12, [4]),
+        (4, 4, [4, 8, 12, 16], 8, [4, 8]),
+        (4, 4, [4, 8, 12, 16], 4, [4, 8, 12]),
+        (5, 5, [5, 10, 15], 15, []),
+        (5, 5, [5, 10, 15], 10, [5]),
+        (5, 5, [5, 10, 15], 5, [5, 10]),
+        (6, 6, [6, 12], 6, [6]),
+        (6, 6, [6, 12], 12, []),
+        (2, 2, [2], 2, []),
+    ])
+    def test_update_move_options(self, d1, d2, move_options, move, expectedResult):
+        self.backgammon.dice_one = d1
+        self.backgammon.dice_two = d2
+        self.backgammon.move_options = move_options
+        self.backgammon.update_move_options(move)
+        self.assertEqual(self.backgammon.move_options, expectedResult)
+
+    @parameterized.expand([
         (board_1, "WHITE", 5, True),
         (board_1, "WHITE", 1, False),
         (board_1, "BLACK", 10, True),
