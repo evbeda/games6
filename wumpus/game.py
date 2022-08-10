@@ -8,7 +8,8 @@ from wumpus.constants import (
     WUMPUS,
     SWORDS_QUANTITY,
     PLAYER,
-    ITEMS_DICTIONARY
+    ITEMS_DICTIONARY,
+    SCORE_GAME
 )
 import random
 
@@ -23,6 +24,7 @@ class WumpusGame:
         self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
         self.swords = SWORDS_QUANTITY
         self.collected_gold = 0
+        self.score = 0
 
     def place_player(self):
         self.board[0][0] = "J"
@@ -65,6 +67,7 @@ class WumpusGame:
         row, col = self.position_finder(PLAYER)[0]
         self.delete_item_on_position(PLAYER, row, col)
         self.board[new_row][new_col] += PLAYER
+        self.modify_score(SCORE_GAME["move"])
 
     def there_is_gold(self, row: int, col: int) -> bool:
         return (row, col) in self.position_finder(GOLD)
@@ -101,12 +104,15 @@ class WumpusGame:
         return position_signals
 
     def move_and_win_gold(self, row, col):
-
         self.delete_item_on_position(GOLD, row, col)
         self.move_player_transaction(row, col)
+        self.modify_score(SCORE_GAME["gold_wumpus"])
 
     def print_signals(self, item):
         positions = self.find_signal_indicator(item)
         for row, col in positions:
             if ITEMS_DICTIONARY[item] not in self.board[row][col]:
                 self.board[row][col] += ITEMS_DICTIONARY[item]
+
+    def modify_score(self, score_to_modify):
+        self.score += score_to_modify
