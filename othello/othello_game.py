@@ -128,3 +128,15 @@ class Othello():
         if moves == {}:
             return False
         return True
+
+    def board_printer(self):
+        list_of_the_printable_board = []
+        list_of_the_printable_board.append(' 0 1 2 3 4 5 6 7   ')
+        for row_count, row in enumerate(self.board):
+            string_row = ''
+            for element in row:
+                string_row += '|'
+                string_row += ' ' if element is None else element
+            string_row += '| ' + str(row_count)
+            list_of_the_printable_board.append(string_row)
+        return list_of_the_printable_board
