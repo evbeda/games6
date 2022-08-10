@@ -1,4 +1,5 @@
 import random
+from .constants import BLACK, WHITE
 
 
 class BackgammonGame():
@@ -11,8 +12,8 @@ class BackgammonGame():
             [0, 5], [0, 0], [0, 0], [0, 0], [3, 0], [0, 0],
             [5, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 2]
         ]
-        self.expelled = {"BLACK": 0, "WHITE": 0}
-        self.player = random.choice(['WHITE', 'BLACK'])
+        self.expelled = {BLACK: 0, WHITE: 0}
+        self.player = random.choice([WHITE, BLACK])
         self.active_game = True
         self.dice_one = 0
         self.dice_two = 0
@@ -21,7 +22,7 @@ class BackgammonGame():
         self.points = {"BLACK": 0, "WHITE": 0}
 
     def available_pieces(self, side):
-        color = 0 if side == "WHITE" else 1
+        color = 0 if side == WHITE else 1
         result = []
         for index, pyramid in enumerate(self.board):
             if pyramid[color]:
@@ -123,22 +124,22 @@ class BackgammonGame():
 
     @property
     def opposite(self):
-        return 'BLACK' if self.player == 'WHITE' else 'WHITE'
+        return BLACK if self.player == WHITE else WHITE
 
     def change_active_player(self):
         self.player = self.opposite
 
     def less_than_two_enemies_in_position(self, position):
-        index_opp = 0 if self.opposite == "WHITE" else 1
+        index_opp = 0 if self.opposite == WHITE else 1
         result = True if self.board[position][index_opp] < 2 else False
         return result
 
     def less_than_five_own_pieces(self, position):
-        side = 0 if self.player == "WHITE" else 1
+        side = 0 if self.player == WHITE else 1
         return self.board[position][side] < 5
 
     def at_least_one_piece_of_the_player(self, position):
-        player_piece = 0 if self.player == "WHITE" else 1
+        player_piece = 0 if self.player == WHITE else 1
         if not self.board[position][player_piece]:
             return False
         return True
@@ -156,8 +157,8 @@ class BackgammonGame():
         return enenmy_condition and own_condition
 
     def capture_opposite_piece(self, actual_position, new_position):
-        inter_position_player = 0 if self.player == "WHITE" else 1
-        inter_position_to_capture = 1 if self.player == "WHITE" else 0
+        inter_position_player = 0 if self.player == WHITE else 1
+        inter_position_to_capture = 1 if self.player == WHITE else 0
         self.board[new_position][inter_position_to_capture] -= 1
         self.expelled[self.opposite] += 1
         self.change_position(actual_position, new_position,
@@ -168,11 +169,11 @@ class BackgammonGame():
         self.board[new_position][col] += 1
 
     def can_capture(self, position):
-        opposite_piece = 1 if self.player == "WHITE" else 0
+        opposite_piece = 1 if self.player == WHITE else 0
         return self.board[position][opposite_piece] == 1
 
     def make_move(self, old_position, new_position):
-        col = 0 if self.player == "WHITE" else 1
+        col = 0 if self.player == WHITE else 1
         move = abs(new_position - old_position)
         if abs(old_position - new_position) in self.move_options:
             if (
@@ -195,8 +196,9 @@ class BackgammonGame():
         "WHITE WINS BY OBJECTIVE" or if no more turns left, retuns
         "WHITE WINS" or "BLACK WINS" or "TIE". ("by objective" means that the
         player has got all 15 points)
-        - if there are still move options (taken from self.move_options); if not
-        it returns "NO MOVES LEFT" (if yes, the current player should keep playing)
+        - if there are still move options (taken from self.move_options);
+        if not it returns "NO MOVES LEFT" (if yes, the current player should
+        keep playing)
         '''
         if self.points["BLACK"] >= 15:
             return "BLACK WINS BY OBJECTIVE"
@@ -211,9 +213,14 @@ class BackgammonGame():
 
     def get_current_winner(self):
 
-        if self.points["BLACK"] > self.points["WHITE"]:
+        if self.points["BLACK"] > self.points[WHITE]:
             return "BLACK WINS"
-        elif self.points["WHITE"] > self.points["BLACK"]:
+        elif self.points["WHITE"] > self.points[BLACK]:
             return "WHITE WINS"
         else:
             return "TIE"
+
+    def insert_captured_piece(self, new_position):
+        self.expelled[self.player] -= 1
+        actual_position = 0 if self.player == WHITE else 23
+        self.make_move(actual_position, new_position)
