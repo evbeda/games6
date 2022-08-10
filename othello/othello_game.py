@@ -36,48 +36,6 @@ class Othello():
         aux.remove(self.player_turn)
         return aux[0]
 
-    # def get_index_limit(self, i):
-    #     '''
-    #     Argument i is an index'''
-    #     if i == 0:
-
-    #         from_i = i
-    #         to_i = i + 1
-
-    #     elif i == 7:
-    #         from_i = i - 1
-    #         to_i = i
-    #     else:
-    #         from_i = i - 1
-    #         to_i = i + 1
-    #     return from_i, to_i
-
-    # def get_limits(self, row, col):
-    #     '''
-    #     Returns a dictionary with 4 values, which are the coordinates of
-    #     edges that define a square.
-    #     It can be a 3x3, 2x3 or 3x2 square or a 2x2 square,
-    #     depending if the entered
-    #     coordinates are in an edge or not.'''
-
-    #     from_row, to_row = self.get_index_limit(row)
-    #     from_col, to_col = self.get_index_limit(col)
-
-    #     return {
-    #         'from_row': from_row,
-    #         'to_row': to_row,
-    #         'from_col': from_col,
-    #         'to_col': to_col}
-
-    # def close_opposite_around(self, row, col):
-    #     limits = self.get_limits(row, col)
-    #     close_opposite_list = []
-    #     for i in range(limits["from_row"], limits["to_row"] + 1):
-    #         for j in range(limits["from_col"], limits["to_col"] + 1):
-    #             if self.what_is(i, j) == self.get_opposite_piece():
-    #                 close_opposite_list.append((i, j))
-    #     return close_opposite_list
-
     def determine_winner(self):
         if self.get_piece_count("W") == self.get_piece_count("B"):
             return "Tie"
@@ -89,28 +47,12 @@ class Othello():
     def flip_pieces(self, coordinates):
         for row, col in coordinates:
             self.board[row][col] = self.player_turn
-        # self.black_can_play = True
-        # self.white_can_play = True
 
     def end_game(self):
         if self.black_can_play is False and self.white_can_play is False:
             self.is_playing = False
             self.determine_winner()
 
-    '''
-    def validate_move(self, row, col):
-        NEEDS TO BE COMPLETED
-        Used by validate_direction(), generates array if valid
-        Returns False if not valid.
-        Suggested: if true, it should return a list of list, where
-        each list is a list of coordinates returned by validate_direction,
-        hence, in most of the cases this function should
-        call validate_direction() eigth times,
-        one for every direction. If a move is on an edge,
-        this list will include three False.
-        if self.board[row][col] is not None:
-            return False
-    '''
     def validate_move(self, row, col):
         '''
         Tells whether a move is valid or not.
