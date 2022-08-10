@@ -1,9 +1,11 @@
 from wumpus.constants import (
     COL,
+    HOLES,
     LOSE,
     ROW,
     GOLD_QUANTITY,
     GOLD,
+    VISITED_CELL,
     WUMPUS_QUANTITY,
     WUMPUS,
     SWORDS_QUANTITY,
@@ -56,7 +58,7 @@ class WumpusGame:
     def move_player_transaction(self, new_row, new_col):
 
         row, col = self.position_finder(PLAYER)[0]
-        self.board[row][col] = '   '
+        self.board[row][col] = VISITED_CELL
         self.board[new_row][new_col] += PLAYER
         self.modify_score(SCORE_GAME["move"])
 
@@ -123,14 +125,22 @@ class WumpusGame:
 
     def shoot_arrow(self, row, col):
         if WUMPUS in self.board[row][col]:
-            self.board[row][col] = '   '
+            self.board[row][col] = VISITED_CELL
             self.modify_score(SCORE_GAME["gold_wumpus"])
         else:
             self.modify_score(SCORE_GAME["lost_shoot"])
 
-    def move_action(self):
+    def move_player(self, row: int, col: int):
 
-        pass
+        if self.there_is_item(GOLD, row, col):
+            self.move_and_win_gold(row, col)
+
+        elif (self.there_is_item(WUMPUS, row, col) or
+              self.there_is_item(HOLES, row, col)):
+            self.move_and_game_over(row, col)
+
+        else:
+            self.move_player_transaction(row, col)
 
     def find_coord(self, coord):
         row, col = self.position_finder(PLAYER)[0]
@@ -148,7 +158,7 @@ class WumpusGame:
     def manager_move(self, action, direction):
         directions = self.find_coord(direction)
         if action == MOVES['move'] and directions:
-            self.move_player_transaction(directions[0], directions[1])
+            self.move_player(directions[0], directions[1])
         elif action == MOVES['shoot'] and directions:
             self.shoot_arrow(directions[0], directions[1])
         else:

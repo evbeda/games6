@@ -2,7 +2,7 @@ import unittest
 from copy import deepcopy
 
 from parameterized import parameterized
-from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
+from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, VISITED_CELL, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
                         ROW, MOVES, MOVES_DIRECTION)
 
@@ -172,7 +172,7 @@ class TestGame(unittest.TestCase):
         game.move_and_win_gold(row, col)
         new_player_row, new_player_col = game.position_finder(PLAYER)[0]
         self.assertEqual((new_player_row, new_player_col), (row, col))
-        self.assertEqual(game.board[old_player_row][old_player_col], '   ')
+        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
         self.assertTrue(GOLD not in game.board[row][col])
         self.assertEqual(len(game.position_finder(GOLD)), 3)
 
@@ -253,7 +253,7 @@ class TestGame(unittest.TestCase):
         game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], '   ')
+        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
         self.assertEqual(game.board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
@@ -274,12 +274,11 @@ class TestGame(unittest.TestCase):
         game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], '   ')
+        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
         self.assertEqual(game.board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, LOSE)
-
 
     @parameterized.expand([
 
@@ -296,25 +295,7 @@ class TestGame(unittest.TestCase):
         game.board = deepcopy(SCENARIO_MOVE_ACTION)
         game.there_is_item(item, row, col)
 
-    # @parameterized.expand([  # auxiliar
-    #     (5, 4, WUMPUS, False),
-    #     (5, 6, HOLES, False),
-    #     (4, 5, GOLD, False),
-    #     (6, 5, PLAYER, False),
-    # ])
-    # def test_move_action(self, row, col, expeted_item, is_playing):
-
-    #     game = WumpusGame()
-    #     game.board = deepcopy(SCENARIO_MOVE_ACTION)
-
-    #     old_player_row, old_player_col = game.position_finder(PLAYER)[0]
-    #     game.move_action(row, col)
-    #     self.assertEqual(game.board[old_player_row][old_player_col], '')
-    #     self.assertEqual(game.board[row][col], expeted_item)
-    #     self.assertEqual(game.is_playing, is_playing)
-
-
-    @parameterized.expand([  # auxiliar
+    @parameterized.expand([
         ("s", 0, 0, (1, 0)),
         ("w", 0, 0, ()),
         ("w", 1, 1, (0, 1)),
@@ -375,3 +356,21 @@ class TestGame(unittest.TestCase):
         self.game.score = 0
         with self.assertRaises(Exception):
             self.game.manager_move(accion, direccion)
+
+    @parameterized.expand([
+        (5, 4, WUMPUS, False),
+        (5, 6, HOLES, False),
+        (4, 5, PLAYER, True),
+        (6, 5, PLAYER, True),
+    ])
+    def test_move_action(self, row, col, expeted_item, is_playing):
+
+        game = WumpusGame()
+        game.board = deepcopy(SCENARIO_MOVE_ACTION)
+
+        old_player_row, old_player_col = game.position_finder(PLAYER)[0]
+        game.move_player(row, col)
+
+        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game.board[row][col], expeted_item)
+        self.assertEqual(game.is_playing, is_playing)
