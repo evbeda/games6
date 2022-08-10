@@ -29,7 +29,7 @@ class WumpusGame:
         self.result_of_game = str()
 
     def place_player(self):
-        self.board[0][0] = "J"
+        self.board[0][0] = PLAYER
 
     def place_item(self, item, quantity):
         for _ in range(quantity):
@@ -111,7 +111,7 @@ class WumpusGame:
         self.modify_score(SCORE_GAME["gold_wumpus"])
         self.modify_score(SCORE_GAME["move"])
 
-    def move_and_fall_in_hole(self, row, col):
+    def move_and_game_over(self, row, col):
         self.move_player_transaction(row, col)
         self.delete_item_on_position(PLAYER, row, col)
         self.game_over(LOSE)
