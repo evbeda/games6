@@ -4,7 +4,7 @@ from copy import deepcopy
 from parameterized import parameterized
 from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
-                        ROW)
+                        ROW, MOVES, MOVES_DIRECTION)
 
 
 from wumpus.game import WumpusGame
@@ -203,7 +203,7 @@ class TestGame(unittest.TestCase):
 
     @parameterized.expand([
         (1000, 2000, SCORE_GAME["gold_wumpus"]),
-        (1000, 990, SCORE_GAME["move"]),
+        (0, -10, SCORE_GAME["move"]),
         (1000, 950, SCORE_GAME["lost_shoot"])
     ])
     def test_score_manager(self, initial_score, final_score, score):
@@ -328,3 +328,48 @@ class TestGame(unittest.TestCase):
         game.board[row][col] = "J"
         final_dir = game.find_coord(direction)
         self.assertEqual(final_dir, final_coord)
+
+    @parameterized.expand([  # test with correct moves
+        (MOVES["move"], MOVES_DIRECTION["south"], 0, 0, 1, 0, -10),
+        (MOVES["move"], MOVES_DIRECTION["east"], 0, 0, 0, 1, -10),
+        (MOVES["move"], MOVES_DIRECTION["north"], 1, 1, 0, 1, -10),
+        (MOVES["move"], MOVES_DIRECTION["south"], 1, 1, 2, 1, -10),
+        (MOVES["shoot"], MOVES_DIRECTION["east"], 0, 0, 0, 0, -50),
+        (MOVES["shoot"], MOVES_DIRECTION["north"], 1, 1, 1, 1, -50),
+        (MOVES["shoot"], MOVES_DIRECTION["west"], 1, 1, 1, 1, -50),
+    ])
+    def test_admin_move(self, accion, direccion, row, col,
+                        final_row, final_col, expected_score):
+        self.game.board = [["" for j in range(COL)] for i in range(ROW)]
+        self.game.board[row][col] = "J"
+        self.game.score = 0
+        self.game.manager_move(accion, direccion)
+        position_player = self.game.position_finder(PLAYER)
+        self.assertEqual(self.game.score, expected_score)
+        self.assertEqual(position_player[0], (final_row, final_col))
+
+    @parameterized.expand([  # test exceptions moves
+        (MOVES["shoot"], MOVES_DIRECTION["north"], 0, 0),
+        (MOVES["shoot"], MOVES_DIRECTION["south"], 7, 7),
+        (MOVES["shoot"], MOVES_DIRECTION["east"], 7, 7),
+        (MOVES["shoot"], MOVES_DIRECTION["west"], 7, 0),
+    ])
+    def test_admin_move_exceptions_shoot(self, accion, direccion, row, col):
+        self.game.board = [["" for j in range(COL)] for i in range(ROW)]
+        self.game.board[row][col] = "J"
+        self.game.score = 0
+        with self.assertRaises(Exception):
+            self.game.manager_move(accion, direccion)
+
+    @parameterized.expand([  # test exceptions moves
+        (MOVES["move"], MOVES_DIRECTION["north"], 0, 0),
+        (MOVES["move"], MOVES_DIRECTION["south"], 7, 7),
+        (MOVES["move"], MOVES_DIRECTION["east"], 7, 7),
+        (MOVES["move"], MOVES_DIRECTION["west"], 7, 0),
+    ])
+    def test_admin_move_exceptions(self, accion, direccion, row, col):
+        self.game.board = [["" for j in range(COL)] for i in range(ROW)]
+        self.game.board[row][col] = "J"
+        self.game.score = 0
+        with self.assertRaises(Exception):
+            self.game.manager_move(accion, direccion)
