@@ -10,7 +10,7 @@ from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-                        SCENARIO_5, SCENARIO_FALL_IN_HOLES, SCENARIO_TEST_GOLD,
+                        SCENARIO_5, SCENARIO_EATEN_BY_WUMPUS, SCENARIO_FALL_IN_HOLES, SCENARIO_TEST_GOLD,
                         SCENARIO_DANGER_SIGNAL_HOLES,
                         SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
                         SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
@@ -53,13 +53,13 @@ class TestGame(unittest.TestCase):
 
     def test_initial_place_player(self):
         self.game.place_player()
-        self.assertEqual(self.game.board[0][0], "J")
+        self.assertEqual(self.game.board[0][0], PLAYER)
 
     @parameterized.expand([
-        (SCENARIO_1, "J", [(0, 0)]),
-        (SCENARIO_2, "J", [(1, 3)]),
-        (SCENARIO_3, "J", [(3, 5)]),
-        (SCENARIO_4, "J", [])
+        (SCENARIO_1, PLAYER, [(0, 0)]),
+        (SCENARIO_2, PLAYER, [(1, 3)]),
+        (SCENARIO_3, PLAYER, [(3, 5)]),
+        (SCENARIO_4, PLAYER, [])
     ])
     def test_position_finder(self, board, item, expected):
         self.game.board = board
@@ -106,12 +106,12 @@ class TestGame(unittest.TestCase):
     ])
     def test_move_transaction(self, board, row, col):
         self.game.board = board
-        old_row, old_row = self.game.position_finder("J")[0]
+        old_row, old_row = self.game.position_finder(PLAYER)[0]
         value_cell = self.game.board[old_row][old_row]
         self.game.move_player_transaction(row, col)
         self.assertEqual(self.game.board[old_row][old_row],
-                         value_cell.replace('J', ''))
-        self.assertEqual(self.game.board[row][col], "J")
+                         value_cell.replace(PLAYER, ''))
+        self.assertEqual(self.game.board[row][col], PLAYER)
 
     # @parameterized.expand([
     #     (SCENARIO_1, )
@@ -265,7 +265,28 @@ class TestGame(unittest.TestCase):
         game.board = deepcopy(SCENARIO_FALL_IN_HOLES)
         content_destination_cell = game.board[row][col]
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
-        game.move_and_fall_in_hole(row, col)
+        game.move_and_game_over(row, col)
+        player_in_board = game.position_finder(PLAYER)
+
+        self.assertEqual(game.board[old_player_row][old_player_col], '')
+        self.assertEqual(game.board[row][col], content_destination_cell)
+        self.assertEqual(player_in_board, [])
+        self.assertEqual(game.is_playing, False)
+        self.assertEqual(game.result_of_game, LOSE)
+
+    @parameterized.expand([
+        (5, 4),
+        (5, 6),
+        (4, 5),
+        (6, 5),
+    ])
+    def test_eaten_by_wumpus(self, row, col):
+
+        game = WumpusGame()
+        game.board = deepcopy(SCENARIO_EATEN_BY_WUMPUS)
+        content_destination_cell = game.board[row][col]
+        old_player_row, old_player_col = game.position_finder(PLAYER)[0]
+        game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
         self.assertEqual(game.board[old_player_row][old_player_col], '')
