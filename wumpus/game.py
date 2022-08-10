@@ -48,18 +48,6 @@ class WumpusGame:
                     position_list.append((i, j))
         return position_list
 
-    def is_not_out_of_bounds(self, row, col, direction):
-        validator = True
-        if direction == "w" and not row > 0:
-            validator = False
-        if direction == "s" and not row < 14:
-            validator = False
-        if direction == "a" and not col > 0:
-            validator = False
-        if direction == "d" and not col < 7:
-            validator = False
-        return validator
-
     def check_is_empty(self, row, col):
         cell = self.board[row][col]
         return cell == ''
@@ -142,3 +130,16 @@ class WumpusGame:
     def move_action(self):
 
         pass
+
+    def find_coord(self, coord):
+        row, col = self.position_finder(PLAYER)[0]
+        if coord == "w" and row - 1 >= 0:
+            return (row - 1, col)
+        elif coord == "s" and row + 1 <= 7:
+            return (row + 1, col)
+        elif coord == "a" and col - 1 >= 0:
+            return (row, col - 1)
+        elif coord == "d" and col + 1 <= 7:
+            return (row, col + 1)
+        else:
+            return ()

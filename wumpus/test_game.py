@@ -10,7 +10,10 @@ from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-                        SCENARIO_5, SCENARIO_EATEN_BY_WUMPUS, SCENARIO_FALL_IN_HOLES, SCENARIO_MOVE_ACTION,
+                        SCENARIO_EATEN_BY_WUMPUS,
+                        SCENARIO_MOVE_ACTION,
+                        SCENARIO_5,
+                        SCENARIO_FALL_IN_HOLES,
                         SCENARIO_TEST_GOLD,
                         SCENARIO_DANGER_SIGNAL_HOLES,
                         SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
@@ -66,26 +69,6 @@ class TestGame(unittest.TestCase):
         self.game.board = board
         position_list = self.game.position_finder(item)
         self.assertEqual(position_list, expected)
-
-    @parameterized.expand([
-        (0, 0, "s"),
-        (1, 3, "w"),
-        (3, 5, "a"),
-        (3, 5, "d"),
-    ])
-    def test_is_not_out_of_bounds(self, row, col, direction):
-        is_not_out = self.game.is_not_out_of_bounds(row, col, direction)
-        self.assertTrue(is_not_out)
-
-    @parameterized.expand([
-        (14, 0, "s"),
-        (0, 3, "w"),
-        (3, 0, "a"),
-        (3, 7, "d"),
-    ])
-    def test_is_out_of_bounds(self, row, col, direction):
-        is_out = self.game.is_not_out_of_bounds(row, col, direction)
-        self.assertFalse(is_out)
 
     @parameterized.expand([
         (SCENARIO_1, 7, 0, True),
@@ -329,3 +312,19 @@ class TestGame(unittest.TestCase):
     #     self.assertEqual(game.board[old_player_row][old_player_col], '')
     #     self.assertEqual(game.board[row][col], expeted_item)
     #     self.assertEqual(game.is_playing, is_playing)
+    @parameterized.expand([  # auxiliar
+        ("s", 0, 0, (1, 0)),
+        ("w", 0, 0, ()),
+        ("w", 1, 1, (0, 1)),
+        ("a", 0, 0, ()),
+        ("a", 1, 1, (1, 0)),
+        ("d", 0, 0, (0, 1)),
+        ("y", 0, 0, ()),
+        ("s", 7, 7, ()),
+    ])
+    def test_find_coord(self, direction, row, col, final_coord):
+        game = WumpusGame()
+        game.board[0][0] = ""
+        game.board[row][col] = "J"
+        final_dir = game.find_coord(direction)
+        self.assertEqual(final_dir, final_coord)
