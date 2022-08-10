@@ -9,7 +9,8 @@ from wumpus.constants import (
     SWORDS_QUANTITY,
     PLAYER,
     ITEMS_DICTIONARY,
-    SCORE_GAME
+    SCORE_GAME,
+    MOVES
 )
 import random
 
@@ -143,3 +144,12 @@ class WumpusGame:
             return (row, col + 1)
         else:
             return ()
+
+    def manager_move(self, action, direction):
+        directions = self.find_coord(direction)
+        if action == MOVES['move'] and directions:
+            self.move_player_transaction(directions[0], directions[1])
+        elif action == MOVES['shoot'] and directions:
+            self.shoot_arrow(directions[0], directions[1])
+        else:
+            raise Exception("Out of range move")

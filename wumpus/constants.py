@@ -18,3 +18,7 @@ ALL_ELEMENTS = "GWOJ+~J"
 ITEMS_DICTIONARY = {"O": "~", "W": "+"}
 
 SCORE_GAME = {"move": -10, "gold_wumpus": 1000, "lost_shoot": -50}
+
+MOVES = {"shoot": "z", "move": "m"}
+
+MOVES_DIRECTION = {"north": "w", "west": "a", "east": "d", "south": "s"}
