@@ -35,32 +35,30 @@ class BackgammonGameTest(unittest.TestCase):
         result = self.backgammon.available_pieces(side)
         self.assertEqual(result, list(expected_result))
 
-    @patch('random.choice', return_value='WHITE')
-    def test_player_1(self, patched_randint):
-        new_game = BackgammonGame()
-        player = new_game.player
-        self.assertEqual(player, 'WHITE')
-
-    @patch('random.choice', return_value='BLACK')
-    def test_player_2(self, patched_randint):
-        new_game = BackgammonGame()
-        player = new_game.player
-        self.assertEqual(player, 'BLACK')
+    @parameterized.expand([
+        ('WHITE',),
+        ('BLACK',),
+    ])
+    def test_player(self, patch_color):
+        with patch('random.choice', return_value=patch_color):
+            new_game = BackgammonGame()
+            player = new_game.player
+        self.assertEqual(player, patch_color)
 
     @parameterized.expand([
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5),
-        (6, 6),
+        (1, 2,),
+        (2, 3,),
+        (3, 4,),
+        (4, 6,),
+        (5, 5,),
+        (6, 1,),
     ])
     @patch('random.randint')
-    def test_roll_dices_number_interval(self, expetc_value,
-                                        patch_value, patch_function):
-        patch_function.return_value = patch_value
+    def test_roll_dices_number_interval(self, first_dice,
+                                        second_dice, patch_function):
+        patch_function.side_effect = [first_dice, second_dice]
         self.assertEqual(self.backgammon.roll_dices(),
-                         (expetc_value, expetc_value))
+                         (first_dice, second_dice))
 
     @parameterized.expand([
         ('WHITE', 'BLACK'),
@@ -194,7 +192,8 @@ class BackgammonGameTest(unittest.TestCase):
         (6, 6, [6, 12], 12, []),
         (2, 2, [2], 2, []),
     ])
-    def test_update_move_options(self, d1, d2, move_options, move, expectedResult):
+    def test_update_move_options(self, d1, d2, move_options, move,
+                                 expectedResult):
         self.backgammon.dice_one = d1
         self.backgammon.dice_two = d2
         self.backgammon.move_options = move_options
@@ -215,18 +214,21 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (board_1, "WHITE", 0, 1, True),
-        (board_1, "WHITE", 0, 11, False),
-        (board_1, "WHITE", 0, 2, True),
-        (board_1, "BLACK", 3, 10, True),
-        (board_1, "BLACK", 21, 23, True),
-        (board_1, "BLACK", 16, 18, False)
+        (board_1, "WHITE", 0, 1, 1, 3, True),
+        (board_1, "WHITE", 0, 11, 6, 5, False),
+        (board_1, "WHITE", 0, 2, 1, 1, True),
+        (board_1, "BLACK", 3, 10, 4, 3, True),
+        (board_1, "BLACK", 21, 23, 2, 3, True),
+        (board_1, "BLACK", 16, 18, 3, 2, False)
     ])
     def test_make_move(self, board, current_player, actual_position,
-                       new_position, expected):
+                       new_position, first_dice, second_dice, expected):
         game = BackgammonGame()
         game.board = board
         game.player = current_player
+        game.dice_one = first_dice
+        game.dice_two = second_dice
+        game.get_move_options()
         result = game.make_move(actual_position, new_position)
         self.assertEqual(result, expected)
 
