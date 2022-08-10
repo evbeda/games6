@@ -17,6 +17,8 @@ class BackgammonGame():
         self.dice_one = 0
         self.dice_two = 0
         self.move_options = []
+        self.current_turn = 0
+        self.points = {"BLACK": 0, "WHITE": 0}
 
     def available_pieces(self, side):
         color = 0 if side == "WHITE" else 1
@@ -143,6 +145,10 @@ class BackgammonGame():
 
     def is_valid_move(self, initial_pos, final_pos) -> bool:
 
+        if ((final_pos < 0 and self.player == 'BLACK')
+           or (final_pos > 23 and self.player == 'WHITE')):
+            return True
+
         enenmy_condition = self.less_than_two_enemies_in_position(final_pos)
         own_condition = (self.less_than_five_own_pieces(final_pos) and
                          self.at_least_one_piece_of_the_player(initial_pos))
@@ -167,14 +173,47 @@ class BackgammonGame():
 
     def make_move(self, old_position, new_position):
         col = 0 if self.player == "WHITE" else 1
+        move = abs(new_position - old_position)
         if abs(old_position - new_position) in self.move_options:
             if (
                 self.is_valid_move(old_position, new_position)
                 and self.can_capture(new_position)
             ):
                 self.capture_opposite_piece(old_position, new_position)
+                self.update_move_options(move)
                 return True
             elif self.is_valid_move(old_position, new_position):
                 self.change_position(old_position, new_position, col)
+                self.update_move_options(move)
                 return True
             return False
+
+    def check_game_status(self):
+        '''
+        Checks the current state of the game, that is, it checks
+        - if there is a winner, in that case returns "BLACK WINS BY OBJECTIVE",
+        "WHITE WINS BY OBJECTIVE" or if no more turns left, retuns
+        "WHITE WINS" or "BLACK WINS" or "TIE". ("by objective" means that the
+        player has got all 15 points)
+        - if there are still move options (taken from self.move_options); if not
+        it returns "NO MOVES LEFT" (if yes, the current player should keep playing)
+        '''
+        if self.points["BLACK"] >= 15:
+            return "BLACK WINS BY OBJECTIVE"
+        if self.points["WHITE"] >= 15:
+            return "WHITE WINS BY OBJECTIVE"
+        if self.current_turn >= 40:
+            return self.get_current_winner()
+        if self.move_options != []:
+            return "CURRENT_PLAYER_MUST_MOVE"
+        else:
+            return "NO_MOVES_LEFT"
+
+    def get_current_winner(self):
+
+        if self.points["BLACK"] > self.points["WHITE"]:
+            return "BLACK WINS"
+        elif self.points["WHITE"] > self.points["BLACK"]:
+            return "WHITE WINS"
+        else:
+            return "TIE"
