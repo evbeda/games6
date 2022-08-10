@@ -29,8 +29,7 @@ class Game(object):
         game_inputs += '99: to quit\n'
         return game_inputs
 
-    def get_turn_input(self, text):
-        input_args = ''
+    def get_input_config(self):
         if isinstance(self.active_game.input_args, tuple):
             input_arg_qtys = self.active_game.input_args
             expecting_input_args = ' or '.join(
@@ -40,6 +39,20 @@ class Game(object):
         else:
             input_arg_qtys = (self.active_game.input_args,)
             expecting_input_args = self.active_game.input_args
+        return input_arg_qtys, expecting_input_args
+
+    def process_inputs(self, inputs):
+        if self.active_game.input_are_ints:
+            return [
+                int(simple_arg)
+                for simple_arg in inputs.split(' ')
+            ]
+        else:
+            return inputs.split(' ')
+
+    def get_turn_input(self, text):
+        input_args = ''
+        input_arg_qtys, expecting_input_args = self.get_input_config()
         expecting_str = (
             '{} numbers separated with spaces'.format(
                 expecting_input_args,
@@ -51,23 +64,9 @@ class Game(object):
                 expecting_str,
             ))
             try:
-                if self.active_game.input_are_ints:
-                    input_args = [
-                        int(simple_arg)
-                        for simple_arg in inputs.split(' ')
-                    ]
-                else:
-                    input_args = inputs.split(' ')
-                    if len(input_args) in input_arg_qtys:
-                        break
-                    else:
-                        self.output(
-                            'Wrong input count, expecting {} values'.format(
-                                self.active_game.input_args
-                            )
-                        )
+                input_args = self.process_inputs(inputs)
 
-                if len(input_args) == self.active_game.input_args:
+                if len(input_args) in input_arg_qtys:
                     break
                 else:
                     self.output(
@@ -92,23 +91,26 @@ class Game(object):
                 break
             if game_selection < len(self.games):
                 self.active_game = self.games[game_selection]()
-                try:
-                    while (
-                        (
-                            hasattr(self.active_game, 'playing') and
-                            self.active_game.playing
-                        ) or (
-                            hasattr(self.active_game, 'is_playing') and
-                            self.active_game.is_playing
-                        )
-                    ):
-                        self.output(self.active_game.board)
-                        game_input = self.get_turn_input(
-                            self.active_game.next_turn(),
-                        )
-                        self.output(self.active_game.play(*game_input))
-                except Exception as e:
-                    self.output('Sorry... {}'.format(e))
+                self.play_game()
+
+    def play_game(self):
+        try:
+            while (
+                (
+                    hasattr(self.active_game, 'playing') and
+                    self.active_game.playing
+                ) or (
+                    hasattr(self.active_game, 'is_playing') and
+                    self.active_game.is_playing
+                )
+            ):
+                self.output(self.active_game.board)
+                game_input = self.get_turn_input(
+                    self.active_game.next_turn(),
+                )
+                self.output(self.active_game.play(*game_input))
+        except Exception as e:
+            self.output('Sorry... {}'.format(e))
 
 
 if __name__ == '__main__':
