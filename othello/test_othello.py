@@ -20,7 +20,8 @@ from othello.scenarios_test import (
     validate_direction_2,
     all_poss_moves_board_1,
     all_poss_moves_exp_1,
-    none_pos_exp_1)
+    none_pos_exp_1,
+    black_12_that_will_print)
 
 
 class Test_othello(unittest.TestCase):
@@ -255,6 +256,15 @@ class Test_othello(unittest.TestCase):
         self.game.board = self._convert_scenario_to_matrix(board)
         result = self.game.none_pos()
         self.assertListEqual(result, expected)
+
+    @parameterized.expand([
+        (black_12, black_12_that_will_print)
+    ])
+    def test_board_printer(self, board, expected_result):
+        self.game.board = board
+        result = self.game.board_printer()
+        for row in range(len(self.game.board)):
+            self.assertEqual(result[row], expected_result[row])
 
 
 if __name__ == "__main__":
