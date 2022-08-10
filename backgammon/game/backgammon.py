@@ -37,9 +37,11 @@ class BackgammonGame():
 
     @property
     def move_points(self):
-        '''Determines the different move options the player has, based on "move points", which is based on the
+        '''Determines the different move options the player has, based on
+        "move points", which is based on the
         rolled dices.
-        returns a list of the possible moves a player can make, based only on the move points.'''
+        returns a list of the possible moves a player can make, based only on
+        the move points.'''
         if self.dice_one != self.dice_two:
             return [self.dice_one, self.dice_two]
         else:
@@ -95,29 +97,31 @@ class BackgammonGame():
 
         return enenmy_condition and own_condition
 
-    def capture_opposite_piece(self, position):
+    def capture_opposite_piece(self, actual_position, new_position):
         inter_position_player = 0 if self.player == "WHITE" else 1
         inter_position_to_capture = 1 if self.player == "WHITE" else 0
-        self.board[position][inter_position_player] += 1
-        self.board[position][inter_position_to_capture] -= 1
+        self.board[new_position][inter_position_to_capture] -= 1
         self.expelled[self.opposite] += 1
+        self.change_position(actual_position, new_position,
+                             inter_position_player)
 
-    def change_position(self, actual_row, actual_col, new_row, new_col):
-        self.board[actual_row][actual_col] -= 1
-        self.board[new_row][new_col] += 1
+    def change_position(self, old_position, new_position, col):
+        self.board[old_position][col] -= 1
+        self.board[new_position][col] += 1
 
     def can_capture(self, position):
         opposite_piece = 1 if self.player == "WHITE" else 0
         return self.board[position][opposite_piece] == 1
 
-    def make_move(self, actual_cell, actual_col, new_cell, new_col):
+    def make_move(self, old_position, new_position):
+        col = 0 if self.player == "WHITE" else 1
         if (
-            self.is_valid_move(actual_cell, new_cell)
-            and self.can_capture(new_cell)
+            self.is_valid_move(old_position, new_position)
+            and self.can_capture(new_position)
         ):
-            self.capture_opposite_piece(new_cell)
+            self.capture_opposite_piece(old_position, new_position)
             return True
-        elif self.is_valid_move(actual_cell, new_cell):
-            self.change_position(actual_cell, actual_col, new_cell, new_col)
+        elif self.is_valid_move(old_position, new_position):
+            self.change_position(old_position, new_position, col)
             return True
         return False
