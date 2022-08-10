@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from parameterized import parameterized
 from .constants import (GOLD, GOLD_QUANTITY, PLAYER, WUMPUS, WUMPUS_QUANTITY,
-                        HOLES_QUANTITY, HOLES)
+                        HOLES_QUANTITY, HOLES, SCORE_GAME)
 
 from wumpus.constants import COL, IN_PROGRESS, ROW
 from wumpus.game import WumpusGame
@@ -210,3 +210,13 @@ class TestGame(unittest.TestCase):
         test_game.print_signals(HOLES)
         test_game.print_signals(WUMPUS)
         self.assertEqual(test_game.board, SCENARIO_CROSS_DIF_ELEMENT_FIN)
+
+    @parameterized.expand([
+        (1000, 2000, SCORE_GAME["gold_wumpus"]),
+        (1000, 990, SCORE_GAME["move"]),
+        (1000, 950, SCORE_GAME["lost_shoot"])
+    ])
+    def test_score_manager(self, initial_score, final_score, score):
+        self.game.score = initial_score
+        self.game.modify_score(score)
+        self.assertEqual(final_score, self.game.score)
