@@ -2,8 +2,9 @@ import unittest
 from copy import deepcopy
 
 from parameterized import parameterized
-from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN, WUMPUS, WUMPUS_QUANTITY,
-                        HOLES_QUANTITY, HOLES, COL, ROW)
+from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
+                        WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
+                        ROW)
 
 
 from wumpus.game import WumpusGame
@@ -27,7 +28,12 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_CROSS_ELEMENT_INIT,
                         SCENARIO_CROSS_ELEMENT_FINAL,
                         SCENARIO_CROSS_DIF_ELEMENT_INI,
-                        SCENARIO_CROSS_DIF_ELEMENT_FIN)
+                        SCENARIO_CROSS_DIF_ELEMENT_FIN,
+                        SCENARIO_SHOOT_WUMPUS_INIT,
+                        SCENARIO_SHOOT_WUMPUS_FINAL,
+                        SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT,
+                        SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN,
+                        SCENARIO_SHOOT_FAIL_INIT)
 
 
 class TestGame(unittest.TestCase):
@@ -230,3 +236,19 @@ class TestGame(unittest.TestCase):
         game.game_over(result)
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, result)
+
+    @parameterized.expand([  # parameters of shoot_arrow
+        (SCENARIO_SHOOT_WUMPUS_INIT, 1000, 4, 4,
+         SCENARIO_SHOOT_WUMPUS_FINAL, 2000),
+        (SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT, 1000, 4, 4,
+         SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN, 2000),
+        (SCENARIO_SHOOT_FAIL_INIT, 1000, 4, 4,
+         SCENARIO_SHOOT_FAIL_INIT, 950)
+    ])
+    def test_shoot_arrow(self, initial_board, initial_score,
+                         row, col, final_board, final_score):
+        self.game.board = initial_board
+        self.game.score = initial_score
+        self.game.shoot_arrow(row, col)
+        self.assertEqual(self.game.board, final_board)
+        self.assertEqual(self.game.score, final_score)
