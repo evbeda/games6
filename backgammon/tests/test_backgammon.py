@@ -146,24 +146,23 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (5,)
+        (0, 5,)
     ])
-    def test_capture_opposite_piece(self, position):
+    def test_capture_opposite_piece(self, actual_position, new_position):
         game = BackgammonGame()
         game.player = "WHITE"
-        game.capture_opposite_piece(position)
+        game.capture_opposite_piece(actual_position, new_position)
         captured_piece = game.expelled["BLACK"]
         self.assertEqual(1, captured_piece)
 
     @parameterized.expand([
-        (initial_board, 0, 0, 1, 0)
+        (initial_board, 0, 1, 0)
     ])
-    def test_change_position(self, board, actual_row, actual_col,
-                             new_row, new_col):
+    def test_change_position(self, board, old_position, new_position, col):
         game = BackgammonGame()
         game.board = board
-        game.change_position(actual_row, actual_col, new_row, new_col)
-        self.assertEqual(1, game.board[new_row][new_col])
+        game.change_position(old_position, new_position, col)
+        self.assertEqual(1, game.board[new_position][col])
 
     @parameterized.expand([
 
@@ -181,26 +180,30 @@ class BackgammonGameTest(unittest.TestCase):
     @parameterized.expand([
         (board_1, "WHITE", 5, True),
         (board_1, "WHITE", 1, False),
+        (board_1, "BLACK", 10, True),
+        (board_1, "BLACK", 11, False)
     ])
-    def test_can_capture(self, board, current_player, position, expected):
+    def test_can_capture(self, board, current_player, new_position, expected):
         game = BackgammonGame()
         game.board = board
         game.player = current_player
-        result = game.can_capture(position)
+        result = game.can_capture(new_position)
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (board_1, "WHITE", 0, 0, 1, 0, True),
-        (board_1, "WHITE", 0, 0, 11, 0, False),
-        (board_1, "WHITE", 0, 0, 2, 0, True)
+        (board_1, "WHITE", 0, 1, True),
+        (board_1, "WHITE", 0, 11, False),
+        (board_1, "WHITE", 0, 2, True),
+        (board_1, "BLACK", 3, 10, True),
+        (board_1, "BLACK", 21, 23, True),
+        (board_1, "BLACK", 16, 18, False)
     ])
-    def test_make_move(self, board, current_player, actual_cell, actual_col,
-                       new_cell, new_col, expected):
+    def test_make_move(self, board, current_player, actual_position,
+                       new_position, expected):
         game = BackgammonGame()
         game.board = board
         game.player = current_player
-        result = game.make_move(actual_cell, actual_col,
-                                new_cell, new_col)
+        result = game.make_move(actual_position, new_position)
         self.assertEqual(result, expected)
 
 
