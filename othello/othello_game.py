@@ -17,6 +17,8 @@ from othello.constants import (
 
 class Othello():
 
+    name = 'Othello'
+
     def __init__(self):
         self.possibles_players = [PLAYER1, PLAYER2]
         self.player_turn = self.possibles_players[0]

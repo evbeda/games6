@@ -1,4 +1,5 @@
 from guess_number_game.guess_number_game import GuessNumberGame
+from othello.othello_game import Othello
 
 
 class Game(object):
@@ -7,6 +8,7 @@ class Game(object):
         super(Game, self).__init__()
         self.games = [
             GuessNumberGame,
+            Othello,
         ]
 
     def output(self, text):
