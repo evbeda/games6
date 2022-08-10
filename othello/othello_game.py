@@ -18,6 +18,8 @@ from othello.constants import (
 class Othello():
 
     name = 'Othello'
+    input_args = 2
+    input_are_ints = True
 
     def __init__(self):
         self.possibles_players = [PLAYER1, PLAYER2]
