@@ -280,6 +280,7 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, LOSE)
 
+
     @parameterized.expand([
 
         (5, 4, WUMPUS, True),
@@ -308,10 +309,11 @@ class TestGame(unittest.TestCase):
 
     #     old_player_row, old_player_col = game.position_finder(PLAYER)[0]
     #     game.move_action(row, col)
-
     #     self.assertEqual(game.board[old_player_row][old_player_col], '')
     #     self.assertEqual(game.board[row][col], expeted_item)
     #     self.assertEqual(game.is_playing, is_playing)
+
+
     @parameterized.expand([  # auxiliar
         ("s", 0, 0, (1, 0)),
         ("w", 0, 0, ()),
