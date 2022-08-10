@@ -67,7 +67,7 @@ class WumpusGame:
     def move_player_transaction(self, new_row, new_col):
 
         row, col = self.position_finder(PLAYER)[0]
-        self.delete_item_on_position(PLAYER, row, col)
+        self.board[row][col] = '   '
         self.board[new_row][new_col] += PLAYER
         self.modify_score(SCORE_GAME["move"])
 
@@ -131,7 +131,7 @@ class WumpusGame:
 
     def shoot_arrow(self, row, col):
         if WUMPUS in self.board[row][col]:
-            self.delete_item_on_position(WUMPUS, row, col)
+            self.board[row][col] = '   '
             self.modify_score(SCORE_GAME["gold_wumpus"])
         else:
             self.modify_score(SCORE_GAME["lost_shoot"])
