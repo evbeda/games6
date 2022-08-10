@@ -1,5 +1,6 @@
 from wumpus.constants import (
     COL,
+    LOSE,
     ROW,
     GOLD_QUANTITY,
     GOLD,
@@ -109,6 +110,11 @@ class WumpusGame:
         self.move_player_transaction(row, col)
         self.modify_score(SCORE_GAME["gold_wumpus"])
         self.modify_score(SCORE_GAME["move"])
+
+    def move_and_fall_in_hole(self, row, col):
+        self.move_player_transaction(row, col)
+        self.delete_item_on_position(PLAYER, row, col)
+        self.game_over(LOSE)
 
     def print_signals(self, item):
         positions = self.find_signal_indicator(item)
