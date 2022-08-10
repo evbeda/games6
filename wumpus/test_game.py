@@ -10,7 +10,7 @@ from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-                        SCENARIO_5, SCENARIO_TEST_GOLD,
+                        SCENARIO_5, SCENARIO_FALL_IN_HOLES, SCENARIO_TEST_GOLD,
                         SCENARIO_DANGER_SIGNAL_HOLES,
                         SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
                         SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
@@ -252,3 +252,24 @@ class TestGame(unittest.TestCase):
         self.game.shoot_arrow(row, col)
         self.assertEqual(self.game.board, final_board)
         self.assertEqual(self.game.score, final_score)
+
+    @parameterized.expand([
+        (5, 4),
+        (5, 6),
+        (4, 5),
+        (6, 5),
+    ])
+    def test_fall_in_hole(self, row, col):
+
+        game = WumpusGame()
+        game.board = deepcopy(SCENARIO_FALL_IN_HOLES)
+        content_destination_cell = game.board[row][col]
+        old_player_row, old_player_col = game.position_finder(PLAYER)[0]
+        game.move_and_fall_in_hole(row, col)
+        player_in_board = game.position_finder(PLAYER)
+
+        self.assertEqual(game.board[old_player_row][old_player_col], '')
+        self.assertEqual(game.board[row][col], content_destination_cell)
+        self.assertEqual(player_in_board, [])
+        self.assertEqual(game.is_playing, False)
+        self.assertEqual(game.result_of_game, LOSE)
