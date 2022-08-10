@@ -108,6 +108,7 @@ class WumpusGame:
         self.delete_item_on_position(GOLD, row, col)
         self.move_player_transaction(row, col)
         self.modify_score(SCORE_GAME["gold_wumpus"])
+        self.modify_score(SCORE_GAME["move"])
 
     def print_signals(self, item):
         positions = self.find_signal_indicator(item)
@@ -121,3 +122,10 @@ class WumpusGame:
     def game_over(self, result: str):
         self.is_playing = False
         self.result_of_game = result
+
+    def shoot_arrow(self, row, col):
+        if WUMPUS in self.board[row][col]:
+            self.delete_item_on_position(WUMPUS, row, col)
+            self.modify_score(SCORE_GAME["gold_wumpus"])
+        else:
+            self.modify_score(SCORE_GAME["lost_shoot"])
