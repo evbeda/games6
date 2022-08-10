@@ -3,6 +3,8 @@ from parameterized import parameterized
 from backgammon.game.backgammon import BackgammonGame
 from backgammon.tests.test_scenarios import initial_board, board_1
 from unittest.mock import patch
+from copy import deepcopy
+from backgammon.game.constants import BLACK, WHITE
 
 
 class BackgammonGameTest(unittest.TestCase):
@@ -27,8 +29,8 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertListEqual(expected_board, self.backgammon.board)
 
     @parameterized.expand([
-        ("WHITE", initial_board, 0, 11, 16, 18),
-        ("BLACK", initial_board, 5, 7, 12, 23)
+        (WHITE, initial_board, 0, 11, 16, 18),
+        (BLACK, initial_board, 5, 7, 12, 23)
     ])
     def test_available_pieces(self, side, board, *expected_result):
         self.backgammon.board = board
@@ -36,8 +38,8 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, list(expected_result))
 
     @parameterized.expand([
-        ('WHITE',),
-        ('BLACK',),
+        (WHITE,),
+        (BLACK,),
     ])
     def test_player(self, patch_color):
         with patch('random.choice', return_value=patch_color):
@@ -61,8 +63,8 @@ class BackgammonGameTest(unittest.TestCase):
                          (first_dice, second_dice))
 
     @parameterized.expand([
-        ('WHITE', 'BLACK'),
-        ('BLACK', 'WHITE'),
+        (WHITE, BLACK),
+        (BLACK, WHITE),
     ])
     def test_opposite(self, current_player, expected):
 
@@ -71,10 +73,10 @@ class BackgammonGameTest(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (3, 'BLACK', 'WHITE'),
-            (1, 'WHITE', 'BLACK'),
-            (4, 'WHITE', 'WHITE'),
-            (7, 'WHITE', 'BLACK'),
+            (3, BLACK, WHITE),
+            (1, WHITE, BLACK),
+            (4, WHITE, WHITE),
+            (7, WHITE, BLACK),
         ]
     )
     @patch('random.choice')
@@ -87,8 +89,8 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(expected, game.player)
 
     @parameterized.expand([
-        ("BLACK", 0, False),
-        ("WHITE", 1, True)
+        (BLACK, 0, False),
+        (WHITE, 1, True)
 
 
     ])
@@ -99,11 +101,11 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
     @parameterized.expand([
-        ('WHITE', 11, False),
-        ('WHITE', 16, True),
-        ('WHITE', 18, False),
-        ('BLACK', 5, False),
-        ('BLACK', 12, False),
+        (WHITE, 11, False),
+        (WHITE, 16, True),
+        (WHITE, 18, False),
+        (BLACK, 5, False),
+        (BLACK, 12, False),
     ])
     def test_less_than_five_own_pieces(self, current_player,
                                        position, expected):
@@ -113,10 +115,10 @@ class BackgammonGameTest(unittest.TestCase):
 
     @parameterized.expand(
         [
-            ('BLACK', 0, False),
-            ('WHITE', 1, False),
-            ('WHITE', 11, True),
-            ('BLACK', 5, True),
+            (BLACK, 0, False),
+            (WHITE, 1, False),
+            (WHITE, 11, True),
+            (BLACK, 5, True),
         ]
     )
     def test_at_least_one_piece_of_the_player(self, current_player,
@@ -126,18 +128,16 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
     @parameterized.expand([
-
-        ('WHITE', 1, 5, False),
-        ('WHITE', 5, 6, False),
-        ('WHITE', 0, 11, False),
-        ('BLACK', 5, 2, True),
-        ('BLACK', 12, 7, True),
-        ('BLACK', 23, 19, True),
-        ('BLACK', 21, 22, False),
-        ('BLACK', 23, 18, False),
-        ('BLACK', 2, -1, True),
-        ('WHITE', 21, 27, True),
-
+        (BLACK, 2, -1, True),
+        (WHITE, 21, 27, True),
+        (WHITE, 1, 5, False),
+        (WHITE, 5, 6, False),
+        (WHITE, 0, 11, False),
+        (BLACK, 5, 2, True),
+        (BLACK, 12, 7, True),
+        (BLACK, 23, 19, True),
+        (BLACK, 21, 22, False),
+        (BLACK, 23, 18, False),
     ])
     def test_valid_move(self, current_player,
                         initial_pos, final_pos, expected):
@@ -150,13 +150,14 @@ class BackgammonGameTest(unittest.TestCase):
     ])
     def test_capture_opposite_piece(self, actual_position, new_position):
         game = BackgammonGame()
-        game.player = "WHITE"
+        game.player = WHITE
         game.capture_opposite_piece(actual_position, new_position)
-        captured_piece = game.expelled["BLACK"]
+        captured_piece = game.expelled[BLACK]
         self.assertEqual(1, captured_piece)
 
     @parameterized.expand([
-        (initial_board, 0, 1, 0)
+        (initial_board, 0, 1, 0),
+        (initial_board, 23, 21, 1)
     ])
     def test_change_position(self, board, old_position, new_position, col):
         game = BackgammonGame()
@@ -203,10 +204,10 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(self.backgammon.move_options, expectedResult)
 
     @parameterized.expand([
-        (board_1, "WHITE", 5, True),
-        (board_1, "WHITE", 1, False),
-        (board_1, "BLACK", 10, True),
-        (board_1, "BLACK", 11, False)
+        (board_1, WHITE, 5, True),
+        (board_1, WHITE, 1, False),
+        (board_1, BLACK, 10, True),
+        (board_1, BLACK, 11, False)
     ])
     def test_can_capture(self, board, current_player, new_position, expected):
         game = BackgammonGame()
@@ -216,12 +217,12 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (board_1, "WHITE", 0, 1, 1, 3, True),
-        (board_1, "WHITE", 0, 11, 6, 5, False),
-        (board_1, "WHITE", 0, 2, 1, 1, True),
-        (board_1, "BLACK", 3, 10, 4, 3, True),
-        (board_1, "BLACK", 21, 23, 2, 3, True),
-        (board_1, "BLACK", 16, 18, 3, 2, False)
+        (board_1, WHITE, 0, 1, 1, 3, True),
+        (board_1, WHITE, 0, 11, 6, 5, False),
+        (board_1, WHITE, 0, 2, 1, 1, True),
+        (board_1, BLACK, 3, 10, 4, 3, True),
+        (board_1, BLACK, 21, 23, 2, 3, True),
+        (board_1, BLACK, 16, 18, 3, 2, False),
     ])
     def test_make_move(self, board, current_player, actual_position,
                        new_position, first_dice, second_dice, expected):
@@ -245,11 +246,30 @@ class BackgammonGameTest(unittest.TestCase):
     ])
     def test_check_game_status(self, black_points, white_points, turn,
                                move_options, expected):
-        self.backgammon.points["BLACK"] = black_points
-        self.backgammon.points["WHITE"] = white_points
+        self.backgammon.points[BLACK] = black_points
+        self.backgammon.points[WHITE] = white_points
         self.backgammon.current_turn = turn
         self.backgammon.move_options = move_options
         self.assertEqual(self.backgammon.check_game_status(), expected)
+
+    @parameterized.expand([
+        (board_1, WHITE, 3, 2, 1, 3, 1),
+        (board_1, BLACK, 1, 1, 1, 21, 2)
+    ])
+    def test_insert_captured_piece(self, board, current_player,
+                                   pieces_captured,
+                                   first_dice, second_dice, new_position,
+                                   expected):
+        game = BackgammonGame()
+        game.board = deepcopy(board)
+        game.player = current_player
+        game.expelled[current_player] = pieces_captured
+        game.dice_one = first_dice
+        game.dice_two = second_dice
+        col = 0 if game.player == WHITE else 1
+        result_before = game.board[new_position][col]
+        game.insert_captured_piece(new_position)
+        self.assertEqual(expected, result_before + 1)
 
 
 if __name__ == '__main__':
