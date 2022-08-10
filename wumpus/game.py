@@ -71,6 +71,9 @@ class WumpusGame:
         self.board[new_row][new_col] += PLAYER
         self.modify_score(SCORE_GAME["move"])
 
+    def there_is_item(self, item, row: int, col: int) -> bool:
+        return (row, col) in self.position_finder(item)
+
     def there_is_gold(self, row: int, col: int) -> bool:
         return (row, col) in self.position_finder(GOLD)
 
@@ -135,3 +138,7 @@ class WumpusGame:
             self.modify_score(SCORE_GAME["gold_wumpus"])
         else:
             self.modify_score(SCORE_GAME["lost_shoot"])
+
+    def move_action(self):
+
+        pass

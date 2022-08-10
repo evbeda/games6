@@ -10,7 +10,7 @@ from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-                        SCENARIO_5, SCENARIO_EATEN_BY_WUMPUS, SCENARIO_FALL_IN_HOLES,
+                        SCENARIO_5, SCENARIO_EATEN_BY_WUMPUS, SCENARIO_FALL_IN_HOLES, SCENARIO_MOVE_ACTION,
                         SCENARIO_TEST_GOLD,
                         SCENARIO_DANGER_SIGNAL_HOLES,
                         SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
@@ -296,3 +296,36 @@ class TestGame(unittest.TestCase):
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, LOSE)
+
+    @parameterized.expand([
+
+        (5, 4, WUMPUS, True),
+        (5, 6, WUMPUS, False),
+        (5, 6, HOLES, True),
+        (4, 5, HOLES, False),
+        (4, 5, GOLD, True),
+        (6, 5, GOLD, False),
+    ])
+    def test_is_there_item(self, row, col, item, expected):
+
+        game = WumpusGame()
+        game.board = deepcopy(SCENARIO_MOVE_ACTION)
+        game.there_is_item(item, row, col)
+
+    # @parameterized.expand([  # auxiliar
+    #     (5, 4, WUMPUS, False),
+    #     (5, 6, HOLES, False),
+    #     (4, 5, GOLD, False),
+    #     (6, 5, PLAYER, False),
+    # ])
+    # def test_move_action(self, row, col, expeted_item, is_playing):
+
+    #     game = WumpusGame()
+    #     game.board = deepcopy(SCENARIO_MOVE_ACTION)
+
+    #     old_player_row, old_player_col = game.position_finder(PLAYER)[0]
+    #     game.move_action(row, col)
+
+    #     self.assertEqual(game.board[old_player_row][old_player_col], '')
+    #     self.assertEqual(game.board[row][col], expeted_item)
+    #     self.assertEqual(game.is_playing, is_playing)
