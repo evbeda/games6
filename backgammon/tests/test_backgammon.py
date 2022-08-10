@@ -135,6 +135,8 @@ class BackgammonGameTest(unittest.TestCase):
         ('BLACK', 23, 19, True),
         ('BLACK', 21, 22, False),
         ('BLACK', 23, 18, False),
+        ('BLACK', 2, -1, True),
+        ('WHITE', 21, 27, True),
 
     ])
     def test_valid_move(self, current_player,
@@ -231,6 +233,23 @@ class BackgammonGameTest(unittest.TestCase):
         game.get_move_options()
         result = game.make_move(actual_position, new_position)
         self.assertEqual(result, expected)
+
+    @parameterized.expand([  # test check game status
+        (6, 8, 20, [2, 3, 5], "CURRENT_PLAYER_MUST_MOVE"),
+        (16, 8, 20, [2, 3, 5], "BLACK WINS BY OBJECTIVE"),
+        (6, 15, 20, [2, 3, 5], "WHITE WINS BY OBJECTIVE"),
+        (6, 8, 20, [], "NO_MOVES_LEFT"),
+        (6, 12, 40, [2], "WHITE WINS"),
+        (11, 5, 40, [3], "BLACK WINS"),
+        (11, 11, 40, [3], "TIE"),
+    ])
+    def test_check_game_status(self, black_points, white_points, turn,
+                               move_options, expected):
+        self.backgammon.points["BLACK"] = black_points
+        self.backgammon.points["WHITE"] = white_points
+        self.backgammon.current_turn = turn
+        self.backgammon.move_options = move_options
+        self.assertEqual(self.backgammon.check_game_status(), expected)
 
 
 if __name__ == '__main__':
