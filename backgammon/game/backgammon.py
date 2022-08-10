@@ -16,6 +16,7 @@ class BackgammonGame():
         self.active_game = True
         self.dice_one = 0
         self.dice_two = 0
+        self.move_options = []
 
     def available_pieces(self, side):
         color = 0 if side == "WHITE" else 1
@@ -58,14 +59,65 @@ class BackgammonGame():
             move_options = list(set(move_options))
         elif len(self.move_points) == 4:
             move_options = [d1, d1 * 2, d1 * 3, d1 * 4]
+        self.move_options = move_options
         return move_options
 
-    '''
     def update_move_options(self, move):
-        Updates the move options remaining, based on the last move
+        '''
+        Updates the move options remaining, based on the last move.
+        Must not be used in the current turn if a player has made no move.
+        (in that case use get_move_options() instead).
+        the parameter "move" should be already validated, and must be included
+        in move_options before the use of this function.
+        Returns an empty array if there are no more move_options.
+        '''
 
-        return True
-    '''
+        self.update_move_aux1(move)
+
+        if self.dice_one == self.dice_two and len(self.move_options) == 4:
+            self.update_move_aux2(move)
+        elif self.dice_one == self.dice_two and len(self.move_options) <= 3:
+            self.update_move_aux3(move)
+
+    def update_move_aux1(self, move):
+        if self.dice_one != self.dice_two and len(self.move_options) > 1:
+            if move == self.dice_one + self.dice_two:
+                self.move_options = []
+            elif move == self.dice_one:
+                self.move_options = [self.dice_two]
+            elif move == self.dice_two:
+                self.move_options = [self.dice_one]
+
+        elif self.dice_one != self.dice_two and len(self.move_options) <= 1:
+            self.move_options = []
+
+    def update_move_aux2(self, move):
+        d1 = self.dice_one
+        if len(self.move_options) == 4 and move == self.move_options[3]:
+            self.move_options = []
+        elif len(self.move_options) == 4 and move == self.move_options[2]:
+            self.move_options = [d1]
+        elif len(self.move_options) == 4 and move == self.move_options[1]:
+            self.move_options = [d1, d1 * 2]
+        elif len(self.move_options) == 4 and move == self.move_options[0]:
+            self.move_options = [d1, d1 * 2, d1 * 3]
+
+    def update_move_aux3(self, move):
+        d1 = self.dice_one
+        if len(self.move_options) == 3 and move == self.move_options[2]:
+            self.move_options = []
+        elif len(self.move_options) == 3 and move == self.move_options[1]:
+            self.move_options = [d1]
+        elif len(self.move_options) == 3 and move == self.move_options[0]:
+            self.move_options = [d1, d1 * 2]
+
+        elif len(self.move_options) == 2 and move == self.move_options[1]:
+            self.move_options = []
+        elif len(self.move_options) == 2 and move == self.move_options[0]:
+            self.move_options = [d1]
+
+        else:
+            self.move_options = []
 
     @property
     def opposite(self):
