@@ -10,7 +10,8 @@ from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-                        SCENARIO_5, SCENARIO_EATEN_BY_WUMPUS, SCENARIO_FALL_IN_HOLES, SCENARIO_TEST_GOLD,
+                        SCENARIO_5, SCENARIO_EATEN_BY_WUMPUS, SCENARIO_FALL_IN_HOLES,
+                        SCENARIO_TEST_GOLD,
                         SCENARIO_DANGER_SIGNAL_HOLES,
                         SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
                         SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
@@ -188,7 +189,7 @@ class TestGame(unittest.TestCase):
         game.move_and_win_gold(row, col)
         new_player_row, new_player_col = game.position_finder(PLAYER)[0]
         self.assertEqual((new_player_row, new_player_col), (row, col))
-        self.assertEqual(game.board[old_player_row][old_player_col], '')
+        self.assertEqual(game.board[old_player_row][old_player_col], '   ')
         self.assertTrue(GOLD not in game.board[row][col])
         self.assertEqual(len(game.position_finder(GOLD)), 3)
 
@@ -263,12 +264,13 @@ class TestGame(unittest.TestCase):
 
         game = WumpusGame()
         game.board = deepcopy(SCENARIO_FALL_IN_HOLES)
+
         content_destination_cell = game.board[row][col]
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
         game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], '')
+        self.assertEqual(game.board[old_player_row][old_player_col], '   ')
         self.assertEqual(game.board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
@@ -289,7 +291,7 @@ class TestGame(unittest.TestCase):
         game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], '')
+        self.assertEqual(game.board[old_player_row][old_player_col], '   ')
         self.assertEqual(game.board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
