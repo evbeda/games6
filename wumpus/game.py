@@ -1,5 +1,4 @@
 from wumpus.constants import (
-    IN_PROGRESS,
     COL,
     ROW,
     GOLD_QUANTITY,
@@ -17,14 +16,16 @@ import random
 class WumpusGame:
 
     def __init__(self) -> None:
-        self.state = IN_PROGRESS
+        self.is_playing = True
         self.board = [['' for j in range(COL)] for i in range(ROW)]
         self.player = self.place_player()
         self.gold = self.place_item(GOLD, GOLD_QUANTITY)
         self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
         self.swords = SWORDS_QUANTITY
         self.collected_gold = 0
+
         self.score = 0
+        self.result_of_game = str()
 
     def place_player(self):
         self.board[0][0] = "J"
@@ -116,3 +117,7 @@ class WumpusGame:
 
     def modify_score(self, score_to_modify):
         self.score += score_to_modify
+
+    def game_over(self, result: str):
+        self.is_playing = False
+        self.result_of_game = result

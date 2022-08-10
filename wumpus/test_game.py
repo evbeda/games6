@@ -2,10 +2,10 @@ import unittest
 from copy import deepcopy
 
 from parameterized import parameterized
-from .constants import (GOLD, GOLD_QUANTITY, PLAYER, WUMPUS, WUMPUS_QUANTITY,
-                        HOLES_QUANTITY, HOLES, SCORE_GAME)
+from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN, WUMPUS, WUMPUS_QUANTITY,
+                        HOLES_QUANTITY, HOLES, COL, ROW)
 
-from wumpus.constants import COL, IN_PROGRESS, ROW
+
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
@@ -36,7 +36,7 @@ class TestGame(unittest.TestCase):
         self.game = WumpusGame()
 
     def test_initial_game(self):
-        self.assertEqual(self.game.state, IN_PROGRESS)
+        self.assertEqual(self.game.is_playing, True)
 
     def test_board_columns(self):
         for row in self.game.board:
@@ -220,3 +220,13 @@ class TestGame(unittest.TestCase):
         self.game.score = initial_score
         self.game.modify_score(score)
         self.assertEqual(final_score, self.game.score)
+
+    @parameterized.expand([
+        (WIN),
+        (LOSE),
+    ])
+    def test_game_over(self, result):
+        game = WumpusGame()
+        game.game_over(result)
+        self.assertEqual(game.is_playing, False)
+        self.assertEqual(game.result_of_game, result)
