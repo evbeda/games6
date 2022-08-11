@@ -6,14 +6,16 @@ from parameterized import parameterized
 from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
                         SCORE_GAME, VISITED_CELL, VISITED_CELL_USER, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
-                        ROW, MOVES, MOVES_DIRECTION)
+                        ROW, MOVES, MOVES_DIRECTION,
+                        MESSAGE_NEXT_TURN, MESSAGE_GAME_OVER)
 
 
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
-                        SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4, SCENARIO_CELL_PARSE_5,
+                        SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
+                        SCENARIO_CELL_PARSE_5,
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
@@ -412,7 +414,6 @@ class TestGame(unittest.TestCase):
         (SCENARIO_CELL_PARSE_1, 4, 5, HIDE_CELL),
         (SCENARIO_CELL_PARSE_1, 6, 5, HIDE_CELL),
         (SCENARIO_CELL_PARSE_1, 7, 5, VISITED_CELL_USER),
-
         (SCENARIO_CELL_PARSE_2, 1, 4, ' J '),
         (SCENARIO_CELL_PARSE_2, 1, 1, HIDE_CELL),
         (SCENARIO_CELL_PARSE_2, 1, 2, HIDE_CELL),
@@ -423,9 +424,7 @@ class TestGame(unittest.TestCase):
         (SCENARIO_CELL_PARSE_2, 0, 3, VISITED_CELL_USER),
         (SCENARIO_CELL_PARSE_2, 0, 2, '~  '),
         (SCENARIO_CELL_PARSE_2, 0, 1, '  +'),
-
         (SCENARIO_CELL_PARSE_3, 5, 5, ' J+'),
-
         (SCENARIO_CELL_PARSE_4, 5, 5, '~J '),
         (SCENARIO_CELL_PARSE_5, 5, 5, ' J '),
 
@@ -435,6 +434,26 @@ class TestGame(unittest.TestCase):
 
         game = WumpusGame()
         game.board = deepcopy(board)
-
         parsed_cell = game.parse_cell(row, col)
         self.assertEqual(parsed_cell, expected)
+
+    @parameterized.expand([
+        (True, 1000, MESSAGE_NEXT_TURN),
+    ])
+    def test_next_turn_true(self, play_condition, score, final_message):
+        game = WumpusGame()
+        game.is_playing = play_condition
+        game.score = score
+        message = game.next_turn()
+        self.assertEqual(message, final_message)
+
+    @parameterized.expand([
+        (False, 1000, MESSAGE_GAME_OVER),
+    ])
+    def test_next_turn_game_over(self, play_condition, score, mssg):
+        game = WumpusGame()
+        game.is_playing = play_condition
+        game.score = score
+        final_message = mssg + str(game.score)
+        message = game.next_turn()
+        self.assertEqual(message, final_message)
