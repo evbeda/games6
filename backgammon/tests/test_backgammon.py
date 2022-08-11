@@ -8,7 +8,11 @@ from backgammon.tests.test_scenarios import (
     next_turn_active,
     next_turn_message_B,
     next_turn_message_W,
-    next_turn_message_TIE)
+    next_turn_message_TIE,
+    initial_board2,
+    board_7,
+    presented_initial_board,
+    presented_board7)
 from unittest.mock import patch
 from copy import deepcopy
 from backgammon.game.constants import BLACK, WHITE
@@ -99,8 +103,6 @@ class BackgammonGameTest(unittest.TestCase):
     @parameterized.expand([
         (BLACK, 0, False),
         (WHITE, 1, True)
-
-
     ])
     def test_less_than_two_enemies_in_position(self, current_player, position,
                                                expected_result):
@@ -174,7 +176,6 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(1, game.board[new_position][col])
 
     @parameterized.expand([
-
         (2, 3, [2, 3, 5]),
         (3, 4, [3, 4, 7]),
         (5, 5, [5, 10, 15, 20])
@@ -348,6 +349,16 @@ class BackgammonGameTest(unittest.TestCase):
         self.backgammon.current_turn = turn
         result = self.backgammon.next_turn()
         self.assertEqual(result, expected)
+
+    @parameterized.expand([  # test present_board()
+        (initial_board2, presented_initial_board),
+        (board_7, presented_board7),
+    ])
+    def test_present_board(self, board, expected):
+        # self.backgammon.board = initial_board
+        new_game = BackgammonGame()
+        new_game.board = board
+        self.assertEqual(new_game.present_board(), expected)
 
 
 if __name__ == '__main__':
