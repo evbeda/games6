@@ -24,7 +24,7 @@ class WumpusGame:
 
     def __init__(self) -> None:
         self.is_playing = True
-        self.board = [['' for j in range(COL)] for i in range(ROW)]
+        self._board = [['' for j in range(COL)] for i in range(ROW)]
         self.player = self.place_player()
         self.gold = self.place_item(GOLD, GOLD_QUANTITY)
         self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
@@ -35,7 +35,7 @@ class WumpusGame:
         self.result_of_game = str()
 
     def place_player(self):
-        self.board[0][0] = PLAYER
+        self._board[0][0] = PLAYER
 
     def place_item(self, item, quantity):
         for _ in range(quantity):
@@ -43,26 +43,26 @@ class WumpusGame:
                 row = random.randint(0, ROW - 1)
                 col = random.randint(0, COL - 1)
                 if self.check_is_empty(row, col):
-                    self.board[row][col] = item
+                    self._board[row][col] = item
                     break
 
     def position_finder(self, item):
         position_list = []
         for i in range(ROW):
             for j in range(COL):
-                if self.board[i][j] == item:
+                if self._board[i][j] == item:
                     position_list.append((i, j))
         return position_list
 
     def check_is_empty(self, row, col):
-        cell = self.board[row][col]
+        cell = self._board[row][col]
         return cell == ''
 
     def move_player_transaction(self, new_row, new_col):
 
         row, col = self.position_finder(PLAYER)[0]
-        self.board[row][col] = VISITED_CELL
-        self.board[new_row][new_col] += PLAYER
+        self._board[row][col] = VISITED_CELL
+        self._board[new_row][new_col] += PLAYER
         self.modify_score(SCORE_GAME["move"])
 
     def there_is_item(self, item, row: int, col: int) -> bool:
@@ -72,7 +72,7 @@ class WumpusGame:
         return (row, col) in self.position_finder(GOLD)
 
     def delete_item_on_position(self, item, row, col):
-        self.board[row][col] = self.board[row][col].replace(item, '')
+        self._board[row][col] = self._board[row][col].replace(item, '')
 
     def _posible_position(self, row, col):
         positions = {
@@ -116,8 +116,8 @@ class WumpusGame:
     def print_signals(self, item):
         positions = self.find_signal_indicator(item)
         for row, col in positions:
-            if ITEMS_DICTIONARY[item] not in self.board[row][col]:
-                self.board[row][col] += ITEMS_DICTIONARY[item]
+            if ITEMS_DICTIONARY[item] not in self._board[row][col]:
+                self._board[row][col] += ITEMS_DICTIONARY[item]
 
     def modify_score(self, score_to_modify):
         self.score += score_to_modify
@@ -127,8 +127,8 @@ class WumpusGame:
         self.result_of_game = result
 
     def shoot_arrow(self, row, col):
-        if WUMPUS in self.board[row][col]:
-            self.board[row][col] = VISITED_CELL
+        if WUMPUS in self._board[row][col]:
+            self._board[row][col] = VISITED_CELL
             self.modify_score(SCORE_GAME["gold_wumpus"])
         else:
             self.modify_score(SCORE_GAME["lost_shoot"])
@@ -173,9 +173,9 @@ class WumpusGame:
         wumpus_flag = False
         hole_flag = False
         for p_row, p_col in positions:
-            if WUMPUS in self.board[p_row][p_col]:
+            if WUMPUS in self._board[p_row][p_col]:
                 wumpus_flag = True
-            if HOLES in self.board[p_row][p_col]:
+            if HOLES in self._board[p_row][p_col]:
                 hole_flag = True
         if wumpus_flag:
             item_array[2] = "+"
@@ -184,7 +184,7 @@ class WumpusGame:
         return "".join(item_array)
 
     def parse_cell(self, row: int, col: int) -> str:
-        cell = self.board[row][col]
+        cell = self._board[row][col]
 
         if cell == PLAYER or cell == VISITED_CELL:
             cell = ' ' + cell + ' '
@@ -202,3 +202,15 @@ class WumpusGame:
         else:
             result = MESSAGE_GAME_OVER + str(self.score)
         return result
+
+    @property
+    def board(self):
+        user_board = str()
+
+        for row in range(ROW):
+            for col in range(COL):
+                user_board += self.parse_cell(row, col)
+
+            user_board += '\n'
+
+        return user_board

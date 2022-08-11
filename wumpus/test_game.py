@@ -13,9 +13,14 @@ from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
                         SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
                         SCENARIO_CELL_PARSE_5,
+                        SCENARIO_CELL_PARSE_1_USER_VIEW, SCENARIO_CELL_PARSE_2_USER_VIEW,
+                        SCENARIO_CELL_PARSE_3_USER_VIEW, SCENARIO_CELL_PARSE_4_USER_VIEW,
+                        SCENARIO_CELL_PARSE_5_USER_VIEW,
+
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
@@ -63,15 +68,15 @@ class TestGame(unittest.TestCase):
         self.assertEqual(self.game.is_playing, True)
 
     def test_board_columns(self):
-        for row in self.game.board:
+        for row in self.game._board:
             self.assertEqual(len(row), COL)
 
     def test_board_rows(self):
-        self.assertEqual(len(self.game.board), ROW)
+        self.assertEqual(len(self.game._board), ROW)
 
     def test_initial_place_player(self):
         self.game.place_player()
-        self.assertEqual(self.game.board[0][0], PLAYER)
+        self.assertEqual(self.game._board[0][0], PLAYER)
 
     @parameterized.expand([
         (SCENARIO_1, PLAYER, [(0, 0)]),
@@ -80,7 +85,7 @@ class TestGame(unittest.TestCase):
         (SCENARIO_4, PLAYER, [])
     ])
     def test_position_finder(self, board, item, expected):
-        self.game.board = board
+        self.game._board = board
         position_list = self.game.position_finder(item)
         self.assertEqual(position_list, expected)
 
@@ -91,7 +96,7 @@ class TestGame(unittest.TestCase):
         (SCENARIO_4, 3, 6, True),
     ])
     def test_check_is_empty(self, board, row, col, expected):
-        self.game.board = board
+        self.game._board = board
         is_empty = self.game.check_is_empty(row, col)
         self.assertEqual(is_empty, expected)
 
@@ -103,13 +108,13 @@ class TestGame(unittest.TestCase):
 
     ])
     def test_move_transaction(self, board, row, col):
-        self.game.board = board
+        self.game._board = board
         old_row, old_row = self.game.position_finder(PLAYER)[0]
-        value_cell = self.game.board[old_row][old_row]
+        value_cell = self.game._board[old_row][old_row]
         self.game.move_player_transaction(row, col)
-        self.assertEqual(self.game.board[old_row][old_row],
+        self.assertEqual(self.game._board[old_row][old_row],
                          value_cell.replace(PLAYER, ''))
-        self.assertEqual(self.game.board[row][col], PLAYER)
+        self.assertEqual(self.game._board[row][col], PLAYER)
 
     # @parameterized.expand([
     #     (SCENARIO_1, )
@@ -122,7 +127,7 @@ class TestGame(unittest.TestCase):
     ])
     def test_place_item(self, item, quantity):
         gameTest = WumpusGame()
-        gameTest.board = [['' for j in range(COL)] for i in range(ROW)]
+        gameTest._board = [['' for j in range(COL)] for i in range(ROW)]
         gameTest.place_item(item, quantity)
         self.assertEqual(len(gameTest.position_finder(item)), 8)
 
@@ -140,7 +145,7 @@ class TestGame(unittest.TestCase):
     ])
     def test_there_is_gold(self, row, col, expeted):
         game = WumpusGame()
-        game.board = SCENARIO_TEST_GOLD
+        game._board = SCENARIO_TEST_GOLD
         result = game.there_is_gold(row, col)
         self.assertEqual(result, expeted)
 
@@ -153,9 +158,9 @@ class TestGame(unittest.TestCase):
     ])
     def test_delete_item(self, item, row, col, expected):
         game = WumpusGame()
-        game.board = SCENARIO_TEST_DELETE
+        game._board = SCENARIO_TEST_DELETE
         game.delete_item_on_position(item, row, col)
-        result = game.board[row][col]
+        result = game._board[row][col]
         self.assertEqual(result, expected)
 
     @parameterized.expand([
@@ -169,7 +174,7 @@ class TestGame(unittest.TestCase):
         (SCENARIO_DANGER_DOWN, [(6, 4), (7, 5), (7, 3)]),
     ])
     def test_find_signal_indicator(self, board, positions):
-        self.game.board = board
+        self.game._board = board
         self.assertEqual(self.game.find_signal_indicator(HOLES), positions)
 
     @parameterized.expand([
@@ -181,13 +186,13 @@ class TestGame(unittest.TestCase):
     def test_move_and_win_gold(self, row, col):
 
         game = WumpusGame()
-        game.board = deepcopy(SCENARIO_WIN_GOLD)
+        game._board = deepcopy(SCENARIO_WIN_GOLD)
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
         game.move_and_win_gold(row, col)
         new_player_row, new_player_col = game.position_finder(PLAYER)[0]
         self.assertEqual((new_player_row, new_player_col), (row, col))
-        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
-        self.assertTrue(GOLD not in game.board[row][col])
+        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertTrue(GOLD not in game._board[row][col])
         self.assertEqual(len(game.position_finder(GOLD)), 3)
 
     @parameterized.expand([
@@ -204,16 +209,16 @@ class TestGame(unittest.TestCase):
     ])
     def test_print_signals(self, board_init, item, final_board):
         test_game = WumpusGame()
-        test_game.board = board_init
+        test_game._board = board_init
         test_game.print_signals(item)
-        self.assertEqual(test_game.board, final_board)
+        self.assertEqual(test_game._board, final_board)
 
     def test_print_signals_dif(self):
         test_game = WumpusGame()
-        test_game.board = SCENARIO_CROSS_DIF_ELEMENT_INI
+        test_game._board = SCENARIO_CROSS_DIF_ELEMENT_INI
         test_game.print_signals(HOLES)
         test_game.print_signals(WUMPUS)
-        self.assertEqual(test_game.board, SCENARIO_CROSS_DIF_ELEMENT_FIN)
+        self.assertEqual(test_game._board, SCENARIO_CROSS_DIF_ELEMENT_FIN)
 
     @parameterized.expand([
         (1000, 2000, SCORE_GAME["gold_wumpus"]),
@@ -245,10 +250,10 @@ class TestGame(unittest.TestCase):
     ])
     def test_shoot_arrow(self, initial_board, initial_score,
                          row, col, final_board, final_score):
-        self.game.board = initial_board
+        self.game._board = initial_board
         self.game.score = initial_score
         self.game.shoot_arrow(row, col)
-        self.assertEqual(self.game.board, final_board)
+        self.assertEqual(self.game._board, final_board)
         self.assertEqual(self.game.score, final_score)
 
     @parameterized.expand([
@@ -260,15 +265,15 @@ class TestGame(unittest.TestCase):
     def test_fall_in_hole(self, row, col):
 
         game = WumpusGame()
-        game.board = deepcopy(SCENARIO_FALL_IN_HOLES)
+        game._board = deepcopy(SCENARIO_FALL_IN_HOLES)
 
-        content_destination_cell = game.board[row][col]
+        content_destination_cell = game._board[row][col]
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
         game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
-        self.assertEqual(game.board[row][col], content_destination_cell)
+        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, LOSE)
@@ -282,14 +287,14 @@ class TestGame(unittest.TestCase):
     def test_eaten_by_wumpus(self, row, col):
 
         game = WumpusGame()
-        game.board = deepcopy(SCENARIO_EATEN_BY_WUMPUS)
-        content_destination_cell = game.board[row][col]
+        game._board = deepcopy(SCENARIO_EATEN_BY_WUMPUS)
+        content_destination_cell = game._board[row][col]
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
         game.move_and_game_over(row, col)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
-        self.assertEqual(game.board[row][col], content_destination_cell)
+        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, LOSE)
@@ -306,7 +311,7 @@ class TestGame(unittest.TestCase):
     def test_is_there_item(self, row, col, item, expected):
 
         game = WumpusGame()
-        game.board = deepcopy(SCENARIO_MOVE_ACTION)
+        game._board = deepcopy(SCENARIO_MOVE_ACTION)
         game.there_is_item(item, row, col)
 
     @parameterized.expand([
@@ -321,8 +326,8 @@ class TestGame(unittest.TestCase):
     ])
     def test_find_coord(self, direction, row, col, final_coord):
         game = WumpusGame()
-        game.board[0][0] = ""
-        game.board[row][col] = "J"
+        game._board[0][0] = ""
+        game._board[row][col] = "J"
         final_dir = game.find_coord(direction)
         self.assertEqual(final_dir, final_coord)
 
@@ -337,8 +342,8 @@ class TestGame(unittest.TestCase):
     ])
     def test_admin_move(self, accion, direccion, row, col,
                         final_row, final_col, expected_score):
-        self.game.board = [["" for j in range(COL)] for i in range(ROW)]
-        self.game.board[row][col] = "J"
+        self.game._board = [["" for j in range(COL)] for i in range(ROW)]
+        self.game._board[row][col] = "J"
         self.game.score = 0
         self.game.manager_move(accion, direccion)
         position_player = self.game.position_finder(PLAYER)
@@ -352,8 +357,8 @@ class TestGame(unittest.TestCase):
         (MOVES["shoot"], MOVES_DIRECTION["west"], 7, 0),
     ])
     def test_admin_move_exceptions_shoot(self, accion, direccion, row, col):
-        self.game.board = [["" for j in range(COL)] for i in range(ROW)]
-        self.game.board[row][col] = "J"
+        self.game._board = [["" for j in range(COL)] for i in range(ROW)]
+        self.game._board[row][col] = "J"
         self.game.score = 0
         with self.assertRaises(Exception):
             self.game.manager_move(accion, direccion)
@@ -365,8 +370,8 @@ class TestGame(unittest.TestCase):
         (MOVES["move"], MOVES_DIRECTION["west"], 7, 0),
     ])
     def test_admin_move_exceptions(self, accion, direccion, row, col):
-        self.game.board = [["" for j in range(COL)] for i in range(ROW)]
-        self.game.board[row][col] = "J"
+        self.game._board = [["" for j in range(COL)] for i in range(ROW)]
+        self.game._board[row][col] = "J"
         self.game.score = 0
         with self.assertRaises(Exception):
             self.game.manager_move(accion, direccion)
@@ -380,13 +385,13 @@ class TestGame(unittest.TestCase):
     def test_move_action(self, row, col, expeted_item, is_playing):
 
         game = WumpusGame()
-        game.board = deepcopy(SCENARIO_MOVE_ACTION)
+        game._board = deepcopy(SCENARIO_MOVE_ACTION)
 
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
         game.move_player(row, col)
 
-        self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
-        self.assertEqual(game.board[row][col], expeted_item)
+        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[row][col], expeted_item)
         self.assertEqual(game.is_playing, is_playing)
 
     @parameterized.expand([
@@ -402,8 +407,8 @@ class TestGame(unittest.TestCase):
     ])
     def test_find_signal(self, item, row, col, final_item, board):
         game = WumpusGame()
-        game.board = board
-        game.board[row][col] = item
+        game._board = board
+        game._board[row][col] = item
         modify_item = game.find_signal(item, row, col)
         self.assertEqual(modify_item, final_item)
 
@@ -433,11 +438,13 @@ class TestGame(unittest.TestCase):
     def test_parse_cell(self, board, row, col, expected):
 
         game = WumpusGame()
-        game.board = deepcopy(board)
+
+        game._board = deepcopy(board)
         parsed_cell = game.parse_cell(row, col)
         self.assertEqual(parsed_cell, expected)
 
     @parameterized.expand([
+
         (True, 1000, MESSAGE_NEXT_TURN),
     ])
     def test_next_turn_true(self, play_condition, score, final_message):
@@ -457,3 +464,16 @@ class TestGame(unittest.TestCase):
         final_message = mssg + str(game.score)
         message = game.next_turn()
         self.assertEqual(message, final_message)
+
+    @parameterized.expand([
+        (SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_1_USER_VIEW),
+        (SCENARIO_CELL_PARSE_2, SCENARIO_CELL_PARSE_2_USER_VIEW),
+        (SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_3_USER_VIEW),
+        (SCENARIO_CELL_PARSE_4, SCENARIO_CELL_PARSE_4_USER_VIEW),
+        (SCENARIO_CELL_PARSE_5, SCENARIO_CELL_PARSE_5_USER_VIEW),
+    ])
+    def test_board(self, board, expeted_board):
+
+        game = WumpusGame()
+        game._board = board
+        self.assertEqual(game.board, expeted_board)
