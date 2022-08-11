@@ -144,16 +144,16 @@ class WumpusGame:
 
     def find_coord(self, coord):
         row, col = self.position_finder(PLAYER)[0]
+        result = ()
         if coord == "w" and row - 1 >= 0:
-            return (row - 1, col)
+            result = (row - 1, col)
         elif coord == "s" and row + 1 <= 7:
-            return (row + 1, col)
+            result = (row + 1, col)
         elif coord == "a" and col - 1 >= 0:
-            return (row, col - 1)
+            result = (row, col - 1)
         elif coord == "d" and col + 1 <= 7:
-            return (row, col + 1)
-        else:
-            return ()
+            result = (row, col + 1)
+        return result
 
     def manager_move(self, action, direction):
         directions = self.find_coord(direction)
@@ -163,3 +163,19 @@ class WumpusGame:
             self.shoot_arrow(directions[0], directions[1])
         else:
             raise Exception("Out of range move")
+
+    def find_signal(self, item, row, col):
+        item_array = list(item)
+        positions = self._posible_position(row, col)
+        wumpus_flag = False
+        hole_flag = False
+        for p_row, p_col in positions:
+            if WUMPUS in self.board[p_row][p_col]:
+                wumpus_flag = True
+            if HOLES in self.board[p_row][p_col]:
+                hole_flag = True
+        if wumpus_flag:
+            item_array[2] = "+"
+        if hole_flag:
+            item_array[0] = "~"
+        return "".join(item_array)
