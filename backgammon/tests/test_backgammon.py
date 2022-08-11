@@ -283,6 +283,20 @@ class BackgammonGameTest(unittest.TestCase):
         game.insert_captured_piece(new_position)
         self.assertEqual(expected, result_before + 1)
 
+    @parameterized.expand([
+        (WHITE, 24, 1),
+        (BLACK, 0, 0),
+        (BLACK, -1, 1),
+        (WHITE, 23, 0)
+    ])
+    def test_increment_points(self, current_player,
+                              new_position, expected):
+        game = BackgammonGame()
+        game.player = current_player
+        game.increment_points(new_position)
+        points = game.points[current_player]
+        self.assertEqual(points, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
