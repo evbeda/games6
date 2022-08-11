@@ -236,21 +236,33 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([  # test check game status
-        (6, 8, 20, [2, 3, 5], "CURRENT_PLAYER_MUST_MOVE"),
-        (16, 8, 20, [2, 3, 5], "BLACK WINS BY OBJECTIVE"),
-        (6, 15, 20, [2, 3, 5], "WHITE WINS BY OBJECTIVE"),
-        (6, 8, 20, [], "NO_MOVES_LEFT"),
-        (6, 12, 40, [2], "WHITE WINS"),
-        (11, 5, 40, [3], "BLACK WINS"),
-        (11, 11, 40, [3], "TIE"),
+        (6, 8, 20, True),
+        (15, 8, 20, False),
+        (6, 15, 20, False),
+        (6, 8, 20, True),
+        (6, 12, 40, False),
+        (11, 5, 40, False),
+        (11, 11, 40, False),
     ])
     def test_check_game_status(self, black_points, white_points, turn,
-                               move_options, expected):
+                               expected):
         self.backgammon.points[BLACK] = black_points
         self.backgammon.points[WHITE] = white_points
         self.backgammon.current_turn = turn
-        self.backgammon.move_options = move_options
-        self.assertEqual(self.backgammon.check_game_status(), expected)
+        self.backgammon.check_game_status()
+        self.assertEqual(self.backgammon.active_game, expected)
+
+    @parameterized.expand([
+        (15, 8, "BLACK WINS"),
+        (15, 15, "TIE"),
+        (6, 15, "WHITE WINS"),
+    ])
+    def test_get_current_winner(self, black_points, white_points,
+                                expected):
+        self.backgammon.points[BLACK] = black_points
+        self.backgammon.points[WHITE] = white_points
+        result = self.backgammon.get_current_winner()
+        self.assertEqual(result, expected)
 
     @parameterized.expand([
         (board_1, WHITE, 3, 2, 1, 3, 1),
