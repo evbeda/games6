@@ -2,9 +2,9 @@ import unittest
 from copy import deepcopy
 
 from parameterized import parameterized
-from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, VISITED_CELL, WIN,
+from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
-                        ROW, MOVES, MOVES_DIRECTION)
+                        ROW, MOVES, MOVES_DIRECTION, VISITED_CELL)
 
 
 from wumpus.game import WumpusGame
@@ -37,7 +37,15 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_SHOOT_WUMPUS_FINAL,
                         SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT,
                         SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN,
-                        SCENARIO_SHOOT_FAIL_INIT)
+                        SCENARIO_SHOOT_FAIL_INIT,
+                        SCENARIO_SIGNAL_WUMPUS_HOLE,
+                        SCENARIO_SIGNAL_HOLE,
+                        SCENARIO_SIGNAL_WUMPUS,
+                        SCENARIO_SIGNAL_EMPTY,
+                        SCENARIO_SIGNAL_HOLE_J,
+                        SCENARIO_SIGNAL_WUMPUS_J,
+                        SCENARIO_SIGNAL_WUMPUS_HOLE_J,
+                        SCENARIO_SIGNAL_J_EMPTY)
 
 
 class TestGame(unittest.TestCase):
@@ -374,3 +382,20 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.board[old_player_row][old_player_col], VISITED_CELL)
         self.assertEqual(game.board[row][col], expeted_item)
         self.assertEqual(game.is_playing, is_playing)
+
+    @parameterized.expand([
+        ("   ", 0, 1, "~  ", SCENARIO_SIGNAL_HOLE),
+        ("   ", 2, 2, "  +", SCENARIO_SIGNAL_WUMPUS),
+        ("   ", 5, 5, "~ +", SCENARIO_SIGNAL_WUMPUS_HOLE),
+        ("   ", 3, 3, "   ", SCENARIO_SIGNAL_EMPTY),
+        (" J ", 4, 4, "~J ", SCENARIO_SIGNAL_HOLE_J),
+        (" J ", 4, 4, " J+", SCENARIO_SIGNAL_WUMPUS_J),
+        (" J ", 5, 5, "~J+", SCENARIO_SIGNAL_WUMPUS_HOLE_J),
+        (" J ", 4, 4, " J ", SCENARIO_SIGNAL_J_EMPTY),
+    ])
+    def test_find_signal(self, item, row, col, final_item, board):
+        game = WumpusGame()
+        game.board = board
+        game.board[row][col] = item
+        modify_item = game.find_signal(item, row, col)
+        self.assertEqual(modify_item, final_item)
