@@ -1,5 +1,6 @@
 from wumpus.constants import (
     COL,
+    HIDE_CELL,
     HOLES,
     LOSE,
     ROW,
@@ -179,3 +180,15 @@ class WumpusGame:
         if hole_flag:
             item_array[0] = "~"
         return "".join(item_array)
+
+    def parse_cell(self, row: int, col: int) -> str:
+        cell = self.board[row][col]
+
+        if cell == PLAYER or cell == VISITED_CELL:
+            cell = ' ' + cell + ' '
+            cell = self.find_signal(cell, row, col)
+
+        else:
+            cell = HIDE_CELL
+
+        return cell

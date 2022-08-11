@@ -22,4 +22,7 @@ MOVES = {"shoot": "z", "move": "m"}
 
 MOVES_DIRECTION = {"north": "w", "west": "a", "east": "d", "south": "s"}
 
-VISITED_CELL = '   '
+VISITED_CELL = ' '
+VISITED_CELL_USER = '   '
+HIDE_CELL = '###'
+PLAYER_CELL = ' J '
