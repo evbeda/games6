@@ -13,7 +13,6 @@ from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
 from wumpus.game import WumpusGame
 
 from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
-
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
                         SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
                         SCENARIO_CELL_PARSE_5,
@@ -25,7 +24,7 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
-                        SCENARIO_FALL_IN_HOLES,
+                        SCENARIO_FALL_IN_HOLES, SCENARIO_PLAY_SHOOT_OK_F,
                         SCENARIO_TEST_GOLD,
                         SCENARIO_TEST_DELETE,
                         SCENARIO_WIN_GOLD,
@@ -38,6 +37,7 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO
                         SCENARIO_SIGNAL_HOLE,
                         SCENARIO_SIGNAL_WUMPUS,
                         SCENARIO_SIGNAL_EMPTY,
+                        SCENARIO_PLAY_MOVE,
                         SCENARIO_SIGNAL_HOLE_J,
                         SCENARIO_SIGNAL_WUMPUS_J,
                         SCENARIO_SIGNAL_WUMPUS_HOLE_J,
@@ -49,7 +49,14 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO
                         SCENARIO_FIND_POS_H_BOR_LEFT,
                         RECURSIVE, INITIAL_FAIL_BOARD,
                         RECURSIVE_SIDE, VALID_HOLE_SCENARIO,
-                        RECURSIVE_SIDE_BORDER)
+                        RECURSIVE_SIDE_BORDER,
+                        SCENARIO_PLAY_MOVE_FINAL,
+                        SCENARIO_PLAY_SHOOT,
+                        SCENARIO_PLAY_SHOOT_OK,
+                        SCENARIO_PLAY_LAST_GOLD,
+                        SCENARIO_PLAY_LAST_GOLD_FIN,
+                        SCENARIO_PLAY_WIN_GOLD,
+                        SCENARIO_PLAY_WIN_GOLD_F)
 
 
 class TestGame(unittest.TestCase):
@@ -109,10 +116,6 @@ class TestGame(unittest.TestCase):
                          value_cell.replace(PLAYER, ''))
         self.assertEqual(self.game._board[row][col], PLAYER)
 
-    # @parameterized.expand([
-    #     (SCENARIO_1, )
-    # ])
-    # @patch("random.randint")
     @parameterized.expand([
         (GOLD, GOLD_QUANTITY),
         (WUMPUS, WUMPUS_QUANTITY),
@@ -170,7 +173,8 @@ class TestGame(unittest.TestCase):
         game.move_and_win_gold(row, col)
         new_player_row, new_player_col = game.position_finder(PLAYER)[0]
         self.assertEqual((new_player_row, new_player_col), (row, col))
-        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[old_player_row][old_player_col],
+                         VISITED_CELL)
         self.assertTrue(GOLD not in game._board[row][col])
         self.assertEqual(len(game.position_finder(GOLD)), 3)
 
@@ -241,7 +245,8 @@ class TestGame(unittest.TestCase):
         game.move_and_game_over(HOLES)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[old_player_row][old_player_col],
+                         VISITED_CELL)
         self.assertEqual(game._board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
@@ -262,7 +267,8 @@ class TestGame(unittest.TestCase):
         game.move_and_game_over(WUMPUS)
         player_in_board = game.position_finder(PLAYER)
 
-        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[old_player_row][old_player_col],
+                         VISITED_CELL)
         self.assertEqual(game._board[row][col], content_destination_cell)
         self.assertEqual(player_in_board, [])
         self.assertEqual(game.is_playing, False)
@@ -359,7 +365,8 @@ class TestGame(unittest.TestCase):
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
         game.move_player(row, col)
 
-        self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
+        self.assertEqual(game._board[old_player_row][old_player_col],
+                         VISITED_CELL)
         self.assertEqual(game._board[row][col], expeted_item)
         self.assertEqual(game.is_playing, is_playing)
 
@@ -495,3 +502,22 @@ class TestGame(unittest.TestCase):
         game = WumpusGame()
         game._board = board
         self.assertEqual(game._valid_hole(row, col), expected)
+        
+    @parameterized.expand([
+        ("m", "w", SCENARIO_PLAY_MOVE, SCENARIO_PLAY_MOVE_FINAL, True, -10),
+        ("z", "w", SCENARIO_PLAY_SHOOT, SCENARIO_PLAY_SHOOT, True, -50),
+        ("z", "w", SCENARIO_PLAY_SHOOT_OK, SCENARIO_PLAY_SHOOT_OK_F,
+         True, 1000),
+        ("m", "w", SCENARIO_PLAY_LAST_GOLD, SCENARIO_PLAY_LAST_GOLD_FIN,
+         False, 990),
+        ("m", "w", SCENARIO_PLAY_WIN_GOLD, SCENARIO_PLAY_WIN_GOLD_F,
+         True, 990),
+    ])
+    def test_play(self, action, direction, initial_board, expected_result,
+                  expected_is_playing, expected_score):
+        game = WumpusGame()
+        game._board = initial_board
+        game.play(action, direction)
+        self.assertEqual(game.is_playing, expected_is_playing)
+        self.assertEqual(game.score, expected_score)
+        self.assertEqual(initial_board, expected_result)
