@@ -172,6 +172,17 @@ all_poss_moves_board_1 = [
     '        ',
 ]
 
+all_poss_moves_board_2 = [
+    'BBBBBBBW',
+    'BWWBBBBB',
+    'BWWWBBWB',
+    'BWWWBBWB',
+    'WWBBWBWB',
+    'WWBWWBWB',
+    'WWWBBBBB',
+    'WWWWWWWB',
+]
+
 
 all_poss_moves_exp_1 = {
     (1, 1, ): [(2, 2)],

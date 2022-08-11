@@ -6,7 +6,6 @@ from othello.scenarios_test import (
     black_12,
     white_12,
     mix_6,
-    # mix_10,
     flip_black,
     final_flip_black,
     flip_row_white,
@@ -27,7 +26,8 @@ from othello.scenarios_test import (
     play_board_b_wins,
     play_board_w_wins,
     play_board_tie,
-    put_piece_board)
+    put_piece_board,
+    all_poss_moves_board_2)
 
 
 class Test_othello(unittest.TestCase):
@@ -64,13 +64,13 @@ class Test_othello(unittest.TestCase):
             (mix_6, 6, 'B'),
         ]
     )
-    def test_initia_white_piece_count(self, board, expected, kind):
+    def test_initial_white_piece_count(self, board, expected, kind):
         # replace board to see diferents situacions
         self.game._board = self._convert_scenario_to_matrix(board)
         pieces = self.game.get_piece_count(kind)
         self.assertEqual(expected, pieces)
 
-    def test_initial_play(self):
+    def test_initial_player(self):
         self.assertTrue(self.game.player_turn == 'B')
 
     @parameterized.expand(
@@ -85,38 +85,6 @@ class Test_othello(unittest.TestCase):
         for _ in range(it):
             self.game.change_player()
         self.assertEqual(expected, self.game.player_turn)
-
-    @parameterized.expand(
-        [
-            (black_12, 'B', 1, 1),
-            (white_12, 'W', 1, 5),
-            (mix_6, 'W', 4, 4),
-            (mix_6, 'B', 7, 1),
-            (mix_6, None, 4, 5),
-            (black_12, None, 2, 5),
-            (white_12, None, 6, 6)
-        ]
-    )
-    def test_what_is(self, board, expected, row, col):
-        self.game._board = self._convert_scenario_to_matrix(board)
-        value = self.game.what_is(row, col)
-        self.assertEqual(expected, value)
-
-    @parameterized.expand(
-        [
-            (black_12, False, 1, 1),
-            (white_12, False, 1, 5),
-            (mix_6, False, 4, 4),
-            (mix_6, False, 7, 1),
-            (mix_6, True, 4, 5),
-            (black_12, True, 2, 5),
-            (white_12, True, 6, 6)
-        ]
-    )
-    def test_is_empty(self, board, expected, row, col):
-        self.game._board = self._convert_scenario_to_matrix(board)
-        value = self.game.is_empty(row, col)
-        self.assertEqual(expected, value)
 
     @parameterized.expand(
         [
@@ -207,31 +175,7 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            ({}, False),
-            ({(1, 1): [(1, 2), (1, 3)]}, True)
-        ]
-    )
-    def test_check_if_the_player_can_play(self, moves, expected_result):
-        self.assertEqual(self.game.check_if_the_player_can_play(moves),
-                         expected_result)
-
-    @parameterized.expand(
-        [
-            (False, False, False),
-            (False, True, True),
-            (True, False, True),
-            (True, True, True)
-        ]
-    )
-    def test_end_game(self, black_player, white_player, expected_result):
-        self.game.black_can_play = black_player
-        self.game.white_can_play = white_player
-        self.game.end_game()
-        self.assertEqual(self.game.is_playing, expected_result)
-
-    @parameterized.expand(
-        [
-            (all_poss_moves_board_1, all_poss_moves_exp_1)
+            (all_poss_moves_board_1, all_poss_moves_exp_1),
         ]
     )
     def test_all_possible_moves_values(self, board, expected):
@@ -253,9 +197,15 @@ class Test_othello(unittest.TestCase):
         result = self.game.all_possible_moves()
         self.assertEqual(result.keys(), expected.keys())
 
+    def test_no_posible_moves(self):
+        self.game._board = self._convert_scenario_to_matrix(all_poss_moves_board_2)
+        result = self.game.all_possible_moves()
+        self.assertEqual(result, {})
+
     @parameterized.expand(
         [
-            (all_poss_moves_board_1, none_pos_exp_1)
+            (all_poss_moves_board_1, none_pos_exp_1),
+            (all_poss_moves_board_2, [])
         ]
     )
     def test_none_pos(self, board, expected):
@@ -291,8 +241,6 @@ class Test_othello(unittest.TestCase):
             (play_board_1, 2, 3, "B", "204"),
             (play_board_b_wins, 0, 7, "B", "B wins the match"),
             (play_board_w_wins, 7, 7, "W", "W wins the match"),
-
-
         ]
     )
     def test_play(self, board, row, col, player, expected):
