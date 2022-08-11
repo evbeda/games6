@@ -182,6 +182,7 @@ class BackgammonGame():
             self.points[self.player] += 1
 
     def make_move(self, old_position, new_position):
+
         col = 0 if self.player == WHITE else 1
         move = abs(new_position - old_position)
         if abs(old_position - new_position) in self.move_options:
@@ -219,3 +220,9 @@ class BackgammonGame():
         self.expelled[self.player] -= 1
         actual_position = 0 if self.player == WHITE else 23
         self.make_move(actual_position, new_position)
+
+    def show_board(self):
+        return "BOARD"
+
+    def show_dices(self):
+        return f"Los dados obtenidos son: {[self.dice_one, self.dice_two]}"
