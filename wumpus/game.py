@@ -7,6 +7,7 @@ from wumpus.constants import (
     GOLD_QUANTITY,
     GOLD,
     VISITED_CELL,
+    WIN,
     WUMPUS_QUANTITY,
     WUMPUS,
     SWORDS_QUANTITY,
@@ -15,8 +16,6 @@ from wumpus.constants import (
     SCORE_GAME,
     MOVES,
     MESSAGE_NEXT_TURN,
-    MESSAGE_GAME_OVER,
-    WIN
 )
 import random
 
@@ -34,6 +33,7 @@ class WumpusGame:
 
         self.score = 0
         self.result_of_game = str()
+        self.message_game_over = str()
 
     def place_player(self):
         self._board[0][0] = PLAYER
@@ -110,11 +110,11 @@ class WumpusGame:
         self.modify_score(SCORE_GAME["move"])
         self.count_golds()
 
-    def move_and_game_over(self, row, col):
+    def move_and_game_over(self, reason):
 
         player_row, player_col = self.position_finder(PLAYER)[0]
         self._board[player_row][player_col] = VISITED_CELL
-        self.game_over(LOSE)
+        self.game_over(LOSE, reason)
 
     def print_signals(self, item):
         positions = self.find_signal_indicator(item)
@@ -125,9 +125,24 @@ class WumpusGame:
     def modify_score(self, score_to_modify):
         self.score += score_to_modify
 
-    def game_over(self, result: str):
+    def game_over(self, result: str, reason: str = ''):
+
         self.is_playing = False
         self.result_of_game = result
+
+        message = "Bad Luck! You lose. "
+
+        if result == WIN:
+            message = 'CONGRATS!! You WIN!!! '
+        elif reason == WUMPUS:
+            message += "You have eaten by a Wumpus. "
+
+        if reason == HOLES:
+            message += "You falled into a hole. "
+
+        message += "Your final score is "
+
+        self.message_game_over = message
 
     def shoot_arrow(self, row, col):
         if self.swords > 0:
@@ -145,9 +160,11 @@ class WumpusGame:
         if self.there_is_item(GOLD, row, col):
             self.move_and_win_gold(row, col)
 
-        elif (self.there_is_item(WUMPUS, row, col) or
-              self.there_is_item(HOLES, row, col)):
-            self.move_and_game_over(row, col)
+        elif self.there_is_item(WUMPUS, row, col):
+            self.move_and_game_over(WUMPUS)
+
+        elif self.there_is_item(HOLES, row, col):
+            self.move_and_game_over(HOLES)
 
         else:
             self.move_player_transaction(row, col)
@@ -207,7 +224,8 @@ class WumpusGame:
         if self.is_playing:
             result = MESSAGE_NEXT_TURN
         else:
-            result = MESSAGE_GAME_OVER + str(self.score)
+            result = self.message_game_over + str(self.score)
+
         return result
 
     @property
