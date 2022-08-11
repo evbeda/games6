@@ -21,7 +21,8 @@ from othello.scenarios_test import (
     all_poss_moves_board_1,
     all_poss_moves_exp_1,
     none_pos_exp_1,
-    black_12_that_will_print)
+    black_12_that_will_print,
+    white_12_that_will_print)
 
 
 class Test_othello(unittest.TestCase):
@@ -42,8 +43,8 @@ class Test_othello(unittest.TestCase):
         self.game = Othello()
 
     def test_board_size(self):
-        self.assertEqual(len(self.game.board), 8)
-        for row in self.game.board:
+        self.assertEqual(len(self.game._board), 8)
+        for row in self.game._board:
             self.assertEqual(len(row), 8)
 
     def test_initial_black_piece_count(self):
@@ -60,7 +61,7 @@ class Test_othello(unittest.TestCase):
     )
     def test_initia_white_piece_count(self, board, expected, kind):
         # replace board to see diferents situacions
-        self.game.board = self._convert_scenario_to_matrix(board)
+        self.game._board = self._convert_scenario_to_matrix(board)
         pieces = self.game.get_piece_count(kind)
         self.assertEqual(expected, pieces)
 
@@ -92,7 +93,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_what_is(self, board, expected, row, col):
-        self.game.board = self._convert_scenario_to_matrix(board)
+        self.game._board = self._convert_scenario_to_matrix(board)
         value = self.game.what_is(row, col)
         self.assertEqual(expected, value)
 
@@ -108,7 +109,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_is_empty(self, board, expected, row, col):
-        self.game.board = self._convert_scenario_to_matrix(board)
+        self.game._board = self._convert_scenario_to_matrix(board)
         value = self.game.is_empty(row, col)
         self.assertEqual(expected, value)
 
@@ -136,11 +137,11 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_flip_pieces(self, initial_board, cordinates, index, final_board):
-        self.game.board = self._convert_scenario_to_matrix(initial_board)
+        self.game._board = self._convert_scenario_to_matrix(initial_board)
         self.game.player_turn = self.game.possibles_players[index]
         self.game.flip_pieces(cordinates)
         self.assertEqual(
-            self._convert_scenario_to_matrix(final_board), self.game.board)
+            self._convert_scenario_to_matrix(final_board), self.game._board)
 
     @parameterized.expand(
         [
@@ -162,28 +163,28 @@ class Test_othello(unittest.TestCase):
     )
     def test_validate_direction(self, board, player,
                                 row, col, direction, expected):
-        self.game.board = board
+        self.game._board = board
         self.game.player_turn = player
         self.assertEqual(expected,
                          self.game.validate_direction(row, col, direction))
 
     def test_select_winner_white(self):
-        self.game.board = self._convert_scenario_to_matrix(board_winner_w)
+        self.game._board = self._convert_scenario_to_matrix(board_winner_w)
         winner = self.game.determine_winner()
         self.assertEqual("W", winner)
 
     def test_select_winner_black(self):
-        self.game.board = self._convert_scenario_to_matrix(diagonal_flip)
+        self.game._board = self._convert_scenario_to_matrix(diagonal_flip)
         winner = self.game.determine_winner()
         self.assertEqual("B", winner)
 
     def test_select_winner_tie(self):
-        self.game.board = self._convert_scenario_to_matrix(board_tie)
+        self.game._board = self._convert_scenario_to_matrix(board_tie)
         winner = self.game.determine_winner()
         self.assertEqual("Tie", winner)
 
     def test_select_empty_tie(self):
-        self.game.board = self._convert_scenario_to_matrix(board_tie_empty)
+        self.game._board = self._convert_scenario_to_matrix(board_tie_empty)
         winner = self.game.determine_winner()
         self.assertEqual("Tie", winner)
 
@@ -195,7 +196,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_validate_move(self, board, player, row, col, expected):
-        self.game.board = board
+        self.game._board = board
         self.game.player_turn = player
         self.assertEqual(expected, self.game.validate_move(row, col))
 
@@ -229,7 +230,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_all_possible_moves_values(self, board, expected):
-        self.game.board = self._convert_scenario_to_matrix(board)
+        self.game._board = self._convert_scenario_to_matrix(board)
         result = self.game.all_possible_moves()
         for key, value in result.items():
             result_list = sorted(value, key=lambda tup: (tup[0], tup[1]))
@@ -243,7 +244,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_all_possible_moves_values_key(self, board, expected):
-        self.game.board = self._convert_scenario_to_matrix(board)
+        self.game._board = self._convert_scenario_to_matrix(board)
         result = self.game.all_possible_moves()
         self.assertEqual(result.keys(), expected.keys())
 
@@ -253,7 +254,7 @@ class Test_othello(unittest.TestCase):
         ]
     )
     def test_none_pos(self, board, expected):
-        self.game.board = self._convert_scenario_to_matrix(board)
+        self.game._board = self._convert_scenario_to_matrix(board)
         result = self.game.none_pos()
         self.assertListEqual(result, expected)
 
@@ -261,10 +262,22 @@ class Test_othello(unittest.TestCase):
         (black_12, black_12_that_will_print)
     ])
     def test_board_printer(self, board, expected_result):
-        self.game.board = board
+        self.game._board = board
         result = self.game.board_printer()
-        for row in range(len(self.game.board)):
+        for row in range(len(self.game._board)):
             self.assertEqual(result[row], expected_result[row])
+
+    @parameterized.expand([
+        (black_12, black_12_that_will_print),
+        (white_12, white_12_that_will_print),
+    ])
+    def test_board(self, board, expected_result):
+        expected_result_as_string = ''
+        for rows in expected_result:
+            expected_result_as_string += rows + '\n'
+        self.game._board = board
+        result = self.game.board
+        self.assertEqual(result, expected_result_as_string)
 
 
 if __name__ == "__main__":
