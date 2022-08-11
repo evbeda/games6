@@ -12,6 +12,7 @@ from backgammon.tests.test_scenarios import (
 from unittest.mock import patch
 from copy import deepcopy
 from backgammon.game.constants import BLACK, WHITE
+from ..game.constants import TIE, WINNER_BLACK, WINNER_WHITE
 
 
 class BackgammonGameTest(unittest.TestCase):
@@ -262,9 +263,9 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(self.backgammon.active_game, expected)
 
     @parameterized.expand([
-        (15, 8, "BLACK WINS"),
-        (15, 15, "TIE"),
-        (6, 15, "WHITE WINS"),
+        (15, 8, WINNER_BLACK),
+        (15, 15, TIE),
+        (6, 15, WINNER_WHITE),
     ])
     def test_get_current_winner(self, black_points, white_points,
                                 expected):
@@ -309,31 +310,31 @@ class BackgammonGameTest(unittest.TestCase):
     @parameterized.expand([
         (True, 1, 2,
             {
-                "BLACK": 3, "WHITE": 2
+                BLACK: 3, WHITE: 2
             },
             {
-                "BLACK": 1, "WHITE": 0
+                BLACK: 1, WHITE: 0
             }, 20, BLACK, next_turn_active),
         (False, 3, 5,
             {
-                "BLACK": 15, "WHITE": 2
+                BLACK: 15, WHITE: 2
             },
             {
-                "BLACK": 1, "WHITE": 0
+                BLACK: 1, WHITE: 0
             }, 20, BLACK, next_turn_message_B),
         (False, 3, 5,
             {
-                "BLACK": 10, "WHITE": 15
+                BLACK: 10, WHITE: 15
             },
             {
-                "BLACK": 1, "WHITE": 0
+                BLACK: 1, WHITE: 0
             }, 20, BLACK, next_turn_message_W),
         (False, 3, 5,
             {
-                "BLACK": 15, "WHITE": 15
+                BLACK: 15, WHITE: 15
             },
             {
-                "BLACK": 1, "WHITE": 0
+                BLACK: 1, WHITE: 0
             }, 20, WHITE, next_turn_message_TIE),
     ])
     def test_next_turn(self, is_active, first_dice, second_dice, points,

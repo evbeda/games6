@@ -1,5 +1,12 @@
 import random
-from .constants import BLACK, WHITE, MESSAGE_FP, MESSAGE_SP
+from .constants import (
+    BLACK,
+    WHITE,
+    MESSAGE_FP,
+    MESSAGE_SP,
+    WINNER_BLACK,
+    WINNER_WHITE,
+    TIE)
 
 
 class BackgammonGame():
@@ -215,11 +222,11 @@ class BackgammonGame():
 
     def get_current_winner(self):
         if self.points[BLACK] > self.points[WHITE]:
-            return "BLACK WINS"
+            return WINNER_BLACK
         elif self.points[WHITE] > self.points[BLACK]:
-            return "WHITE WINS"
+            return WINNER_WHITE
         else:
-            return "TIE"
+            return TIE
 
     def insert_captured_piece(self, new_position):
         self.expelled[self.player] -= 1
