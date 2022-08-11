@@ -12,7 +12,7 @@ from .constants import (EMPTY_CELL, GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER
 
 from wumpus.game import WumpusGame
 
-from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+from .scenarios import (MEMORY_TEST, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
 
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
                         SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
@@ -539,3 +539,17 @@ class TestGame(unittest.TestCase):
         self.assertEqual(board[7][4], HOLES)
         self.assertEqual(board[7][5], HOLES)
         self.assertEqual(board[7][6], HOLES)
+
+    @parameterized.expand([
+        (0, 0, False),
+        (1, 0, True),
+        (4, 5, True),
+        (3, 4, True),
+        (6, 6, False),
+    ])
+    def test_there_is_valid_moves(self, row, col, expected):
+
+        game = WumpusGame()
+        game.memory = MEMORY_TEST
+        result = game._there_is_valid_moves(row, col)
+        self.assertEqual(result, expected)
