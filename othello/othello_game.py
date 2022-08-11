@@ -1,3 +1,4 @@
+
 class Othello():
 
     def __init__(self):
@@ -21,7 +22,7 @@ class Othello():
         return sum(
             [ficha == kind for row in self._board for ficha in row])
 
-    def next_turn(self):
+    def change_player(self):
         self.player_turn = self.get_opposite_piece()
 
     def what_is(self, row, col):
@@ -151,3 +152,35 @@ class Othello():
                 string_board += ' ' if element is None else element
             string_board += '| ' + str(row_count) + '\n'
         return string_board
+
+    def play(self, row, col):
+
+        move = (row, col)
+        moves = self.all_possible_moves()
+        # pdb.set_trace()
+        if not (move in moves):
+            return (f"Bad move of player {self.player_turn}. Try again")
+
+        self.put_piece(move)
+        self.flip_pieces(moves[move])
+
+        self.change_player()
+
+        if not self.all_possible_moves():
+            self.change_player()
+            if not self.all_possible_moves():
+                winner = self.determine_winner()
+                self.is_playing = False
+                return "tie match" if winner == "Tie" else f"{winner} wins the match"
+
+        return "204"
+
+    def next_turn(self):
+        if self.is_playing:
+            return f"Turn of Player {self.player_turn}"
+        else:
+            return "Game Over"
+
+    def put_piece(self, coordinate):
+        row, col = coordinate
+        self._board[row][col] = self.player_turn
