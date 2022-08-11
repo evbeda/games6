@@ -4,6 +4,7 @@ from backgammon.game.backgammon import BackgammonGame
 from backgammon.tests.test_scenarios import (
     initial_board,
     board_1,
+    board_3,
     next_turn_active,
     next_turn_message_B,
     next_turn_message_W,
@@ -229,6 +230,8 @@ class BackgammonGameTest(unittest.TestCase):
         (board_1, BLACK, 3, 10, 4, 3, True),
         (board_1, BLACK, 21, 23, 2, 3, True),
         (board_1, BLACK, 16, 18, 3, 2, False),
+        (board_3, WHITE, 22, 25, 2, 1, True),
+        (board_3, BLACK, 3, -1, 4, 1, True),
     ])
     def test_make_move(self, board, current_player, actual_position,
                        new_position, first_dice, second_dice, expected):
