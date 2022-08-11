@@ -2,14 +2,18 @@ import unittest
 from copy import deepcopy
 
 from parameterized import parameterized
-from .constants import (GOLD, GOLD_QUANTITY, LOSE, PLAYER, SCORE_GAME, WIN,
+
+from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
+                        SCORE_GAME, VISITED_CELL, VISITED_CELL_USER, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
-                        ROW, MOVES, MOVES_DIRECTION, VISITED_CELL)
+                        ROW, MOVES, MOVES_DIRECTION)
 
 
 from wumpus.game import WumpusGame
 
 from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+                        SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
+                        SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4, SCENARIO_CELL_PARSE_5,
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
@@ -384,6 +388,7 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.is_playing, is_playing)
 
     @parameterized.expand([
+
         ("   ", 0, 1, "~  ", SCENARIO_SIGNAL_HOLE),
         ("   ", 2, 2, "  +", SCENARIO_SIGNAL_WUMPUS),
         ("   ", 5, 5, "~ +", SCENARIO_SIGNAL_WUMPUS_HOLE),
@@ -399,3 +404,37 @@ class TestGame(unittest.TestCase):
         game.board[row][col] = item
         modify_item = game.find_signal(item, row, col)
         self.assertEqual(modify_item, final_item)
+
+    @parameterized.expand([
+        (SCENARIO_CELL_PARSE_1, 5, 5, '~J+'),
+        (SCENARIO_CELL_PARSE_1, 5, 4, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_1, 5, 6, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_1, 4, 5, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_1, 6, 5, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_1, 7, 5, VISITED_CELL_USER),
+
+        (SCENARIO_CELL_PARSE_2, 1, 4, ' J '),
+        (SCENARIO_CELL_PARSE_2, 1, 1, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_2, 1, 2, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_2, 0, 5, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_2, 0, 0, VISITED_CELL_USER),
+        (SCENARIO_CELL_PARSE_2, 2, 4, HIDE_CELL),
+        (SCENARIO_CELL_PARSE_2, 0, 4, '~  '),
+        (SCENARIO_CELL_PARSE_2, 0, 3, VISITED_CELL_USER),
+        (SCENARIO_CELL_PARSE_2, 0, 2, '~  '),
+        (SCENARIO_CELL_PARSE_2, 0, 1, '  +'),
+
+        (SCENARIO_CELL_PARSE_3, 5, 5, ' J+'),
+
+        (SCENARIO_CELL_PARSE_4, 5, 5, '~J '),
+        (SCENARIO_CELL_PARSE_5, 5, 5, ' J '),
+
+
+    ])
+    def test_parse_cell(self, board, row, col, expected):
+
+        game = WumpusGame()
+        game.board = deepcopy(board)
+
+        parsed_cell = game.parse_cell(row, col)
+        self.assertEqual(parsed_cell, expected)

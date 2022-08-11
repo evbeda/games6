@@ -1,4 +1,4 @@
-from .constants import GOLD, HOLES, PLAYER, ROW, COL, WUMPUS
+from .constants import GOLD, HOLES, PLAYER, ROW, COL, VISITED_CELL, WUMPUS
 from copy import deepcopy
 
 SCENARIO_1 = [['' for j in range(COL)] for i in range(ROW)]
@@ -140,14 +140,14 @@ SCENARIO_SHOOT_WUMPUS_INIT = [["" for j in range(COL)] for i in range(ROW)]
 SCENARIO_SHOOT_WUMPUS_INIT[4][4] = "W"
 
 SCENARIO_SHOOT_WUMPUS_FINAL = deepcopy(SCENARIO_SHOOT_WUMPUS_INIT)
-SCENARIO_SHOOT_WUMPUS_FINAL[4][4] = "   "
+SCENARIO_SHOOT_WUMPUS_FINAL[4][4] = VISITED_CELL
 
 SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT = [["" for j in range(COL)]
                                      for i in range(ROW)]
 SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT[4][4] = "~+W"
 
 SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN = deepcopy(SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT)
-SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN[4][4] = "   "
+SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN[4][4] = VISITED_CELL
 
 SCENARIO_SHOOT_FAIL_INIT = [["" for j in range(COL)] for i in range(ROW)]
 SCENARIO_SHOOT_FAIL_INIT[4][4] = ""
@@ -175,6 +175,8 @@ SCENARIO_MOVE_ACTION[5][4] = WUMPUS
 SCENARIO_MOVE_ACTION[5][6] = HOLES
 SCENARIO_MOVE_ACTION[4][5] = GOLD
 SCENARIO_MOVE_ACTION[6][5] = ''
+SCENARIO_MOVE_ACTION[7][5] = VISITED_CELL
+
 
 SCENARIO_SIGNAL_HOLE = [['' for j in range(COL)] for i in range(ROW)]
 SCENARIO_SIGNAL_HOLE[1][1] = HOLES
@@ -199,3 +201,36 @@ SCENARIO_SIGNAL_WUMPUS_HOLE_J[4][5] = HOLES
 SCENARIO_SIGNAL_WUMPUS_HOLE_J[5][6] = WUMPUS
 
 SCENARIO_SIGNAL_J_EMPTY = [['' for j in range(COL)] for i in range(ROW)]
+
+
+SCENARIO_CELL_PARSE_1 = [['' for j in range(COL)] for i in range(ROW)]
+
+SCENARIO_CELL_PARSE_1[5][5] = PLAYER
+SCENARIO_CELL_PARSE_1[5][4] = WUMPUS
+SCENARIO_CELL_PARSE_1[5][6] = HOLES
+SCENARIO_CELL_PARSE_1[4][5] = GOLD
+SCENARIO_CELL_PARSE_1[6][5] = ''
+SCENARIO_CELL_PARSE_1[7][5] = VISITED_CELL
+
+SCENARIO_CELL_PARSE_2 = [
+
+    [' ', ' ', ' ', ' ', ' ', 'O', '', '', '', '', '', '', '', '', ''],
+    ['', 'W', 'O', '', 'J', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+]
+
+SCENARIO_CELL_PARSE_3 = [['' for j in range(COL)] for i in range(ROW)]
+SCENARIO_CELL_PARSE_3[5][5] = PLAYER
+SCENARIO_CELL_PARSE_3[5][4] = WUMPUS
+
+SCENARIO_CELL_PARSE_4 = [['' for j in range(COL)] for i in range(ROW)]
+SCENARIO_CELL_PARSE_4[5][5] = PLAYER
+SCENARIO_CELL_PARSE_4[5][4] = HOLES
+
+SCENARIO_CELL_PARSE_5 = [['' for j in range(COL)] for i in range(ROW)]
+SCENARIO_CELL_PARSE_5[5][5] = PLAYER
