@@ -317,3 +317,11 @@ SCENARIO_DELETE[7][3] = HOLES
 SCENARIO_DELETE[7][4] = HOLES
 SCENARIO_DELETE[7][5] = HOLES
 SCENARIO_DELETE[7][6] = HOLES
+
+MEMORY_TEST = {
+    (0, 0): [],
+    (1, 0): [(1, 1)],
+    (4, 5): [(3, 5), (5, 5), (4, 5)],
+    (3, 4): [(2, 4), (4, 4), (3, 5), (3, 3)],
+    (6, 6): [],
+}

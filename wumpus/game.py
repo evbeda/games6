@@ -35,6 +35,7 @@ class WumpusGame:
         self.score = 0
         self.result_of_game = str()
         self.message_game_over = str()
+        self.memory = {}
 
     def place_player(self):
         self._board[0][0] = PLAYER
@@ -264,3 +265,6 @@ class WumpusGame:
                 game.delete_item_on_position(item, row, col)
         board = deepcopy(game._board)
         return board
+
+    def _there_is_valid_moves(self, row, col):
+        return len(self.memory[(row, col)]) > 0
