@@ -26,3 +26,10 @@ VISITED_CELL = ' '
 VISITED_CELL_USER = '   '
 HIDE_CELL = '###'
 PLAYER_CELL = ' J '
+
+
+MESSAGE_NEXT_TURN = "Please select your next move. \n"\
+                    " Use 'z' for shoot a row or 'm' to move \n"\
+                    " And 'a', 'w', 's', 'd' to select the direction \n"
+
+MESSAGE_GAME_OVER = "Bad Luck! You lose. Your final score is "

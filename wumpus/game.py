@@ -13,7 +13,9 @@ from wumpus.constants import (
     PLAYER,
     ITEMS_DICTIONARY,
     SCORE_GAME,
-    MOVES
+    MOVES,
+    MESSAGE_NEXT_TURN,
+    MESSAGE_GAME_OVER
 )
 import random
 
@@ -192,3 +194,11 @@ class WumpusGame:
             cell = HIDE_CELL
 
         return cell
+
+    def next_turn(self):
+        result = ""
+        if self.is_playing:
+            result = MESSAGE_NEXT_TURN
+        else:
+            result = MESSAGE_GAME_OVER + str(self.score)
+        return result
