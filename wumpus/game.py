@@ -268,3 +268,27 @@ class WumpusGame:
 
     def _there_is_valid_moves(self, row, col):
         return len(self.memory[(row, col)]) > 0
+
+    def see_goal()
+
+    def _find_gold_way(self, row, col, board) -> bool:
+
+        possible_moves = self._find_posible_moves_gold(row, col, board)
+        self.memory.update(
+            {(row, col): possible_moves}
+        )
+        valid_moves = self._there_is_valid_moves(row, col)
+
+        while (0, 0) not in self.memory[(row, col)] and valid_moves:
+            new_row, new_col = self.memory[(row, col)][0]
+            if (new_row, new_col) not in self.memory:
+                possible_moves = self._find_posible_moves_gold(row, col, board)
+                self.memory.update(
+                    {(new_row, new_col): possible_moves}
+                )
+
+            self.memory[(row, col)].remove(new_row, new_col)
+            row, col = new_row, new_col
+            valid_moves = self._there_is_valid_moves(row, col)
+
+        return (0, 0) not in self.memory[(row, col)] and valid_moves

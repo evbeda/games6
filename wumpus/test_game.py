@@ -553,3 +553,11 @@ class TestGame(unittest.TestCase):
         game.memory = MEMORY_TEST
         result = game._there_is_valid_moves(row, col)
         self.assertEqual(result, expected)
+
+    @parameterized.expand([
+        (1, 1, SCENARIO_FIND_POSITION, True)
+    ])
+    def test_find_gold_way(self, row, col, board, bool_return):
+        game = WumpusGame()
+        game._board = board
+        self.assertEqual(game._find_gold_way(row, col, board), bool_return)
