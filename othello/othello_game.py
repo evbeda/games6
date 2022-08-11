@@ -1,21 +1,35 @@
+from othello.constants import (
+    PLAYER1,
+    PLAYER2,
+    N,
+    NE,
+    E,
+    SE,
+    S,
+    SW,
+    W,
+    NW,
+    TIE_MATCH,
+    GAME_OVER,
+    MOVE_OK,
+)
+
 
 class Othello():
 
     def __init__(self):
-        self.possibles_players = ['B', 'W']
+        self.possibles_players = [PLAYER1, PLAYER2]
         self.player_turn = self.possibles_players[0]
         self._board = [
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
-            [None, None, None, "W", "B", None, None, None],
-            [None, None, None, "B", "W", None, None, None],
+            [None, None, None, PLAYER2, PLAYER1, None, None, None],
+            [None, None, None, PLAYER1, PLAYER2, None, None, None],
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
         ]
-        self.black_can_play = True
-        self.white_can_play = True
         self.is_playing = True
 
     def get_piece_count(self, kind):
@@ -26,24 +40,23 @@ class Othello():
         self.player_turn = self.get_opposite_piece()
 
     def get_opposite_piece(self):
-        if self.player_turn == self.possibles_players[0]:
-            return self.possibles_players[1]
-        return self.possibles_players[0]
+        if self.player_turn == PLAYER1:
+            return PLAYER2
+        return PLAYER1
 
     def determine_winner(self):
-        if self.get_piece_count("W") == self.get_piece_count("B"):
-            return "Tie"
-        elif self.get_piece_count("W") > self.get_piece_count("B"):
-            return self.possibles_players[1]
-        else:
-            return self.possibles_players[0]
+        if self.get_piece_count(PLAYER2) == self.get_piece_count(PLAYER1):
+            return TIE_MATCH
+        if self.get_piece_count(PLAYER2) > self.get_piece_count(PLAYER1):
+            return PLAYER2
+        return PLAYER1
 
     def flip_pieces(self, coordinates):
         for row, col in coordinates:
             self._board[row][col] = self.player_turn
 
     def validate_move(self, row, col):
-        directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
+        directions = [N, NE, E, SE, S, SW, W, NW]
         flips = []
         for direction in directions:
             potential_flips = self.validate_direction(row, col, direction)
@@ -54,14 +67,14 @@ class Othello():
     def validate_direction(self, row, col, direction):
 
         direction_coordinates = {
-            "n": [-1, 0],
-            "ne": [-1, 1],
-            "e": [0, 1],
-            "se": [1, 1],
-            "s": [1, 0],
-            "sw": [1, -1],
-            "w": [0, -1],
-            "nw": [-1, -1]
+            N: [-1, 0],
+            NE: [-1, 1],
+            E: [0, 1],
+            SE: [1, 1],
+            S: [1, 0],
+            SW: [1, -1],
+            W: [0, -1],
+            NW: [-1, -1]
         }
         change = direction_coordinates[direction]
         pieces_available_to_flip = []
@@ -141,15 +154,15 @@ class Othello():
             if not self.all_possible_moves():
                 winner = self.determine_winner()
                 self.is_playing = False
-                return "tie match" if winner == "Tie" else f"{winner} wins the match"
+                return TIE_MATCH if winner == TIE_MATCH else f"{winner} wins the match"
 
-        return "204"
+        return MOVE_OK
 
     def next_turn(self):
         if self.is_playing:
             return f"Turn of Player {self.player_turn}"
         else:
-            return "Game Over"
+            return GAME_OVER
 
     def put_piece(self, coordinate):
         row, col = coordinate

@@ -28,16 +28,32 @@ from othello.scenarios_test import (
     play_board_tie,
     put_piece_board,
     all_poss_moves_board_2)
+from othello.constants import (
+    PLAYER1,
+    PLAYER2,
+    N,
+    NE,
+    E,
+    SE,
+    S,
+    SW,
+    W,
+    NW,
+    TIE_MATCH,
+    GAME_OVER,
+    MOVE_OK,
+)
 
 
 class Test_othello(unittest.TestCase):
 
     def _convert_scenario_to_matrix(self, scenario):
+        players = PLAYER1 + PLAYER2
         matrix = []
         for scenario_line in scenario:
             matrix_line = [
                 scenario_letter
-                if scenario_letter in 'BW'
+                if scenario_letter in players
                 else None
                 for scenario_letter in scenario_line
             ]
@@ -53,15 +69,15 @@ class Test_othello(unittest.TestCase):
             self.assertEqual(len(row), 8)
 
     def test_initial_black_piece_count(self):
-        black_pieces = self.game.get_piece_count('B')
-        self.assertEqual(2, black_pieces)
+        player1_pieces = self.game.get_piece_count(PLAYER1)
+        self.assertEqual(2, player1_pieces)
 
     @parameterized.expand(
         [
-            (black_12, 12, 'B'),
-            (white_12, 12, 'W'),
-            (mix_6, 6, 'W'),
-            (mix_6, 6, 'B'),
+            (black_12, 12, PLAYER1),
+            (white_12, 12, PLAYER2),
+            (mix_6, 6, PLAYER2),
+            (mix_6, 6, PLAYER1),
         ]
     )
     def test_initial_white_piece_count(self, board, expected, kind):
@@ -71,14 +87,14 @@ class Test_othello(unittest.TestCase):
         self.assertEqual(expected, pieces)
 
     def test_initial_player(self):
-        self.assertTrue(self.game.player_turn == 'B')
+        self.assertTrue(self.game.player_turn == PLAYER1)
 
     @parameterized.expand(
         [
-            (1, 'W'),
-            (3, 'W'),
-            (4, 'B'),
-            (7, 'W'),
+            (1, PLAYER2),
+            (3, PLAYER2),
+            (4, PLAYER1),
+            (7, PLAYER2),
         ]
     )
     def test_current_turn(self, it, expected):
@@ -88,10 +104,10 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (1, 'B'),
-            (3, 'B'),
-            (4, 'W'),
-            (7, 'B'),
+            (1, PLAYER1),
+            (3, PLAYER1),
+            (4, PLAYER2),
+            (7, PLAYER1),
         ]
     )
     def test_opposite_piece(self, it, expected):
@@ -118,20 +134,21 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (validate_direction_1, 'B', 6, 4, "n", [(5, 4), (4, 4)]),
-            (validate_direction_1, 'W', 7, 4, "ne", [(6, 5), (5, 6)]),
-            (validate_direction_1, 'W', 0, 5, "e", [(0, 6)]),
-            (validate_direction_1, 'B', 0, 0, "se", [(1, 1)]),
-            (validate_direction_2, 'B', 0, 6, "s", [(1, 6), (2, 6), (3, 6),
-                                                    (4, 6), (5, 6), (6, 6)]),
-            (validate_direction_1, 'W', 2, 5, "sw", [(3, 4), (4, 3)]),
-            (validate_direction_2, 'W', 4, 3, "w", [(4, 2), (4, 1)]),
-            (validate_direction_2, 'W', 6, 4, "nw", [(5, 3), (4, 2), (3, 1)]),
-            (validate_direction_2, 'W', 0, 4, "n", []),
-            (validate_direction_2, 'B', 3, 0, "w", []),
-            (validate_direction_2, 'W', 7, 1, "s", []),
-            (validate_direction_2, 'B', 5, 7, "e", []),
-            (validate_direction_2, 'B', 1, 3, "e", []),
+            (validate_direction_1, PLAYER1, 6, 4, N, [(5, 4), (4, 4)]),
+            (validate_direction_1, PLAYER2, 7, 4, NE, [(6, 5), (5, 6)]),
+            (validate_direction_1, PLAYER2, 0, 5, E, [(0, 6)]),
+            (validate_direction_1, PLAYER1, 0, 0, SE, [(1, 1)]),
+            (validate_direction_2, PLAYER1, 0, 6, S, [(1, 6), (2, 6), (3, 6),
+                                                      (4, 6), (5, 6), (6, 6)]),
+            (validate_direction_1, PLAYER2, 2, 5, SW, [(3, 4), (4, 3)]),
+            (validate_direction_2, PLAYER2, 4, 3, W, [(4, 2), (4, 1)]),
+            (validate_direction_2, PLAYER2, 6, 4, NW, [(5, 3), (4, 2),
+                                                       (3, 1)]),
+            (validate_direction_2, PLAYER2, 0, 4, N, []),
+            (validate_direction_2, PLAYER1, 3, 0, W, []),
+            (validate_direction_2, PLAYER2, 7, 1, S, []),
+            (validate_direction_2, PLAYER1, 5, 7, E, []),
+            (validate_direction_2, PLAYER1, 1, 3, E, []),
         ]
     )
     def test_validate_direction(self, board, player,
@@ -144,28 +161,28 @@ class Test_othello(unittest.TestCase):
     def test_select_winner_white(self):
         self.game._board = self._convert_scenario_to_matrix(board_winner_w)
         winner = self.game.determine_winner()
-        self.assertEqual("W", winner)
+        self.assertEqual(PLAYER2, winner)
 
     def test_select_winner_black(self):
         self.game._board = self._convert_scenario_to_matrix(diagonal_flip)
         winner = self.game.determine_winner()
-        self.assertEqual("B", winner)
+        self.assertEqual(PLAYER1, winner)
 
     def test_select_winner_tie(self):
         self.game._board = self._convert_scenario_to_matrix(board_tie)
         winner = self.game.determine_winner()
-        self.assertEqual("Tie", winner)
+        self.assertEqual(TIE_MATCH, winner)
 
     def test_select_empty_tie(self):
         self.game._board = self._convert_scenario_to_matrix(board_tie_empty)
         winner = self.game.determine_winner()
-        self.assertEqual("Tie", winner)
+        self.assertEqual(TIE_MATCH, winner)
 
     @parameterized.expand(
         [
-            (validate_direction_2, 'B', 1, 2, []),
-            (validate_direction_2, 'B', 0, 6, [(1, 6), (2, 6), (3, 6),
-                                               (4, 6), (5, 6), (6, 6)]),
+            (validate_direction_2, PLAYER1, 1, 2, []),
+            (validate_direction_2, PLAYER1, 0, 6, [(1, 6), (2, 6), (3, 6),
+                                                   (4, 6), (5, 6), (6, 6)]),
         ]
     )
     def test_validate_move(self, board, player, row, col, expected):
@@ -198,7 +215,8 @@ class Test_othello(unittest.TestCase):
         self.assertEqual(result.keys(), expected.keys())
 
     def test_no_posible_moves(self):
-        self.game._board = self._convert_scenario_to_matrix(all_poss_moves_board_2)
+        self.game._board = self._convert_scenario_to_matrix(
+            all_poss_moves_board_2)
         result = self.game.all_possible_moves()
         self.assertEqual(result, {})
 
@@ -236,11 +254,12 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (play_board_tie, 7, 0, "W", "tie match"),
-            (play_board_1, 0, 0, "B", "Bad move of player B. Try again"),
-            (play_board_1, 2, 3, "B", "204"),
-            (play_board_b_wins, 0, 7, "B", "B wins the match"),
-            (play_board_w_wins, 7, 7, "W", "W wins the match"),
+            (play_board_tie, 7, 0, PLAYER2, TIE_MATCH),
+            (play_board_1, 0, 0, PLAYER1,
+             f"Bad move of player {PLAYER1}. Try again"),
+            (play_board_1, 2, 3, PLAYER1, MOVE_OK),
+            (play_board_b_wins, 0, 7, PLAYER1, f"{PLAYER1} wins the match"),
+            (play_board_w_wins, 7, 7, PLAYER2, f"{PLAYER2} wins the match"),
         ]
     )
     def test_play(self, board, row, col, player, expected):
@@ -251,9 +270,9 @@ class Test_othello(unittest.TestCase):
 
     @parameterized.expand(
         [
-            (True, "B", "Turn of Player B"),
-            (True, "W", "Turn of Player W"),
-            (False, "B", "Game Over"),
+            (True, PLAYER1, f"Turn of Player {PLAYER1}"),
+            (True, PLAYER2, f"Turn of Player {PLAYER2}"),
+            (False, PLAYER2, GAME_OVER),
         ]
     )
     def test_next_turn(self, state, player, expected):
