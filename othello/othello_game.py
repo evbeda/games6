@@ -25,13 +25,6 @@ class Othello():
     def change_player(self):
         self.player_turn = self.get_opposite_piece()
 
-    def what_is(self, row, col):
-        return self._board[row][col]
-
-    def is_empty(self, row, col):
-        value = self.what_is(row, col)
-        return value is None
-
     def get_opposite_piece(self):
         aux = self.possibles_players.copy()
         aux.remove(self.player_turn)
@@ -48,11 +41,6 @@ class Othello():
     def flip_pieces(self, coordinates):
         for row, col in coordinates:
             self._board[row][col] = self.player_turn
-
-    def end_game(self):
-        if self.black_can_play is False and self.white_can_play is False:
-            self.is_playing = False
-            self.determine_winner()
 
     def validate_move(self, row, col):
         '''
@@ -124,11 +112,6 @@ class Othello():
                 if element is None:
                     pos.append((x, y))
         return pos
-
-    def check_if_the_player_can_play(self, moves):
-        if moves == {}:
-            return False
-        return True
 
     # this method may be unused...
     def board_printer(self):
