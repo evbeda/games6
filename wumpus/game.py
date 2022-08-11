@@ -1,3 +1,4 @@
+from copy import deepcopy
 from wumpus.constants import (
     COL,
     HIDE_CELL,
@@ -253,3 +254,13 @@ class WumpusGame:
                 final_positions.append((row, col))
         final_positions.sort()
         return final_positions
+
+    def _delete_gold_and_wumpus(self, board) -> list:
+        game = WumpusGame()
+        game._board = board
+
+        for item in [GOLD, WUMPUS, PLAYER]:
+            for row, col in game.position_finder(item):
+                game.delete_item_on_position(item, row, col)
+        board = deepcopy(game._board)
+        return board

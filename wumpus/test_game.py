@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from parameterized import parameterized
 
-from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
+from .constants import (EMPTY_CELL, GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
                         SCORE_GAME, VISITED_CELL, VISITED_CELL_USER, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
                         ROW, MOVES, MOVES_DIRECTION,
@@ -21,7 +21,7 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_CELL_PARSE_2_USER_VIEW,
                         SCENARIO_CELL_PARSE_3_USER_VIEW,
                         SCENARIO_CELL_PARSE_4_USER_VIEW,
-                        SCENARIO_CELL_PARSE_5_USER_VIEW,
+                        SCENARIO_CELL_PARSE_5_USER_VIEW, SCENARIO_DELETE,
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
@@ -524,3 +524,18 @@ class TestGame(unittest.TestCase):
         game._board = board
         find_list = game._find_posible_moves_gold(row, col, board)
         self.assertEqual(find_list, position_list)
+
+    def test_delete_gold_and_wumpus(self):
+
+        game = WumpusGame()
+        board = game._delete_gold_and_wumpus(deepcopy(SCENARIO_DELETE))
+
+        self.assertEqual(board[5][5], EMPTY_CELL)
+        self.assertEqual(board[5][4], EMPTY_CELL)
+        self.assertEqual(board[5][6], EMPTY_CELL)
+        self.assertEqual(board[4][4], EMPTY_CELL)
+        self.assertEqual(board[6][5], EMPTY_CELL)
+        self.assertEqual(board[7][3], HOLES)
+        self.assertEqual(board[7][4], HOLES)
+        self.assertEqual(board[7][5], HOLES)
+        self.assertEqual(board[7][6], HOLES)
