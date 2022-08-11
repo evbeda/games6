@@ -3,7 +3,7 @@ class Othello():
     def __init__(self):
         self.possibles_players = ['B', 'W']
         self.player_turn = self.possibles_players[0]
-        self.board = [
+        self._board = [
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None],
@@ -19,13 +19,13 @@ class Othello():
 
     def get_piece_count(self, kind):
         return sum(
-            [ficha == kind for row in self.board for ficha in row])
+            [ficha == kind for row in self._board for ficha in row])
 
     def next_turn(self):
         self.player_turn = self.get_opposite_piece()
 
     def what_is(self, row, col):
-        return self.board[row][col]
+        return self._board[row][col]
 
     def is_empty(self, row, col):
         value = self.what_is(row, col)
@@ -46,7 +46,7 @@ class Othello():
 
     def flip_pieces(self, coordinates):
         for row, col in coordinates:
-            self.board[row][col] = self.player_turn
+            self._board[row][col] = self.player_turn
 
     def end_game(self):
         if self.black_can_play is False and self.white_can_play is False:
@@ -96,9 +96,9 @@ class Othello():
                col + change[1] >= 0 and col + change[1] < 8):
             row = row + change[0]
             col = col + change[1]
-            if self.board[row][col] is None:
+            if self._board[row][col] is None:
                 return []
-            if self.board[row][col] == self.player_turn:
+            if self._board[row][col] == self.player_turn:
                 ending_same_color = True
                 break
             myList.append((row, col))
@@ -118,7 +118,7 @@ class Othello():
 
     def none_pos(self):
         pos = []
-        for x, row in enumerate(self.board):
+        for x, row in enumerate(self._board):
             for y, element in enumerate(row):
                 if element is None:
                     pos.append((x, y))
@@ -129,10 +129,11 @@ class Othello():
             return False
         return True
 
+    # this method may be unused...
     def board_printer(self):
         list_of_the_printable_board = []
         list_of_the_printable_board.append(' 0 1 2 3 4 5 6 7   ')
-        for row_count, row in enumerate(self.board):
+        for row_count, row in enumerate(self._board):
             string_row = ''
             for element in row:
                 string_row += '|'
@@ -140,3 +141,13 @@ class Othello():
             string_row += '| ' + str(row_count)
             list_of_the_printable_board.append(string_row)
         return list_of_the_printable_board
+
+    @property
+    def board(self):
+        string_board = ' 0 1 2 3 4 5 6 7   \n'
+        for row_count, row in enumerate(self._board):
+            for element in row:
+                string_board += '|'
+                string_board += ' ' if element is None else element
+            string_board += '| ' + str(row_count) + '\n'
+        return string_board
