@@ -111,7 +111,6 @@ class WumpusGame:
         self.delete_item_on_position(GOLD, row, col)
         self.move_player_transaction(row, col)
         self.modify_score(SCORE_GAME["gold_wumpus"])
-        self.modify_score(SCORE_GAME["move"])
         self.count_golds()
 
     def move_and_game_over(self, reason):
@@ -276,3 +275,6 @@ class WumpusGame:
             if not self._find_gold_recursive(0, 0, gold_position, aux_board, []):
                 return False
         return True
+    
+    def play(self, action, direction):
+        self.manager_move(action, direction)
