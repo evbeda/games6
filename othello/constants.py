@@ -9,7 +9,7 @@ S = "s"
 SW = "sw"
 W = "w"
 NW = "nw"
-TIE_MATCH = "Tie_match"
+TIE_MATCH = "Tie match"
 GAME_OVER = "Game Over"
 MOVE_OK = "204"
 
