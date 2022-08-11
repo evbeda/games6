@@ -58,7 +58,11 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_SIGNAL_WUMPUS_J,
                         SCENARIO_SIGNAL_WUMPUS_HOLE_J,
                         SCENARIO_SIGNAL_J_EMPTY,
-                        SCENARIO_WITH_OUT_GOLD)
+                        SCENARIO_WITH_OUT_GOLD,
+                        SCENARIO_FIND_POSITION,
+                        SCENARIO_FIND_POSITION_HOLES,
+                        SCENARIO_FIND_POSITION_H_BORDER,
+                        SCENARIO_FIND_POS_H_BOR_LEFT)
 
 
 class TestGame(unittest.TestCase):
@@ -507,3 +511,16 @@ class TestGame(unittest.TestCase):
         game.count_golds()
         self.assertEqual(game.is_playing, state_game)
         self.assertEqual(game.result_of_game, final_expresion)
+
+    @parameterized.expand([
+        (1, 1, SCENARIO_FIND_POSITION, [(0, 1), (1, 0), (1, 2), (2, 1)]),
+        (5, 5, SCENARIO_FIND_POSITION_HOLES, []),
+        (0, 5, SCENARIO_FIND_POSITION_H_BORDER, [(0, 4), (0, 6)]),
+        (2, 0, SCENARIO_FIND_POS_H_BOR_LEFT, [(2, 1)]),
+    ])
+    def test_find_posible_moves_gold(self, row, col, board,
+                                     position_list):
+        game = WumpusGame()
+        game._board = board
+        find_list = game._find_posible_moves_gold(row, col, board)
+        self.assertEqual(find_list, position_list)
