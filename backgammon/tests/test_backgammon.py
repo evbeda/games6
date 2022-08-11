@@ -5,6 +5,10 @@ from backgammon.tests.test_scenarios import (
     initial_board,
     board_1,
     board_3,
+    board_4,
+    board_5,
+    board_6,
+    board_8,
     next_turn_active,
     next_turn_message_B,
     next_turn_message_W,
@@ -15,8 +19,7 @@ from backgammon.tests.test_scenarios import (
     presented_board7)
 from unittest.mock import patch
 from copy import deepcopy
-from backgammon.game.constants import BLACK, WHITE
-from ..game.constants import TIE, WINNER_BLACK, WINNER_WHITE
+from ..game.constants import BLACK, WHITE, TIE, WINNER_BLACK, WINNER_WHITE
 
 
 class BackgammonGameTest(unittest.TestCase):
@@ -276,8 +279,9 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (board_1, WHITE, 3, 2, 1, 3, 1),
-        (board_1, BLACK, 1, 1, 1, 21, 2)
+        (board_5, WHITE, 3, 2, 1, 3, 1),
+        (board_6, WHITE, 1, 1, 1, 2, 1),
+        (board_8, BLACK, 1, 1, 2, 21, 2)
     ])
     def test_insert_captured_piece(self, board, current_player,
                                    pieces_captured,
@@ -359,6 +363,22 @@ class BackgammonGameTest(unittest.TestCase):
         new_game = BackgammonGame()
         new_game.board = board
         self.assertEqual(new_game.present_board(), expected)
+
+    @parameterized.expand([
+        (board_4, WHITE, {WHITE: 2}, 0, False),
+        (board_5, WHITE, {WHITE: 2}, 0, True),
+        (board_6, BLACK, {BLACK: 2}, 23, True),
+        (board_5, BLACK, {BLACK: 2}, 23, False),
+        (board_6, BLACK, {BLACK: 0}, 23, False),
+        (board_5, WHITE, {WHITE: 0}, 0, False),
+    ])
+    def test_captured_piece(self, board, current_player, captured_pieces,
+                            initial_position, expected):
+        self.backgammon.board = board
+        self.backgammon.player = current_player
+        self.backgammon.expelled = captured_pieces
+        result = self.backgammon.can_insert_captured_piece(initial_position)
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':

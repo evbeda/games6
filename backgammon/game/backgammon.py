@@ -162,6 +162,12 @@ class BackgammonGame():
             return True
         return False
 
+    def can_insert_captured_piece(self, initial_pos):
+        if not self.at_least_one_piece_of_the_player(initial_pos):
+            if self.expelled[self.player] > 0:
+                return True
+        return False
+
     def is_valid_move(self, initial_pos, final_pos) -> bool:
         if self.piece_move_off_board(final_pos):
             return True
@@ -201,7 +207,6 @@ class BackgammonGame():
             self.points[self.player] += 1
 
     def make_move(self, old_position, new_position):
-
         col = 0 if self.player == WHITE else 1
         move = abs(new_position - old_position)
         if move in self.move_options:
@@ -234,9 +239,10 @@ class BackgammonGame():
             return TIE
 
     def insert_captured_piece(self, new_position):
-        self.expelled[self.player] -= 1
         actual_position = 0 if self.player == WHITE else 23
-        self.make_move(actual_position, new_position)
+        if self.can_insert_captured_piece(actual_position):
+            self.expelled[self.player] -= 1
+            self.make_move(actual_position, new_position)
 
     def next_turn(self):
         if not self.active_game:
