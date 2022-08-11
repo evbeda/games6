@@ -109,8 +109,9 @@ class WumpusGame:
         self.modify_score(SCORE_GAME["move"])
 
     def move_and_game_over(self, row, col):
-        self.move_player_transaction(row, col)
-        self.delete_item_on_position(PLAYER, row, col)
+
+        player_row, player_col = self.position_finder(PLAYER)[0]
+        self._board[player_row][player_col] = VISITED_CELL
         self.game_over(LOSE)
 
     def print_signals(self, item):
