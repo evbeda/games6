@@ -244,3 +244,12 @@ class WumpusGame:
         golds = self.position_finder(GOLD)
         if not golds:
             self.game_over(WIN)
+
+    def _find_posible_moves_gold(self, row, col, board):
+        positions = self._posible_position(row, col)
+        final_positions = []
+        for row, col in positions:
+            if HOLES not in board[row][col]:
+                final_positions.append((row, col))
+        final_positions.sort()
+        return final_positions
