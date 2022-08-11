@@ -284,3 +284,7 @@ SCENARIO_CELL_PARSE_5_USER_VIEW = \
     "############### J ###########################\n"\
     "#############################################\n"\
     "#############################################\n"
+
+
+SCENARIO_WITH_OUT_GOLD = [['' for j in range(COL)] for i in range(ROW)]
+SCENARIO_WITH_OUT_GOLD[5][5] = PLAYER

@@ -17,10 +17,11 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
                         SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
                         SCENARIO_CELL_PARSE_5,
-                        SCENARIO_CELL_PARSE_1_USER_VIEW, SCENARIO_CELL_PARSE_2_USER_VIEW,
-                        SCENARIO_CELL_PARSE_3_USER_VIEW, SCENARIO_CELL_PARSE_4_USER_VIEW,
+                        SCENARIO_CELL_PARSE_1_USER_VIEW,
+                        SCENARIO_CELL_PARSE_2_USER_VIEW,
+                        SCENARIO_CELL_PARSE_3_USER_VIEW,
+                        SCENARIO_CELL_PARSE_4_USER_VIEW,
                         SCENARIO_CELL_PARSE_5_USER_VIEW,
-
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
@@ -56,7 +57,8 @@ from .scenarios import (SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
                         SCENARIO_SIGNAL_HOLE_J,
                         SCENARIO_SIGNAL_WUMPUS_J,
                         SCENARIO_SIGNAL_WUMPUS_HOLE_J,
-                        SCENARIO_SIGNAL_J_EMPTY)
+                        SCENARIO_SIGNAL_J_EMPTY,
+                        SCENARIO_WITH_OUT_GOLD)
 
 
 class TestGame(unittest.TestCase):
@@ -392,7 +394,7 @@ class TestGame(unittest.TestCase):
     @parameterized.expand([
         (5, 4, WUMPUS, False),
         (5, 6, HOLES, False),
-        (4, 5, PLAYER, True),
+        (4, 5, PLAYER, False),
         (6, 5, PLAYER, True),
     ])
     def test_move_action(self, row, col, expeted_item, is_playing):
@@ -490,3 +492,13 @@ class TestGame(unittest.TestCase):
         game = WumpusGame()
         game._board = board
         self.assertEqual(game.board, expeted_board)
+
+    @parameterized.expand([
+        (SCENARIO_WITH_OUT_GOLD, False, WIN)
+    ])
+    def test_count_golds(self, board_i, state_game, final_expresion):
+        game = WumpusGame()
+        game._board = board_i
+        game.count_golds()
+        self.assertEqual(game.is_playing, state_game)
+        self.assertEqual(game.result_of_game, final_expresion)
