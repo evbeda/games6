@@ -15,7 +15,8 @@ from wumpus.constants import (
     SCORE_GAME,
     MOVES,
     MESSAGE_NEXT_TURN,
-    MESSAGE_GAME_OVER
+    MESSAGE_GAME_OVER,
+    WIN
 )
 import random
 
@@ -107,6 +108,7 @@ class WumpusGame:
         self.move_player_transaction(row, col)
         self.modify_score(SCORE_GAME["gold_wumpus"])
         self.modify_score(SCORE_GAME["move"])
+        self.count_golds()
 
     def move_and_game_over(self, row, col):
 
@@ -219,3 +221,8 @@ class WumpusGame:
             user_board += '\n'
 
         return user_board
+
+    def count_golds(self):
+        golds = self.position_finder(GOLD)
+        if not golds:
+            self.game_over(WIN)
