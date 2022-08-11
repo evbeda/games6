@@ -297,6 +297,24 @@ class BackgammonGameTest(unittest.TestCase):
         points = game.points[current_player]
         self.assertEqual(points, expected)
 
+    @parameterized.expand([
+        ("BOARD")
+    ])
+    def test_show_board(self, expected):
+        board = self.backgammon.show_board()
+        self.assertEqual(board, expected)
+
+    @parameterized.expand([
+        (1, 2, "Los dados obtenidos son: [1, 2]"),
+        (3, 5, "Los dados obtenidos son [3, 5]"),
+        (6, 6, "Los dados obtenidos son: [6, 6]")
+    ])
+    def test_show_dices(self, first_dice, second_dice, expected):
+        self.backgammon.dice_one = first_dice
+        self.backgammon.dice_two = second_dice
+        result = self.backgammon.show_dices()
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
