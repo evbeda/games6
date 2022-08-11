@@ -128,11 +128,15 @@ class WumpusGame:
         self.result_of_game = result
 
     def shoot_arrow(self, row, col):
-        if WUMPUS in self._board[row][col]:
-            self._board[row][col] = VISITED_CELL
-            self.modify_score(SCORE_GAME["gold_wumpus"])
+        if self.swords > 0:
+            if WUMPUS in self._board[row][col]:
+                self._board[row][col] = VISITED_CELL
+                self.modify_score(SCORE_GAME["gold_wumpus"])
+            else:
+                self.modify_score(SCORE_GAME["lost_shoot"])
+            self.swords -= 1
         else:
-            self.modify_score(SCORE_GAME["lost_shoot"])
+            raise Exception("Error. You don't have any arrow")
 
     def move_player(self, row: int, col: int):
 
