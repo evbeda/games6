@@ -253,7 +253,7 @@ class BackgammonGame():
             return f"{resume} \n GAME OVER"
         else:
             resume = {
-                "board": "board",
+                "board": self.present_board(),
                 "dices": [self.dice_one, self.dice_two],
                 "points": self.points,
                 "number_of_turns": self.current_turn,
