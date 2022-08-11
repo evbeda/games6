@@ -20,15 +20,15 @@ class Othello():
 
     def get_piece_count(self, kind):
         return sum(
-            [ficha == kind for row in self._board for ficha in row])
+            [piece == kind for row in self._board for piece in row])
 
     def change_player(self):
         self.player_turn = self.get_opposite_piece()
 
     def get_opposite_piece(self):
-        aux = self.possibles_players.copy()
-        aux.remove(self.player_turn)
-        return aux[0]
+        if self.player_turn == self.possibles_players[0]:
+            return self.possibles_players[1]
+        return self.possibles_players[0]
 
     def determine_winner(self):
         if self.get_piece_count("W") == self.get_piece_count("B"):
@@ -43,30 +43,17 @@ class Othello():
             self._board[row][col] = self.player_turn
 
     def validate_move(self, row, col):
-        '''
-        Tells whether a move is valid or not.
-        Returns False if not valid,
-        Returns an list of lists, where the contained lists consist '''
         directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
         flips = []
-        for i in directions:
-            potential_flips = self.validate_direction(row, col, i)
+        for direction in directions:
+            potential_flips = self.validate_direction(row, col, direction)
             if potential_flips:
-                flips = flips + potential_flips
+                flips += potential_flips
         return flips
 
     def validate_direction(self, row, col, direction):
-        '''
-        used by validate_move()
-        gets row and col, direction is a string.
-        returns false is direction is not valid,
-        returns the array if direction is valid.
-        The returned array does not include the
-        position where we are placing a piece,
-        nor the last position that includes a
-        piece of the same color of the active player
-        '''
-        my_dictionary = {
+
+        direction_coordinates = {
             "n": [-1, 0],
             "ne": [-1, 1],
             "e": [0, 1],
@@ -76,8 +63,8 @@ class Othello():
             "w": [0, -1],
             "nw": [-1, -1]
         }
-        change = my_dictionary[direction]
-        myList = []
+        change = direction_coordinates[direction]
+        pieces_available_to_flip = []
         ending_same_color = False
 
         while (row + change[0] >= 0 and
@@ -90,9 +77,9 @@ class Othello():
             if self._board[row][col] == self.player_turn:
                 ending_same_color = True
                 break
-            myList.append((row, col))
+            pieces_available_to_flip.append((row, col))
 
-        return myList if ending_same_color else []
+        return pieces_available_to_flip if ending_same_color else []
 
     def all_possible_moves(self):
         moves = {}
