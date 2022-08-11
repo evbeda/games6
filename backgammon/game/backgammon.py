@@ -144,10 +144,14 @@ class BackgammonGame():
             return False
         return True
 
-    def is_valid_move(self, initial_pos, final_pos) -> bool:
+    def piece_move_off_board(self, final_pos):
+        if ((final_pos < 0 and self.player == BLACK)
+           or (final_pos > 23 and self.player == WHITE)):
+            return True
+        return False
 
-        if ((final_pos < 0 and self.player == 'BLACK')
-           or (final_pos > 23 and self.player == 'WHITE')):
+    def is_valid_move(self, initial_pos, final_pos) -> bool:
+        if self.piece_move_off_board(final_pos):
             return True
 
         enenmy_condition = self.less_than_two_enemies_in_position(final_pos)
@@ -167,10 +171,15 @@ class BackgammonGame():
     def change_position(self, old_position, new_position, col):
         self.board[old_position][col] -= 1
         self.board[new_position][col] += 1
+        self.increment_points(new_position)
 
     def can_capture(self, position):
         opposite_piece = 1 if self.player == WHITE else 0
         return self.board[position][opposite_piece] == 1
+
+    def increment_points(self, new_position):
+        if self.piece_move_off_board(new_position):
+            self.points[self.player] += 1
 
     def make_move(self, old_position, new_position):
         col = 0 if self.player == WHITE else 1
