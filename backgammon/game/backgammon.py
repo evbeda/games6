@@ -169,11 +169,18 @@ class BackgammonGame():
                              inter_position_player)
 
     def change_position(self, old_position, new_position, col):
+        if self.piece_move_off_board(new_position):
+            self.board[old_position][col] -= 1
+            self.increment_points(new_position)
+            return
+
         self.board[old_position][col] -= 1
         self.board[new_position][col] += 1
-        self.increment_points(new_position)
 
     def can_capture(self, position):
+        if self.piece_move_off_board(position):
+            return False
+
         opposite_piece = 1 if self.player == WHITE else 0
         return self.board[position][opposite_piece] == 1
 
@@ -185,7 +192,7 @@ class BackgammonGame():
 
         col = 0 if self.player == WHITE else 1
         move = abs(new_position - old_position)
-        if abs(old_position - new_position) in self.move_options:
+        if move in self.move_options:
             if (
                 self.is_valid_move(old_position, new_position)
                 and self.can_capture(new_position)
