@@ -22,7 +22,12 @@ from othello.scenarios_test import (
     all_poss_moves_exp_1,
     none_pos_exp_1,
     black_12_that_will_print,
-    white_12_that_will_print)
+    white_12_that_will_print,
+    play_board_1,
+    play_board_b_wins,
+    play_board_w_wins,
+    play_board_tie,
+    put_piece_board)
 
 
 class Test_othello(unittest.TestCase):
@@ -78,7 +83,7 @@ class Test_othello(unittest.TestCase):
     )
     def test_current_turn(self, it, expected):
         for _ in range(it):
-            self.game.next_turn()
+            self.game.change_player()
         self.assertEqual(expected, self.game.player_turn)
 
     @parameterized.expand(
@@ -123,7 +128,7 @@ class Test_othello(unittest.TestCase):
     )
     def test_opposite_piece(self, it, expected):
         for _ in range(it):
-            self.game.next_turn()
+            self.game.change_player()
         self.assertEqual(expected, self.game.get_opposite_piece())
 
     @parameterized.expand(
@@ -278,6 +283,41 @@ class Test_othello(unittest.TestCase):
         self.game._board = board
         result = self.game.board
         self.assertEqual(result, expected_result_as_string)
+
+    @parameterized.expand(
+        [
+            (play_board_tie, 7, 0, "W", "tie match"),
+            (play_board_1, 0, 0, "B", "Bad move of player B. Try again"),
+            (play_board_1, 2, 3, "B", "204"),
+            (play_board_b_wins, 0, 7, "B", "B wins the match"),
+            (play_board_w_wins, 7, 7, "W", "W wins the match"),
+
+
+        ]
+    )
+    def test_play(self, board, row, col, player, expected):
+        self.game.player_turn = player
+        self.game._board = self._convert_scenario_to_matrix(board)
+        result = self.game.play(row, col)
+        self.assertEqual(result, expected)
+
+    @parameterized.expand(
+        [
+            (True, "B", "Turn of Player B"),
+            (True, "W", "Turn of Player W"),
+            (False, "B", "Game Over"),
+        ]
+    )
+    def test_next_turn(self, state, player, expected):
+        self.game.is_playing = state
+        self.game.player_turn = player
+        result = self.game.next_turn()
+        self.assertEqual(result, expected)
+
+    def test_put_piece(self):
+        self.game.put_piece((0, 0))
+        expected = self._convert_scenario_to_matrix(put_piece_board)
+        self.assertEqual(self.game._board, expected)
 
 
 if __name__ == "__main__":

@@ -221,3 +221,58 @@ white_12_that_will_print = [
     '|W|W| | |W| | | | 7',
 
 ]
+play_board_1 = [
+    '        ',
+    '        ',
+    '        ',
+    '   WB   ',
+    '   BW   ',
+    '        ',
+    '        ',
+    '        ',
+]
+
+play_board_tie = [
+    'BBBBBBBB',
+    'BWWBWBBB',
+    'BWWWBBWB',
+    'BWWWBBWB',
+    'WWBBWBWB',
+    'BWBWWBWB',
+    'BWWBBWWB',
+    ' WWWWWWB',
+]
+
+
+play_board_b_wins = [
+    'BBBBBBB ',
+    'BWWBBBBW',
+    'BWWWBBWW',
+    'BWWWBBWW',
+    'WWBBWBWW',
+    'WWBWWBWW',
+    'WWWBBWWW',
+    'WWWWWWWB',
+]
+
+play_board_w_wins = [
+    'BBBBBBBW',
+    'BWWBBBBB',
+    'BWWWBBWB',
+    'BWWWBBWB',
+    'WWBBWBWB',
+    'WWBWWBWB',
+    'WWWBBBBB',
+    'WWWWWWW ',
+]
+
+put_piece_board = [
+    'B       ',
+    '        ',
+    '        ',
+    '   WB   ',
+    '   BW   ',
+    '        ',
+    '        ',
+    '        ',
+]
