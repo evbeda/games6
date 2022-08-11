@@ -11,6 +11,10 @@ from .constants import (
 
 class BackgammonGame():
 
+    name = "Backgammon"
+    input_args = 2
+    args_are_ints = True
+
     def __init__(self):
 
         self.board = [
@@ -27,6 +31,7 @@ class BackgammonGame():
         self.move_options = []
         self.current_turn = 0
         self.points = {BLACK: 0, WHITE: 0}
+        self.is_playing = True
 
     def available_pieces(self, side):
         color = 0 if side == WHITE else 1
@@ -249,3 +254,52 @@ class BackgammonGame():
                 "piece_captured": self.expelled
             }
             return f"{resume} \n {MESSAGE_FP} {MESSAGE_SP}"
+
+    def add_piece(self, color, iteration, position, pboard):
+        line = list(pboard[iteration])
+        line[position] = color
+        new_line = "".join(line)
+        pboard[iteration] = new_line
+
+    def iterate(self, pieces_amount, position, pboard, index, color):
+        for iter in range(pieces_amount):
+            if index <= 11:
+                line = 1 + iter
+            else:
+                line = 11 - iter
+            self.add_piece(color, line, position, pboard)
+
+    def present_board(self):
+
+        aux_board = self.board[::-1]
+
+        pboard = [
+            "131415161718 192021222324",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "                         ",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "| | | | | |   | | | | | |",
+            "1211109 8 7   6 5 4 3 2 1"
+        ]
+
+        for index, i in enumerate(aux_board):
+            if i[0] > 0 or i[1] > 0:
+                color = "W" if i[0] > i[1] else "B"
+                amount = i[0] if color == 'W' else i[1]
+                if index <= 5:
+                    position = -(index * 2 + 1)
+                elif index <= 11:
+                    position = -((index - 6) * 2 + 15)
+                elif index <= 17:
+                    position = (index - 12) * 2
+                else:
+                    position = (index - 18) * 2 + 14
+                self.iterate(amount, position, pboard, index, color)
+        return pboard
