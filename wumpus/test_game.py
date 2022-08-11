@@ -242,19 +242,32 @@ class TestGame(unittest.TestCase):
 
     @parameterized.expand([  # parameters of shoot_arrow
         (SCENARIO_SHOOT_WUMPUS_INIT, 1000, 4, 4,
-         SCENARIO_SHOOT_WUMPUS_FINAL, 2000),
+         SCENARIO_SHOOT_WUMPUS_FINAL, 2000, 10, 9),
         (SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT, 1000, 4, 4,
-         SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN, 2000),
+         SCENARIO_SHOOT_WUMPUS_SIGNAL_FIN, 2000, 8, 7),
         (SCENARIO_SHOOT_FAIL_INIT, 1000, 4, 4,
-         SCENARIO_SHOOT_FAIL_INIT, 950)
+         SCENARIO_SHOOT_FAIL_INIT, 950, 1, 0)
     ])
     def test_shoot_arrow(self, initial_board, initial_score,
-                         row, col, final_board, final_score):
+                         row, col, final_board, final_score,
+                         quantity_rows, final_q_row):
         self.game._board = initial_board
         self.game.score = initial_score
+        self.game.swords = quantity_rows
         self.game.shoot_arrow(row, col)
         self.assertEqual(self.game._board, final_board)
         self.assertEqual(self.game.score, final_score)
+        self.assertEqual(self.game.swords, final_q_row)
+
+    @parameterized.expand([  # parameters of shoot_arrow
+        (SCENARIO_SHOOT_WUMPUS_INIT, 4, 4, 0),
+    ])
+    def test_shoot_arrow_exception(self, initial_board,
+                                   row, col, quantity_rows):
+        self.game._board = initial_board
+        self.game.swords = quantity_rows
+        with self.assertRaises(Exception):
+            self.game.shoot_arrow(row, col)
 
     @parameterized.expand([
         (5, 4),
