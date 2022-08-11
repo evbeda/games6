@@ -26,7 +26,7 @@ VISITED_CELL = ' '
 VISITED_CELL_USER = '   '
 HIDE_CELL = '###'
 PLAYER_CELL = ' J '
-
+EMPTY_CELL = ''
 
 MESSAGE_NEXT_TURN = "Please select your next move. \n"\
                     " Use 'z' for shoot a row or 'm' to move \n"\
