@@ -7,7 +7,7 @@ from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
                         SCORE_GAME, VISITED_CELL, VISITED_CELL_USER, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
                         ROW, MOVES, MOVES_DIRECTION,
-                        MESSAGE_NEXT_TURN, MESSAGE_GAME_OVER)
+                        MESSAGE_NEXT_TURN)
 
 
 from wumpus.game import WumpusGame
@@ -233,14 +233,16 @@ class TestGame(unittest.TestCase):
         self.assertEqual(final_score, self.game.score)
 
     @parameterized.expand([
-        (WIN),
-        (LOSE),
+        (WIN, '', 'CONGRATS!! You WIN!!! Your final score is '),
+        (LOSE, WUMPUS, "Bad Luck! You lose. You have eaten by a Wumpus. Your final score is "),
+        (LOSE, HOLES, "Bad Luck! You lose. You falled into a hole. Your final score is "),
     ])
-    def test_game_over(self, result):
+    def test_game_over(self, result, reason, expected_message):
         game = WumpusGame()
-        game.game_over(result)
+        game.game_over(result, reason)
         self.assertEqual(game.is_playing, False)
         self.assertEqual(game.result_of_game, result)
+        self.assertEqual(game.message_game_over, expected_message)
 
     @parameterized.expand([  # parameters of shoot_arrow
         (SCENARIO_SHOOT_WUMPUS_INIT, 1000, 4, 4,
@@ -284,7 +286,7 @@ class TestGame(unittest.TestCase):
 
         content_destination_cell = game._board[row][col]
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
-        game.move_and_game_over(row, col)
+        game.move_and_game_over(HOLES)
         player_in_board = game.position_finder(PLAYER)
 
         self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
@@ -305,7 +307,7 @@ class TestGame(unittest.TestCase):
         game._board = deepcopy(SCENARIO_EATEN_BY_WUMPUS)
         content_destination_cell = game._board[row][col]
         old_player_row, old_player_col = game.position_finder(PLAYER)[0]
-        game.move_and_game_over(row, col)
+        game.move_and_game_over(WUMPUS)
         player_in_board = game.position_finder(PLAYER)
 
         self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
@@ -470,15 +472,18 @@ class TestGame(unittest.TestCase):
         self.assertEqual(message, final_message)
 
     @parameterized.expand([
-        (False, 1000, MESSAGE_GAME_OVER),
+        (WIN, '', 'CONGRATS!! You WIN!!! Your final score is 1000'),
+        (LOSE, WUMPUS, "Bad Luck! You lose. You have eaten by a Wumpus. Your final score is 1000"),
+        (LOSE, HOLES, "Bad Luck! You lose. You falled into a hole. Your final score is 1000"),
     ])
-    def test_next_turn_game_over(self, play_condition, score, mssg):
+    def test_next_turn_game_over(self, result, reason, expected_msg):
+
         game = WumpusGame()
-        game.is_playing = play_condition
-        game.score = score
-        final_message = mssg + str(game.score)
+        game.score = 1000
+
+        game.game_over(result, reason)
         message = game.next_turn()
-        self.assertEqual(message, final_message)
+        self.assertEqual(message, expected_msg)
 
     @parameterized.expand([
         (SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_1_USER_VIEW),
