@@ -1,5 +1,5 @@
 import random
-from .constants import BLACK, WHITE
+from .constants import BLACK, WHITE, MESSAGE_FP, MESSAGE_SP
 
 
 class BackgammonGame():
@@ -200,10 +200,8 @@ class BackgammonGame():
             return False
 
     def check_game_status(self):
-
         if self.current_turn == 40:
             self.game_active_change()
-
         elif self.current_turn < 40 and (self.points[BLACK] == 15
                                          or self.points[WHITE] == 15):
             self.game_active_change()
@@ -221,8 +219,19 @@ class BackgammonGame():
         actual_position = 0 if self.player == WHITE else 23
         self.make_move(actual_position, new_position)
 
-    def show_board(self):
-        return "BOARD"
-
-    def show_dices(self):
-        return f"Los dados obtenidos son: {[self.dice_one, self.dice_two]}"
+    def next_turn(self):
+        if not self.active_game:
+            resume = {
+                "result": self.get_current_winner(),
+                "point": self.points
+            }
+            return f"{resume} \n GAME OVER"
+        else:
+            resume = {
+                "board": "board",
+                "dices": [self.dice_one, self.dice_two],
+                "points": self.points,
+                "number_of_turns": self.current_turn,
+                "piece_captured": self.expelled
+            }
+            return f"{resume} \n {MESSAGE_FP} {MESSAGE_SP}"

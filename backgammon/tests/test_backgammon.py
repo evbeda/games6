@@ -1,7 +1,13 @@
 import unittest
 from parameterized import parameterized
 from backgammon.game.backgammon import BackgammonGame
-from backgammon.tests.test_scenarios import initial_board, board_1
+from backgammon.tests.test_scenarios import (
+    initial_board,
+    board_1,
+    next_turn_active,
+    next_turn_message_B,
+    next_turn_message_W,
+    next_turn_message_TIE)
 from unittest.mock import patch
 from copy import deepcopy
 from backgammon.game.constants import BLACK, WHITE
@@ -298,21 +304,45 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(points, expected)
 
     @parameterized.expand([
-        ("BOARD")
+        (True, 1, 2,
+            {
+                "BLACK": 3, "WHITE": 2
+            },
+            {
+                "BLACK": 1, "WHITE": 0
+            }, 20, BLACK, next_turn_active),
+        (False, 3, 5,
+            {
+                "BLACK": 15, "WHITE": 2
+            },
+            {
+                "BLACK": 1, "WHITE": 0
+            }, 20, BLACK, next_turn_message_B),
+        (False, 3, 5,
+            {
+                "BLACK": 10, "WHITE": 15
+            },
+            {
+                "BLACK": 1, "WHITE": 0
+            }, 20, BLACK, next_turn_message_W),
+        (False, 3, 5,
+            {
+                "BLACK": 15, "WHITE": 15
+            },
+            {
+                "BLACK": 1, "WHITE": 0
+            }, 20, WHITE, next_turn_message_TIE),
     ])
-    def test_show_board(self, expected):
-        board = self.backgammon.show_board()
-        self.assertEqual(board, expected)
-
-    @parameterized.expand([
-        (1, 2, "Los dados obtenidos son: [1, 2]"),
-        (3, 5, "Los dados obtenidos son [3, 5]"),
-        (6, 6, "Los dados obtenidos son: [6, 6]")
-    ])
-    def test_show_dices(self, first_dice, second_dice, expected):
+    def test_next_turn(self, is_active, first_dice, second_dice, points,
+                       captured, turn, current_player, expected):
+        self.backgammon.active_game = is_active
+        self.backgammon.player = current_player
         self.backgammon.dice_one = first_dice
         self.backgammon.dice_two = second_dice
-        result = self.backgammon.show_dices()
+        self.backgammon.points = points
+        self.backgammon.expelled = captured
+        self.backgammon.current_turn = turn
+        result = self.backgammon.next_turn()
         self.assertEqual(result, expected)
 
 
