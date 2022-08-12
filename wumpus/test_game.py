@@ -12,7 +12,7 @@ from .constants import (EMPTY_CELL, GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER
 
 from wumpus.game import WumpusGame
 
-from .scenarios import (MEMORY_TEST, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+from .scenarios import (INITIAL_BIG_FAIL_BOARD, MEMORY_TEST, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
 
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
                         SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
@@ -62,7 +62,8 @@ from .scenarios import (MEMORY_TEST, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARI
                         SCENARIO_FIND_POSITION,
                         SCENARIO_FIND_POSITION_HOLES,
                         SCENARIO_FIND_POSITION_H_BORDER,
-                        SCENARIO_FIND_POS_H_BOR_LEFT)
+                        SCENARIO_FIND_POS_H_BOR_LEFT,
+                        RECURSIVE, INITIAL_FAIL_BOARD)
 
 
 class TestGame(unittest.TestCase):
@@ -555,9 +556,11 @@ class TestGame(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (1, 1, SCENARIO_FIND_POSITION, True)
+        ((7, 7), RECURSIVE, True),
+        ((4, 4), INITIAL_FAIL_BOARD, False),
+        ((7, 7), INITIAL_BIG_FAIL_BOARD, False),
     ])
-    def test_find_gold_way(self, row, col, board, bool_return):
+    def test_find_gold_way(self, gold_position, board, bool_return):
         game = WumpusGame()
         game._board = board
-        self.assertEqual(game._find_gold_way(row, col, board), bool_return)
+        self.assertEqual(game._find_gold_recursive(0, 0, gold_position, board), bool_return)
