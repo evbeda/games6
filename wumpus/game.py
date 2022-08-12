@@ -13,7 +13,6 @@ from wumpus.constants import (
     WUMPUS,
     SWORDS_QUANTITY,
     PLAYER,
-    ITEMS_DICTIONARY,
     SCORE_GAME,
     MOVES,
     MESSAGE_NEXT_TURN,
@@ -23,12 +22,18 @@ import random
 
 class WumpusGame:
 
+    name = 'Wumpus'
+    input_args = 2
+    input_are_ints = False
+
     def __init__(self) -> None:
         self.is_playing = True
         self._board = [['' for j in range(COL)] for i in range(ROW)]
-        self.player = self.place_player()
-        self.gold = self.place_item(GOLD, GOLD_QUANTITY)
-        self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
+        self.place_player()
+
+        self.place_item(GOLD, GOLD_QUANTITY)
+        self.place_item(WUMPUS, WUMPUS_QUANTITY)
+        self.place_item(HOLES, WUMPUS_QUANTITY)
         self.swords = SWORDS_QUANTITY
         self.collected_gold = 0
         self.visited = ()
@@ -45,7 +50,13 @@ class WumpusGame:
             while True:  # busca hasta encontrar una posicion libre
                 row = random.randint(0, ROW - 1)
                 col = random.randint(0, COL - 1)
-                if self.check_is_empty(row, col):
+
+                valid = self.check_is_empty(row, col)
+
+                if item == HOLES and valid:
+                    valid = self._valid_hole(row, col)
+
+                if valid:
                     self._board[row][col] = item
                     break
 
@@ -87,23 +98,14 @@ class WumpusGame:
 
         if row - 1 < 0:
             del (positions['nort'])
-        if row + 1 > 7:
+        if row + 1 >= ROW:
             del (positions['sout'])
-        if col + 1 > 7:
+        if col + 1 >= COL:
             del (positions['east'])
         if col - 1 < 0:
             del (positions['west'])
 
         return list(positions.values())
-
-    def find_signal_indicator(self, item):
-        position_items = self.position_finder(item)
-        position_signals = []
-        for pos in position_items:
-            list_int = self._posible_position(pos[0], pos[1])
-            for tuple in list_int:
-                position_signals.append(tuple)
-        return position_signals
 
     def move_and_win_gold(self, row, col):
         self.delete_item_on_position(GOLD, row, col)
@@ -117,12 +119,6 @@ class WumpusGame:
         player_row, player_col = self.position_finder(PLAYER)[0]
         self._board[player_row][player_col] = VISITED_CELL
         self.game_over(LOSE, reason)
-
-    def print_signals(self, item):
-        positions = self.find_signal_indicator(item)
-        for row, col in positions:
-            if ITEMS_DICTIONARY[item] not in self._board[row][col]:
-                self._board[row][col] += ITEMS_DICTIONARY[item]
 
     def modify_score(self, score_to_modify):
         self.score += score_to_modify
@@ -199,6 +195,7 @@ class WumpusGame:
         wumpus_flag = False
         hole_flag = False
         for p_row, p_col in positions:
+
             if WUMPUS in self._board[p_row][p_col]:
                 wumpus_flag = True
             if HOLES in self._board[p_row][p_col]:
@@ -256,30 +253,28 @@ class WumpusGame:
         final_positions.sort()
         return final_positions
 
-    def _delete_gold_and_wumpus(self, board) -> list:
-        game = WumpusGame()
-        game._board = board
-
-        for item in [GOLD, WUMPUS, PLAYER]:
-            for row, col in game.position_finder(item):
-                game.delete_item_on_position(item, row, col)
-        board = deepcopy(game._board)
-        return board
-
-    def _there_is_valid_moves(self, row, col):
-        return len(self.memory[(row, col)]) > 0
-
-    def _find_gold_recursive(self, row, col, gold_position, board):
+    def _find_gold_recursive(self, row, col, gold_position, board, visited):
+        visited.append((row, col,))
         if (row, col) == gold_position:
             return True
-        possible_moves = self._find_posible_moves_gold(row, col, board)
-        for element in self.visited:
-            if element in possible_moves:
-                possible_moves.remove(element)
+        possible_moves = self._posible_position(row, col)
         if not possible_moves:
             return False
         for row_next, col_next in possible_moves:
-            self.visited = self.visited + ((row, col),)
-            if self._find_gold_recursive(row_next, col_next, gold_position, board):
+            if (
+                (row_next, col_next) not in visited and
+                board[row_next][col_next] != HOLES and
+                self._find_gold_recursive(row_next, col_next, gold_position, board, visited)
+            ):
                 return True
         return False
+
+    def _valid_hole(self, row, col) -> bool:
+
+        aux_board = deepcopy(self._board)
+        aux_board[row][col] = HOLES
+        golds = self.position_finder(GOLD)
+        for gold_position in golds:
+            if not self._find_gold_recursive(0, 0, gold_position, aux_board, []):
+                return False
+        return True

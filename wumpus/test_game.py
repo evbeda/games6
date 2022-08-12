@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from parameterized import parameterized
 
-from .constants import (EMPTY_CELL, GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
+from .constants import (GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER,
                         SCORE_GAME, VISITED_CELL, VISITED_CELL_USER, WIN,
                         WUMPUS, WUMPUS_QUANTITY, HOLES_QUANTITY, HOLES, COL,
                         ROW, MOVES, MOVES_DIRECTION,
@@ -12,7 +12,7 @@ from .constants import (EMPTY_CELL, GOLD, GOLD_QUANTITY, HIDE_CELL, LOSE, PLAYER
 
 from wumpus.game import WumpusGame
 
-from .scenarios import (INITIAL_BIG_FAIL_BOARD, MEMORY_TEST, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
+from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO_3, SCENARIO_4,
 
                         SCENARIO_CELL_PARSE_1, SCENARIO_CELL_PARSE_2,
                         SCENARIO_CELL_PARSE_3, SCENARIO_CELL_PARSE_4,
@@ -21,30 +21,14 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, MEMORY_TEST, SCENARIO_1, SCENARI
                         SCENARIO_CELL_PARSE_2_USER_VIEW,
                         SCENARIO_CELL_PARSE_3_USER_VIEW,
                         SCENARIO_CELL_PARSE_4_USER_VIEW,
-                        SCENARIO_CELL_PARSE_5_USER_VIEW, SCENARIO_DELETE,
+                        SCENARIO_CELL_PARSE_5_USER_VIEW,
                         SCENARIO_EATEN_BY_WUMPUS,
                         SCENARIO_MOVE_ACTION,
                         SCENARIO_5,
                         SCENARIO_FALL_IN_HOLES,
                         SCENARIO_TEST_GOLD,
-                        SCENARIO_DANGER_SIGNAL_HOLES,
-                        SCENARIO_DANGER_LEFT_DOWN, SCENARIO_DANGER_RIGTH_DOWN,
-                        SCENARIO_DANGER_RIGTH_UP, SCENARIO_DANGER_LEFT,
-                        SCENARIO_DANGER_RIGTH, SCENARIO_DANGER_UP,
-                        SCENARIO_DANGER_DOWN, SCENARIO_TEST_DELETE,
+                        SCENARIO_TEST_DELETE,
                         SCENARIO_WIN_GOLD,
-                        SCENARIO_DANGER_COMPLETE_FINAL,
-                        SCENARIO_DANGER_COMPLETE_INIT,
-                        SCENARIO_DANGER_LEFT_DOWN_INIT,
-                        SCENARIO_DANGER_LEFT_DOWN_FINAL,
-                        SCENARIO_DANGER_RIGTH_DOWN_INI,
-                        SCENARIO_DANGER_RIGTH_DOWN_FINAL,
-                        SCENARIO_DANGER_DOWN_INITI,
-                        SCENARIO_DANGER_DOWN_FINAL,
-                        SCENARIO_CROSS_ELEMENT_INIT,
-                        SCENARIO_CROSS_ELEMENT_FINAL,
-                        SCENARIO_CROSS_DIF_ELEMENT_INI,
-                        SCENARIO_CROSS_DIF_ELEMENT_FIN,
                         SCENARIO_SHOOT_WUMPUS_INIT,
                         SCENARIO_SHOOT_WUMPUS_FINAL,
                         SCENARIO_SHOOT_WUMPUS_SIGNAL_INIT,
@@ -63,7 +47,8 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, MEMORY_TEST, SCENARIO_1, SCENARI
                         SCENARIO_FIND_POSITION_HOLES,
                         SCENARIO_FIND_POSITION_H_BORDER,
                         SCENARIO_FIND_POS_H_BOR_LEFT,
-                        RECURSIVE, INITIAL_FAIL_BOARD)
+                        RECURSIVE, INITIAL_FAIL_BOARD,
+                        RECURSIVE_SIDE, VALID_HOLE_SCENARIO)
 
 
 class TestGame(unittest.TestCase):
@@ -171,20 +156,6 @@ class TestGame(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (SCENARIO_DANGER_SIGNAL_HOLES, [(0, 1), (2, 1), (1, 2), (1, 0)]),
-        (SCENARIO_DANGER_LEFT_DOWN, [(6, 0), (7, 1)]),
-        (SCENARIO_DANGER_RIGTH_DOWN, [(6, 7), (7, 6)]),
-        (SCENARIO_DANGER_RIGTH_UP, [(1, 7), (0, 6)]),
-        (SCENARIO_DANGER_LEFT, [(3, 0), (5, 0), (4, 1)]),
-        (SCENARIO_DANGER_RIGTH, [(3, 7), (5, 7), (4, 6)]),
-        (SCENARIO_DANGER_UP, [(1, 4), (0, 5), (0, 3)]),
-        (SCENARIO_DANGER_DOWN, [(6, 4), (7, 5), (7, 3)]),
-    ])
-    def test_find_signal_indicator(self, board, positions):
-        self.game._board = board
-        self.assertEqual(self.game.find_signal_indicator(HOLES), positions)
-
-    @parameterized.expand([
         (5, 4),
         (5, 6),
         (4, 5),
@@ -201,31 +172,6 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game._board[old_player_row][old_player_col], VISITED_CELL)
         self.assertTrue(GOLD not in game._board[row][col])
         self.assertEqual(len(game.position_finder(GOLD)), 3)
-
-    @parameterized.expand([
-        (SCENARIO_DANGER_DOWN_INITI, WUMPUS, SCENARIO_DANGER_DOWN_FINAL),
-        (SCENARIO_DANGER_COMPLETE_INIT, HOLES, SCENARIO_DANGER_COMPLETE_FINAL),
-        (SCENARIO_DANGER_LEFT_DOWN_INIT, WUMPUS,
-            SCENARIO_DANGER_LEFT_DOWN_FINAL),
-        (SCENARIO_DANGER_RIGTH_DOWN_INI, WUMPUS,
-            SCENARIO_DANGER_RIGTH_DOWN_FINAL),
-        (SCENARIO_CROSS_ELEMENT_INIT, WUMPUS,
-            SCENARIO_CROSS_ELEMENT_FINAL),
-        (SCENARIO_CROSS_ELEMENT_INIT, WUMPUS,
-            SCENARIO_CROSS_ELEMENT_FINAL)
-    ])
-    def test_print_signals(self, board_init, item, final_board):
-        test_game = WumpusGame()
-        test_game._board = board_init
-        test_game.print_signals(item)
-        self.assertEqual(test_game._board, final_board)
-
-    def test_print_signals_dif(self):
-        test_game = WumpusGame()
-        test_game._board = SCENARIO_CROSS_DIF_ELEMENT_INI
-        test_game.print_signals(HOLES)
-        test_game.print_signals(WUMPUS)
-        self.assertEqual(test_game._board, SCENARIO_CROSS_DIF_ELEMENT_FIN)
 
     @parameterized.expand([
         (1000, 2000, SCORE_GAME["gold_wumpus"]),
@@ -526,41 +472,24 @@ class TestGame(unittest.TestCase):
         find_list = game._find_posible_moves_gold(row, col, board)
         self.assertEqual(find_list, position_list)
 
-    def test_delete_gold_and_wumpus(self):
-
-        game = WumpusGame()
-        board = game._delete_gold_and_wumpus(deepcopy(SCENARIO_DELETE))
-
-        self.assertEqual(board[5][5], EMPTY_CELL)
-        self.assertEqual(board[5][4], EMPTY_CELL)
-        self.assertEqual(board[5][6], EMPTY_CELL)
-        self.assertEqual(board[4][4], EMPTY_CELL)
-        self.assertEqual(board[6][5], EMPTY_CELL)
-        self.assertEqual(board[7][3], HOLES)
-        self.assertEqual(board[7][4], HOLES)
-        self.assertEqual(board[7][5], HOLES)
-        self.assertEqual(board[7][6], HOLES)
-
-    @parameterized.expand([
-        (0, 0, False),
-        (1, 0, True),
-        (4, 5, True),
-        (3, 4, True),
-        (6, 6, False),
-    ])
-    def test_there_is_valid_moves(self, row, col, expected):
-
-        game = WumpusGame()
-        game.memory = MEMORY_TEST
-        result = game._there_is_valid_moves(row, col)
-        self.assertEqual(result, expected)
-
     @parameterized.expand([
         ((7, 7), RECURSIVE, True),
         ((4, 4), INITIAL_FAIL_BOARD, False),
         ((7, 7), INITIAL_BIG_FAIL_BOARD, False),
+        ((2, 7), RECURSIVE_SIDE, True),
     ])
     def test_find_gold_way(self, gold_position, board, bool_return):
         game = WumpusGame()
         game._board = board
-        self.assertEqual(game._find_gold_recursive(0, 0, gold_position, board), bool_return)
+        self.assertEqual(game._find_gold_recursive(0, 0, gold_position, board, []), bool_return)
+
+    @parameterized.expand([
+        (7, 10, VALID_HOLE_SCENARIO, True),
+        (7, 4, VALID_HOLE_SCENARIO, False),
+        (7, 5, VALID_HOLE_SCENARIO, False),
+        (7, 3, VALID_HOLE_SCENARIO, False),
+    ])
+    def test_valid_hole(self, row, col, board, expected):
+        game = WumpusGame()
+        game._board = board
+        self.assertEqual(game._valid_hole(row, col), expected)
