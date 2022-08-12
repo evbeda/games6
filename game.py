@@ -1,5 +1,6 @@
 from guess_number_game.guess_number_game import GuessNumberGame
 from othello.othello_game import Othello
+from wumpus.game import WumpusGame
 
 
 class Game(object):
@@ -9,6 +10,7 @@ class Game(object):
         self.games = [
             GuessNumberGame,
             Othello,
+            WumpusGame
         ]
 
     def output(self, text):
