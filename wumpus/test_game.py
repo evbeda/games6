@@ -502,7 +502,7 @@ class TestGame(unittest.TestCase):
         game = WumpusGame()
         game._board = board
         self.assertEqual(game._valid_hole(row, col), expected)
-        
+
     @parameterized.expand([
         ("m", "w", SCENARIO_PLAY_MOVE, SCENARIO_PLAY_MOVE_FINAL, True, -10),
         ("z", "w", SCENARIO_PLAY_SHOOT, SCENARIO_PLAY_SHOOT, True, -50),
