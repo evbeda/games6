@@ -17,7 +17,7 @@ class BackgammonGame():
 
     def __init__(self):
 
-        self.board = [
+        self.board_matrix = [
             [2, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 5],
             [0, 0], [0, 3], [0, 0], [0, 0], [0, 0], [5, 0],
             [0, 5], [0, 0], [0, 0], [0, 0], [3, 0], [0, 0],
@@ -26,8 +26,8 @@ class BackgammonGame():
         self.expelled = {BLACK: 0, WHITE: 0}
         self.player = random.choice([WHITE, BLACK])
         self.active_game = True
-        self.dice_one = 0
-        self.dice_two = 0
+        self.dice_one = random.randint(1, 6)
+        self.dice_two = random.randint(1, 6)
         self.move_options = []
         self.current_turn = 0
         self.points = {BLACK: 0, WHITE: 0}
@@ -36,7 +36,7 @@ class BackgammonGame():
     def available_pieces(self, side):
         color = 0 if side == WHITE else 1
         result = []
-        for index, pyramid in enumerate(self.board):
+        for index, pyramid in enumerate(self.board_matrix):
             if pyramid[color]:
                 result.append(index)
         return result
@@ -138,21 +138,32 @@ class BackgammonGame():
     def opposite(self):
         return BLACK if self.player == WHITE else WHITE
 
+    # def play(self, from_position, to_position):
+    #     self.check_game_status()
+    #     if self.active_game:
+    #         if self.move_options():
+    #             if from_position not in range(0, 24):
+    #                 self.insert_captured_piece()
+    #             else:
+    #                 self.make_move(from_position, to_position)
+    #         else:
+    #             self.change_active_player()
+
     def change_active_player(self):
         self.player = self.opposite
 
     def less_than_two_enemies_in_position(self, position):
         index_opp = 0 if self.opposite == WHITE else 1
-        result = True if self.board[position][index_opp] < 2 else False
+        result = True if self.board_matrix[position][index_opp] < 2 else False
         return result
 
     def less_than_five_own_pieces(self, position):
         side = 0 if self.player == WHITE else 1
-        return self.board[position][side] < 5
+        return self.board_matrix[position][side] < 5
 
     def at_least_one_piece_of_the_player(self, position):
         player_piece = 0 if self.player == WHITE else 1
-        if not self.board[position][player_piece]:
+        if not self.board_matrix[position][player_piece]:
             return False
         return True
 
@@ -162,10 +173,9 @@ class BackgammonGame():
             return True
         return False
 
-    def can_insert_captured_piece(self, initial_pos):
-        if not self.at_least_one_piece_of_the_player(initial_pos):
-            if self.expelled[self.player] > 0:
-                return True
+    def can_insert_captured_piece(self):
+        if self.expelled[self.player] > 0:
+            return True
         return False
 
     def is_valid_move(self, initial_pos, final_pos) -> bool:
@@ -181,26 +191,27 @@ class BackgammonGame():
     def capture_opposite_piece(self, actual_position, new_position):
         inter_position_player = 0 if self.player == WHITE else 1
         inter_position_to_capture = 1 if self.player == WHITE else 0
-        self.board[new_position][inter_position_to_capture] -= 1
+        self.board_matrix[new_position][inter_position_to_capture] -= 1
         self.expelled[self.opposite] += 1
         self.change_position(actual_position, new_position,
                              inter_position_player)
 
     def change_position(self, old_position, new_position, col):
         if self.piece_move_off_board(new_position):
-            self.board[old_position][col] -= 1
+            self.board_matrix[old_position][col] -= 1
             self.increment_points(new_position)
             return
-
-        self.board[old_position][col] -= 1
-        self.board[new_position][col] += 1
+        if old_position < 0 or old_position > 23:
+            self.board_matrix[new_position][col] += 1
+            return
+        self.board_matrix[old_position][col] -= 1
+        self.board_matrix[new_position][col] += 1
 
     def can_capture(self, position):
         if self.piece_move_off_board(position):
             return False
-
         opposite_piece = 1 if self.player == WHITE else 0
-        return self.board[position][opposite_piece] == 1
+        return self.board_matrix[position][opposite_piece] == 1
 
     def increment_points(self, new_position):
         if self.piece_move_off_board(new_position):
@@ -221,7 +232,7 @@ class BackgammonGame():
                 self.change_position(old_position, new_position, col)
                 self.update_move_options(move)
                 return True
-            return False
+        return False
 
     def check_game_status(self):
         if self.current_turn == 40:
@@ -239,8 +250,8 @@ class BackgammonGame():
             return TIE
 
     def insert_captured_piece(self, new_position):
-        actual_position = 0 if self.player == WHITE else 23
-        if self.can_insert_captured_piece(actual_position):
+        actual_position = -1 if self.player == WHITE else 24
+        if self.can_insert_captured_piece():
             self.expelled[self.player] -= 1
             self.make_move(actual_position, new_position)
 
@@ -253,13 +264,13 @@ class BackgammonGame():
             return f"{resume} \n GAME OVER"
         else:
             resume = {
-                "board": self.present_board(),
                 "dices": [self.dice_one, self.dice_two],
+                "move_options": self.move_options,
                 "points": self.points,
                 "number_of_turns": self.current_turn,
                 "piece_captured": self.expelled
             }
-            return f"{resume} \n {MESSAGE_FP} {MESSAGE_SP}"
+            return f"{self.player} turn. {resume} \n {MESSAGE_FP} {MESSAGE_SP}"
 
     def add_piece(self, color, iteration, position, pboard):
         line = list(pboard[iteration])
@@ -285,9 +296,9 @@ class BackgammonGame():
         else:
             return (index - 18) * 2 + 14
 
-    def present_board(self):
-
-        aux_board = self.board[::-1]
+    @property
+    def board(self):
+        aux_board = self.board_matrix[::-1]
 
         pboard = [
             "131415161718 192021222324",
@@ -312,3 +323,15 @@ class BackgammonGame():
                 position = self.calculate_position(index)
                 self.iterate(amount, position, pboard, index, color)
         return pboard
+
+    def all_moves(self, player_position):
+        all_moves = {}
+        move_options = self.get_move_options()
+        for index, element in enumerate(self.board_matrix):
+            if element[player_position] > 0:
+                all_moves[str(index)] = list(map(
+                    lambda dice:
+                        dice + index if player_position == 0
+                        else index - dice,
+                        move_options))
+        return all_moves
