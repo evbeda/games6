@@ -76,7 +76,7 @@ class WumpusGame:
 
         row, col = self.position_finder(PLAYER)[0]
         self._board[row][col] = VISITED_CELL
-        self._board[new_row][new_col] += PLAYER
+        self._board[new_row][new_col] = PLAYER
         self.modify_score(SCORE_GAME["move"])
 
     def there_is_item(self, item, row: int, col: int) -> bool:
@@ -277,4 +277,11 @@ class WumpusGame:
         return True
 
     def play(self, action, direction):
-        self.manager_move(action, direction)
+        try:
+            self.manager_move(action, direction)
+            result = f"Your score is {str(self.score)}"
+            if not self.is_playing:
+                result = self.message_game_over + str(self.score)
+        except Exception:
+            return "Bad move"
+        return result
