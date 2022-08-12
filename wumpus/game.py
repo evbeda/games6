@@ -31,7 +31,7 @@ class WumpusGame:
         self.wumpus = self.place_item(WUMPUS, WUMPUS_QUANTITY)
         self.swords = SWORDS_QUANTITY
         self.collected_gold = 0
-
+        self.visited = ()
         self.score = 0
         self.result_of_game = str()
         self.message_game_over = str()
@@ -269,26 +269,17 @@ class WumpusGame:
     def _there_is_valid_moves(self, row, col):
         return len(self.memory[(row, col)]) > 0
 
-    def see_goal()
-
-    def _find_gold_way(self, row, col, board) -> bool:
-
+    def _find_gold_recursive(self, row, col, gold_position, board):
+        if (row, col) == gold_position:
+            return True
         possible_moves = self._find_posible_moves_gold(row, col, board)
-        self.memory.update(
-            {(row, col): possible_moves}
-        )
-        valid_moves = self._there_is_valid_moves(row, col)
-
-        while (0, 0) not in self.memory[(row, col)] and valid_moves:
-            new_row, new_col = self.memory[(row, col)][0]
-            if (new_row, new_col) not in self.memory:
-                possible_moves = self._find_posible_moves_gold(row, col, board)
-                self.memory.update(
-                    {(new_row, new_col): possible_moves}
-                )
-
-            self.memory[(row, col)].remove(new_row, new_col)
-            row, col = new_row, new_col
-            valid_moves = self._there_is_valid_moves(row, col)
-
-        return (0, 0) not in self.memory[(row, col)] and valid_moves
+        for element in self.visited:
+            if element in possible_moves:
+                possible_moves.remove(element)
+        if not possible_moves:
+            return False
+        for row_next, col_next in possible_moves:
+            self.visited = self.visited + ((row, col),)
+            if self._find_gold_recursive(row_next, col_next, gold_position, board):
+                return True
+        return False
