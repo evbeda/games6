@@ -138,18 +138,6 @@ class BackgammonGame():
     def opposite(self):
         return BLACK if self.player == WHITE else WHITE
 
-    # def play(self, from_position, to_position):
-    #     self.check_game_status()  # Ends game if end game condition is met.
-    #     if self.active_game:
-    #         if self.move_options():
-    #             if from_position not in range(0, 24):
-    #                 self.insert_captured_piece()
-    #             else:
-    #                 self.make_move(from_position, to_position)
-    #         else:
-    #             self.change_active_player()
-    #     return self.next_turn()
-
     def change_active_player(self):
         self.player = self.opposite
 
@@ -175,9 +163,7 @@ class BackgammonGame():
         return False
 
     def can_insert_captured_piece(self):
-        if self.expelled[self.player] > 0:
-            return True
-        return False
+        return self.expelled[self.player] > 0
 
     def is_valid_move(self, initial_pos, final_pos) -> bool:
         if self.piece_move_off_board(final_pos):
@@ -250,11 +236,51 @@ class BackgammonGame():
         else:
             return TIE
 
-    def insert_captured_piece(self, new_position):
-        actual_position = -1 if self.player == WHITE else 24
-        if self.can_insert_captured_piece():
+    def make_move_change_position(
+        self,
+        new_position,
+        move,
+        col
+    ):
+        if (
+            self.less_than_five_own_pieces(new_position)
+            or self.less_than_two_enemies_in_position(new_position)
+        ):
+            self.update_move_options(move)
             self.expelled[self.player] -= 1
-            self.make_move(actual_position, new_position)
+            self.board_matrix[new_position][col] += 1
+            self.increment_points(new_position)
+            return True
+
+    def make_move_expelled_piece(
+        self,
+        actual_position,
+        new_position,
+        move,
+        col
+    ):
+        if move in self.move_options:
+            if (
+                (self.less_than_five_own_pieces(new_position)
+                 or self.less_than_two_enemies_in_position(new_position))
+                and self.can_capture(new_position)
+            ):
+                self.capture_opposite_piece(actual_position, new_position)
+                self.update_move_options(move)
+                self.expelled[self.player] -= 1
+                return True
+            else:
+                self.make_move_change_position(new_position, move, col)
+
+    def insert_captured_piece(self, new_position):
+        if self.can_insert_captured_piece():
+            actual_position = -1 if self.player == WHITE else 24
+            col = 0 if self.player == WHITE else 1
+            move = 24 - new_position if self.player == BLACK else new_position
+            self.make_move_expelled_piece(actual_position, new_position,
+                                          move, col)
+            return True
+        return False
 
     def next_turn(self):
         if not self.active_game:

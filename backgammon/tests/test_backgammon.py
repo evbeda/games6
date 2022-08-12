@@ -10,6 +10,8 @@ from backgammon.tests.test_scenarios import (
     board_6,
     board_9,
     board_10,
+    board_11,
+    board_12,
     message,
     next_turn_message_B,
     next_turn_message_W,
@@ -280,20 +282,25 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (WHITE, 3, 2, 1, 2, 2),
-        (BLACK, 1, 1, 2, 22, 0)
+        (WHITE, 3, 3, 4, [3, 4, 7], 3, board_11, 1),
+        (BLACK, 1, 3, 4, [3, 4, 7], 20, board_11, 1),
+        (WHITE, 2, 5, 5, [5, 10, 15, 20], 20, board_12, 1),
+        (BLACK, 0, 4, 1, [1, 4, 5], 22, board_11, 0),
     ])
     def test_insert_captured_piece(self, current_player,
-                                   pieces_captured,
-                                   first_dice, second_dice, new_position,
-                                   expected):
+                                   pieces_captured, first_dice,
+                                   second_dice, move_options, new_position,
+                                   board, expected):
         game = BackgammonGame()
+        game.board_matrix = board
         game.player = current_player
         game.expelled[current_player] = pieces_captured
         game.dice_one = first_dice
         game.dice_two = second_dice
+        game.move_options = move_options
         game.insert_captured_piece(new_position)
-        result = game.expelled[game.player]
+        col = 0 if game.player == WHITE else 1
+        result = game.board_matrix[new_position][col]
         self.assertEqual(result, expected)
 
     @parameterized.expand([
