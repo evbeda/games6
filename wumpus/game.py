@@ -22,7 +22,7 @@ import random
 
 class WumpusGame:
 
-    name = 'Wumpus'
+    name = 'Wumpus . An unforgettable Adventure'
     input_args = 2
     input_are_ints = False
 
@@ -275,6 +275,6 @@ class WumpusGame:
             if not self._find_gold_recursive(0, 0, gold_position, aux_board, []):
                 return False
         return True
-    
+
     def play(self, action, direction):
         self.manager_move(action, direction)
