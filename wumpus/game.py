@@ -50,15 +50,15 @@ class WumpusGame:
             while True:  # busca hasta encontrar una posicion libre
                 row = random.randint(0, ROW - 1)
                 col = random.randint(0, COL - 1)
-
-                valid = self.check_is_empty(row, col)
-
-                if item == HOLES and valid:
-                    valid = self._valid_hole(row, col)
-
-                if valid:
+                if self._is_valid(row, col, item):
                     self._board[row][col] = item
                     break
+
+    def _is_valid(self, row, col, item) -> bool:
+        valid = self.check_is_empty(row, col)
+        if item == HOLES and valid:
+            valid = self._valid_hole(row, col)
+        return valid
 
     def position_finder(self, item):
         position_list = []
