@@ -258,8 +258,6 @@ class WumpusGame:
         if (row, col) == gold_position:
             return True
         possible_moves = self._posible_position(row, col)
-        if not possible_moves:
-            return False
         for row_next, col_next in possible_moves:
             if (
                 (row_next, col_next) not in visited and
