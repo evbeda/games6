@@ -325,13 +325,22 @@ class BackgammonGame():
         return pboard
 
     def all_moves(self, player_position):
-        all_moves = {}
+        _all_moves = {}
         move_options = self.get_move_options()
         for index, element in enumerate(self.board_matrix):
             if element[player_position] > 0:
-                all_moves[str(index)] = list(map(
+                _all_moves[str(index)] = list(map(
                     lambda dice:
                         dice + index if player_position == 0
                         else index - dice,
                         move_options))
-        return all_moves
+        return _all_moves
+
+    def available_moves(self):
+        moves = self.all_moves()
+        for key, value in moves.items():
+            for position in value:
+                if self.is_valid_move(int(key), position):
+                    return True
+
+        return False
