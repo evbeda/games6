@@ -48,7 +48,8 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO
                         SCENARIO_FIND_POSITION_H_BORDER,
                         SCENARIO_FIND_POS_H_BOR_LEFT,
                         RECURSIVE, INITIAL_FAIL_BOARD,
-                        RECURSIVE_SIDE, VALID_HOLE_SCENARIO)
+                        RECURSIVE_SIDE, VALID_HOLE_SCENARIO,
+                        RECURSIVE_SIDE_BORDER)
 
 
 class TestGame(unittest.TestCase):
@@ -477,6 +478,7 @@ class TestGame(unittest.TestCase):
         ((4, 4), INITIAL_FAIL_BOARD, False),
         ((7, 7), INITIAL_BIG_FAIL_BOARD, False),
         ((2, 7), RECURSIVE_SIDE, True),
+        ((7, 0), RECURSIVE_SIDE_BORDER, False),
     ])
     def test_find_gold_way(self, gold_position, board, bool_return):
         game = WumpusGame()
