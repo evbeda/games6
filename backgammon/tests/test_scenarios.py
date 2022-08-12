@@ -105,8 +105,8 @@ presented_board7 = [
 ]
 
 next_turn_resume_true = {
-    "board": presented_initial_board,
     "dices": [1, 2],
+    "move_options": [1, 2, 3],
     "points": {BLACK: 3, WHITE: 2},
     "number_of_turns": 20,
     "piece_captured": {"BLACK": 1, "WHITE": 0}
@@ -127,7 +127,7 @@ next_turn_resume_false_TIE = {
     "point": {BLACK: 15, WHITE: 15}
 }
 
-next_turn_active = f"{next_turn_resume_true} \n {MESSAGE_FP} {MESSAGE_SP}"
+message = f"BLACK turn. {next_turn_resume_true} \n {MESSAGE_FP} {MESSAGE_SP}"
 next_turn_message_B = f"{next_turn_resume_false_B} \n GAME OVER"
 next_turn_message_W = f"{next_turn_resume_false_W} \n GAME OVER"
 next_turn_message_TIE = f"{next_turn_resume_false_TIE} \n GAME OVER"
