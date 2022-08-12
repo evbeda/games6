@@ -139,7 +139,7 @@ class BackgammonGame():
         return BLACK if self.player == WHITE else WHITE
 
     # def play(self, from_position, to_position):
-    #     self.check_game_status()
+    #     self.check_game_status()  # Ends game if end game condition is met.
     #     if self.active_game:
     #         if self.move_options():
     #             if from_position not in range(0, 24):
@@ -148,6 +148,7 @@ class BackgammonGame():
     #                 self.make_move(from_position, to_position)
     #         else:
     #             self.change_active_player()
+    #     return self.next_turn()
 
     def change_active_player(self):
         self.player = self.opposite
@@ -301,7 +302,7 @@ class BackgammonGame():
         aux_board = self.board_matrix[::-1]
 
         pboard = [
-            "131415161718 192021222324",
+            "121314151617 181920212223",
             "| | | | | |   | | | | | |",
             "| | | | | |   | | | | | |",
             "| | | | | |   | | | | | |",
@@ -313,7 +314,7 @@ class BackgammonGame():
             "| | | | | |   | | | | | |",
             "| | | | | |   | | | | | |",
             "| | | | | |   | | | | | |",
-            "1211109 8 7   6 5 4 3 2 1"
+            "11109 8 7 6   5 4 3 2 1 0"
         ]
 
         for index, elem in enumerate(aux_board):
