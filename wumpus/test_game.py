@@ -56,7 +56,8 @@ from .scenarios import (INITIAL_BIG_FAIL_BOARD, SCENARIO_1, SCENARIO_2, SCENARIO
                         SCENARIO_PLAY_LAST_GOLD,
                         SCENARIO_PLAY_LAST_GOLD_FIN,
                         SCENARIO_PLAY_WIN_GOLD,
-                        SCENARIO_PLAY_WIN_GOLD_F)
+                        SCENARIO_PLAY_WIN_GOLD_F,
+                        SCENARIO_BAD_MOVE)
 
 
 class TestGame(unittest.TestCase):
@@ -511,7 +512,7 @@ class TestGame(unittest.TestCase):
         ("m", "w", SCENARIO_PLAY_LAST_GOLD, SCENARIO_PLAY_LAST_GOLD_FIN,
          False, 990),
         ("m", "w", SCENARIO_PLAY_WIN_GOLD, SCENARIO_PLAY_WIN_GOLD_F,
-         True, 990),
+         True, 990)
     ])
     def test_play(self, action, direction, initial_board, expected_result,
                   expected_is_playing, expected_score):
@@ -521,3 +522,14 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.is_playing, expected_is_playing)
         self.assertEqual(game.score, expected_score)
         self.assertEqual(initial_board, expected_result)
+
+    @parameterized.expand([
+        ("m", "w", SCENARIO_BAD_MOVE, SCENARIO_BAD_MOVE,
+         True, 0),
+    ])
+    def test_play_exception(self, action, direction, initial_board, expected_result,
+                            expected_is_playing, expected_score):
+        game = WumpusGame()
+        game._board = initial_board
+        self.assertEqual(game.play(action, direction), "Bad move")
+
