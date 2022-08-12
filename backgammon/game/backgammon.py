@@ -275,6 +275,16 @@ class BackgammonGame():
                 line = 11 - iter
             self.add_piece(color, line, position, pboard)
 
+    def calculate_position(self, index):
+        if index <= 5:
+            return -(index * 2 + 1)
+        elif index <= 11:
+            return -((index - 6) * 2 + 15)
+        elif index <= 17:
+            return (index - 12) * 2
+        else:
+            return (index - 18) * 2 + 14
+
     def present_board(self):
 
         aux_board = self.board[::-1]
@@ -295,17 +305,10 @@ class BackgammonGame():
             "1211109 8 7   6 5 4 3 2 1"
         ]
 
-        for index, i in enumerate(aux_board):
-            if i[0] > 0 or i[1] > 0:
-                color = "W" if i[0] > i[1] else "B"
-                amount = i[0] if color == 'W' else i[1]
-                if index <= 5:
-                    position = -(index * 2 + 1)
-                elif index <= 11:
-                    position = -((index - 6) * 2 + 15)
-                elif index <= 17:
-                    position = (index - 12) * 2
-                else:
-                    position = (index - 18) * 2 + 14
+        for index, elem in enumerate(aux_board):
+            if elem[0] > 0 or elem[1] > 0:
+                color = "W" if elem[0] > elem[1] else "B"
+                amount = elem[0] if color == 'W' else elem[1]
+                position = self.calculate_position(index)
                 self.iterate(amount, position, pboard, index, color)
         return pboard
