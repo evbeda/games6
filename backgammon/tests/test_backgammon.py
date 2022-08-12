@@ -8,6 +8,8 @@ from backgammon.tests.test_scenarios import (
     board_4,
     board_5,
     board_6,
+    board_9,
+    board_10,
     message,
     next_turn_message_B,
     next_turn_message_W,
@@ -385,6 +387,28 @@ class BackgammonGameTest(unittest.TestCase):
         player_position = 0 if current_player == WHITE else 1
         posible_moves_list = game.all_moves(player_position)
         self.assertEqual(posible_moves_list, expected)
+
+    @parameterized.expand([
+        (WHITE, {
+            "0": [1, 2, 3],
+            "11": [12, 13, 14],
+            "16": [17, 18, 19],
+            "18": [19, 20, 21]
+        }, board_10, True),
+        (BLACK, {
+            "23": [19, 15, 11, 7],
+            "12": [8, 4, 0],
+            "7": [3],
+            "5": [1]
+        }, board_9, False),
+    ])
+    def test_avialable_moves(self, current_player, all_moves, board, expected):
+        game = BackgammonGame()
+        game.player = current_player
+        game.board_matrix = board
+        with patch.object(BackgammonGame, 'all_moves', return_value=all_moves):
+            result = game.available_moves()
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':
