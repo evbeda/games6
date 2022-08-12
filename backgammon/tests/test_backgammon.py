@@ -19,7 +19,9 @@ from backgammon.tests.test_scenarios import (
     initial_board2,
     board_7,
     presented_initial_board,
-    presented_board7)
+    presented_board7,
+    board_with_no_more_moves,
+    board_with_just_one_move,)
 from unittest.mock import patch
 from ..game.constants import BLACK, WHITE, TIE, WINNER_BLACK, WINNER_WHITE
 
@@ -391,8 +393,7 @@ class BackgammonGameTest(unittest.TestCase):
         game.dice_one = first_dice
         game.dice_two = second_dice
         game.move_options = move_options
-        player_position = 0 if current_player == WHITE else 1
-        posible_moves_list = game.all_moves(player_position)
+        posible_moves_list = game.all_moves()
         self.assertEqual(posible_moves_list, expected)
 
     @parameterized.expand([
@@ -416,6 +417,48 @@ class BackgammonGameTest(unittest.TestCase):
         with patch.object(BackgammonGame, 'all_moves', return_value=all_moves):
             result = game.available_moves()
         self.assertEqual(result, expected)
+
+    @parameterized.expand([
+        (BLACK, 23, 21, 2, 1, 'GOOD MOVE', initial_board),
+        (WHITE, 0, 2, 2, 1, 'GOOD MOVE', initial_board),
+        (WHITE, 1, 2, 1, 2, 'GAME OVER', board_with_no_more_moves),
+        (BLACK, 23, 21, 2, 1, 'GAME OVER', board_with_no_more_moves),
+        (WHITE, 0, 10, 1, 1, 'BAD MOVE', initial_board),
+    ])
+    def test_play(self, player, from_coor, to_coor, dice_one,
+                  dice_two, expected_result, board):
+        game = BackgammonGame()
+        game.player = player
+        game.dice_one, game.dice_two = dice_one, dice_two
+        game.board_matrix = board
+        result = game.play(from_coor, to_coor)
+        self.assertEqual(result, expected_result)
+
+    @parameterized.expand([
+        (WHITE, 23, 25, 2, 2, False, board_with_just_one_move),
+    ])
+    def test_game_over(self, player, from_coor, to_coor, dice_one,
+                       dice_two, expected_result, board):
+        game = BackgammonGame()
+        game.player = player
+        game.dice_one, game.dice_two = dice_one, dice_two
+        game.board_matrix = board
+        game.play(from_coor, to_coor)
+        self.assertEqual(game.active_game, expected_result)
+
+    @parameterized.expand([
+        (BLACK, 3, 3, 4, 50, 20, board_11, 'GOOD MOVE'),
+    ])
+    def test_good_capture_in_play(self, player, expelled_pieces, dice_one,
+                                  dice_two, from_coor, to_coor, board,
+                                  expected_result):
+        game = BackgammonGame()
+        game.player = player
+        game.expelled[game.player] = expelled_pieces
+        game.dice_one, game.dice_two = dice_one, dice_two
+        game.board_matrix = board
+        result = game.play(from_coor, to_coor)
+        self.assertEqual(result, expected_result)
 
 
 if __name__ == '__main__':
