@@ -12,6 +12,7 @@ from backgammon.tests.test_scenarios import (
     board_10,
     board_11,
     board_12,
+    board_13,
     message,
     next_turn_message_B,
     next_turn_message_W,
@@ -287,6 +288,8 @@ class BackgammonGameTest(unittest.TestCase):
     @parameterized.expand([
         (WHITE, 2, 5, 5, [5, 10, 15, 20], 20, board_12, 1),
         (BLACK, 0, 4, 1, [1, 4, 5], 22, board_11, 0),
+        (BLACK, 1, 1, 1, [1, 2, 3, 4], 22, board_13, 1),
+        (WHITE, 3, 3, 4, [3, 4, 7], 3, board_13, 1)
     ])
     def test_insert_captured_piece(self, current_player,
                                    pieces_captured, first_dice,
