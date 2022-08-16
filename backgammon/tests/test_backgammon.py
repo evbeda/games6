@@ -471,6 +471,19 @@ class BackgammonGameTest(unittest.TestCase):
         result = game.board
         self.assertEqual(result, expected)
 
+    @parameterized.expand([
+        (WHITE, 0, 1, 1, 2, [], BLACK)
+    ])
+    def test_play_no_move_options(self, current_player, from_coor, to_coor,
+                                  dice_one, dice_two, move_options, expected):
+        game = BackgammonGame()
+        game.player = current_player
+        game.dice_one, game.dice_two = dice_one, dice_two
+        game.move_options = move_options
+        game.play(from_coor, to_coor)
+        result = game.player
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
