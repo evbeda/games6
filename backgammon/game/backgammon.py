@@ -1,5 +1,4 @@
 import random
-# import ipdb
 from .constants import (
     BLACK,
     WHITE,
@@ -383,20 +382,22 @@ class BackgammonGame():
     def play(self, start_coor, to_coor):
         result = 'GOOD MOVE'
         self.check_game_status()
-        if start_coor > 23:
-            self.insert_captured_piece(to_coor)
-        elif (str(start_coor) not in self.all_moves()
-              or (not self.make_move(start_coor, to_coor))):
-            result = 'BAD MOVE'
         if not self.move_options:
             self.change_active_player()
             self.roll_dices()
             self.get_move_options()
             self.current_turn += 1
+        if start_coor > 23:
+            self.insert_captured_piece(to_coor)
+        elif (str(start_coor) not in self.all_moves()
+              or (not self.make_move(start_coor, to_coor))):
+            result = 'BAD MOVE'
+        if not self.available_moves():
+            self.change_active_player()
+            self.roll_dices()
+            self.get_move_options()
             if not self.available_moves():
-                self.change_active_player()
-                if not self.available_moves():
-                    self.game_active_change()
-                    self.next_turn()
-                    result = 'GAME OVER'
+                self.game_active_change()
+                self.next_turn()
+                result = 'GAME OVER'
         return result
