@@ -176,3 +176,10 @@ message = f"BLACK turn. {next_turn_resume_true} \n {MESSAGE_FP} {MESSAGE_SP}"
 next_turn_message_B = f"{next_turn_resume_false_B} \n GAME OVER"
 next_turn_message_W = f"{next_turn_resume_false_W} \n GAME OVER"
 next_turn_message_TIE = f"{next_turn_resume_false_TIE} \n GAME OVER"
+
+
+def return_board_str():
+    board = ""
+    for element in presented_board7:
+        board += str(element) + '\n'
+    return board

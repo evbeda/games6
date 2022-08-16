@@ -37,6 +37,7 @@ class TestGame(unittest.TestCase):
             '0: Guess Number Game\n'
             '1: Othello\n'
             '2: Wumpus . An unforgettable Adventure\n'
+            '3: Backgammon\n'
             '99: to quit\n'
         )
 
