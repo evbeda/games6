@@ -285,7 +285,6 @@ class BackgammonGameTest(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @parameterized.expand([
-        (WHITE, 3, 3, 4, [3, 4, 7], 3, board_11, 1),
         (WHITE, 2, 5, 5, [5, 10, 15, 20], 20, board_12, 1),
         (BLACK, 0, 4, 1, [1, 4, 5], 22, board_11, 0),
     ])
