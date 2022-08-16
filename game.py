@@ -68,6 +68,7 @@ class Game(object):
                 expecting_str,
             ))
             try:
+                # ipdb.set_trace()
                 input_args = self.process_inputs(inputs)
 
                 if len(input_args) in input_arg_qtys:
