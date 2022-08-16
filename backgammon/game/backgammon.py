@@ -388,11 +388,15 @@ class BackgammonGame():
         elif (str(start_coor) not in self.all_moves()
               or (not self.make_move(start_coor, to_coor))):
             result = 'BAD MOVE'
-        self.change_active_player()
-        if not self.available_moves():
+        if not self.move_options:
             self.change_active_player()
+            self.roll_dices()
+            self.get_move_options()
+            self.current_turn += 1
             if not self.available_moves():
-                self.game_active_change()
-                self.next_turn()
-                result = 'GAME OVER'
+                self.change_active_player()
+                if not self.available_moves():
+                    self.game_active_change()
+                    self.next_turn()
+                    result = 'GAME OVER'
         return result
