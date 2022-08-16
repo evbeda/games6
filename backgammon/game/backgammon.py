@@ -12,9 +12,9 @@ from .constants import (
 
 class BackgammonGame():
 
-    name = "Backgammon"
+    name = 'Backgammon'
     input_args = 2
-    args_are_ints = True
+    input_are_ints = True
 
     def __init__(self):
 
@@ -29,8 +29,8 @@ class BackgammonGame():
         self.active_game = True
         self.dice_one = random.randint(1, 6)
         self.dice_two = random.randint(1, 6)
-        self.move_options = []
-        self.current_turn = 0
+        self.move_options = self.get_move_options()
+        self.current_turn = 1
         self.points = {BLACK: 0, WHITE: 0}
         self.is_playing = True
 
@@ -324,8 +324,7 @@ class BackgammonGame():
         else:
             return (index - 18) * 2 + 14
 
-    @property
-    def board(self):
+    def p_board(self):
         aux_board = self.board_matrix[::-1]
 
         pboard = [
@@ -351,6 +350,13 @@ class BackgammonGame():
                 position = self.calculate_position(index)
                 self.iterate(amount, position, pboard, index, color)
         return pboard
+
+    @property
+    def board(self):
+        board = ""
+        for element in self.p_board():
+            board += str(element) + '\n'
+        return board
 
     def all_moves(self):
         player_position = 0 if self.player == WHITE else 1

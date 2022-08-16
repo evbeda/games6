@@ -21,7 +21,8 @@ from backgammon.tests.test_scenarios import (
     presented_initial_board,
     presented_board7,
     board_with_no_more_moves,
-    board_with_just_one_move,)
+    board_with_just_one_move,
+    return_board_str,)
 from unittest.mock import patch
 from ..game.constants import BLACK, WHITE, TIE, WINNER_BLACK, WINNER_WHITE
 
@@ -285,7 +286,6 @@ class BackgammonGameTest(unittest.TestCase):
 
     @parameterized.expand([
         (WHITE, 3, 3, 4, [3, 4, 7], 3, board_11, 1),
-        (BLACK, 1, 3, 4, [3, 4, 7], 20, board_11, 1),
         (WHITE, 2, 5, 5, [5, 10, 15, 20], 20, board_12, 1),
         (BLACK, 0, 4, 1, [1, 4, 5], 22, board_11, 0),
     ])
@@ -354,7 +354,7 @@ class BackgammonGameTest(unittest.TestCase):
         # self.backgammon.board = initial_board
         new_game = BackgammonGame()
         new_game.board_matrix = board
-        self.assertEqual(new_game.board, expected)
+        self.assertEqual(new_game.p_board(), expected)
 
     @parameterized.expand([
         (board_4, WHITE, {WHITE: 2}, True),
@@ -459,6 +459,15 @@ class BackgammonGameTest(unittest.TestCase):
         game.board_matrix = board
         result = game.play(from_coor, to_coor)
         self.assertEqual(result, expected_result)
+
+    @parameterized.expand([
+        (board_7, return_board_str())
+    ])
+    def test_return_board(self, board, expected):
+        game = BackgammonGame()
+        game.board_matrix = board
+        result = game.board
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':
